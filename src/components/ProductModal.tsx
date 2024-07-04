@@ -1,3 +1,5 @@
+import styles from '../styles/ProductModal.module.css'
+
 interface Product {
   pType: string;
   pName: string;
@@ -7,8 +9,11 @@ interface Product {
 
 export default function Modal() {
   return(
-    <div>
-      hello!!
+    <div className={styles.Modal}>
+      <div>
+        <input type="file" accept="image/*" />
+        <input type="button" value="임시 닫기" onClick={() => {window.location.reload()}}/>
+      </div>
     </div>
   )
 }
