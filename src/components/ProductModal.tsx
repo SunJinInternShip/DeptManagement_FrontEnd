@@ -1,23 +1,26 @@
-import styles from '../styles/ProductModal.module.css'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
-interface Product {
-  pType: string;
-  pName: string;
-  price: number;
-  quantity: number;
-}
+export default function PModal() {
+  return (
+    <div
+      className="modal show"
+      style={{ display: 'block', position: 'initial' }}
+    >
+      <Modal.Dialog>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal title</Modal.Title>
+        </Modal.Header>
 
-export default function Modal() {
-  return(
-    <div className={styles.Modal}>
-      <div>
-        <input type="file" accept="image/*" />
-        <input type="button" value="임시 닫기" onClick={() => {window.location.reload()}}/>
-      </div>
+        <Modal.Body>
+          <p>Modal body text goes here.</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary">Close</Button>
+          <Button variant="primary">Save changes</Button>
+        </Modal.Footer>
+      </Modal.Dialog>
     </div>
-  )
+  );
 }
-
-//export function ProductOrder() {}
-
-//export function ProductModification() {}

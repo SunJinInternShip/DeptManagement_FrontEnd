@@ -1,11 +1,10 @@
 import * as React from 'react';
-import Modal from '../components/ProductModal';
+import PModal from '../components/ProductModal';
 import Spinner from '../components/Spinner';
 
 export default function DepartmentMain() {
   const [state, setState] = React.useState<boolean>(false);
-  //<input type='button' value="버튼" onClick={() => {setState(!state)}}/> {state? Modal() : ""}
-  //{Spinner()}
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
@@ -65,7 +64,7 @@ export default function DepartmentMain() {
           </tr>
         </table>
       </div>
-      <input type='button' value="버튼" onClick={() => {setState(!state)}}/> {state? Modal() : ""}
+      <input type='button' value="버튼" onClick={() => {setState(!state)}}/> {state? PModal() : ""}
     </div>
   );
 }

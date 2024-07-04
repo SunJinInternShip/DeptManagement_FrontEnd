@@ -1,9 +1,9 @@
-import styles from '../styles/Spinner.module.css'
+import Spinner from 'react-bootstrap/Spinner';
 
 export default function Spinner() {
-  return(
-    <div className={styles.ldsspinner}>
-      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-    </div>
-  )
+  return (
+    <Spinner animation="border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+  );
 }
