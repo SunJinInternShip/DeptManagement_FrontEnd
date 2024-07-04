@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { userData } from '../utils/SampleData';
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [id, setId] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -26,6 +29,7 @@ export default function Login() {
           <input type='password' placeholder='password' required
            onChange={(e: any) => {setPassword(e.target.value)}}/>
           <input type='submit' value="로그인"/>
+          <button onClick={() => {navigate("/register")}}>회원가입</button>
         </form>
       </div>
     </div>
