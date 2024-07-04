@@ -7,6 +7,7 @@ export default function Login() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    // /login
     userData.map((user) => {
       if(user.userId === id) {
         if(user.password === password) {
