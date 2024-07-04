@@ -8,7 +8,7 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // /login
     userData.map((user) => {
@@ -25,9 +25,9 @@ export default function Login() {
       <div>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
           <input type='text' placeholder='id' required
-           onChange={(e: any) => {setId(e.target.value)}}/>
+           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setId(e.target.value)}}/>
           <input type='password' placeholder='password' required
-           onChange={(e: any) => {setPassword(e.target.value)}}/>
+           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setPassword(e.target.value)}}/>
           <input type='submit' value="로그인"/>
           <button onClick={() => {navigate("/register")}}>회원가입</button>
         </form>
