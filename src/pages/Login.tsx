@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as React from 'react';
 import { useNavigate } from "react-router-dom";
+import { GetToken, SetToken, RemoveAtoken, RemoveRtoken } from '../components/JWTToken';
 
 interface User {
   id: string;
@@ -30,7 +31,7 @@ export default function Login() {
         "loginId": user.id,
         "password": user.password
       });
-      //console.log(res.data); // 토큰 값 주의!!!
+      SetToken(res.data.accessToken, res.data.refreshToken);
       alert("로그인 성공!");
     } catch (error) {
       console.log(error);
@@ -51,6 +52,10 @@ export default function Login() {
           <input type='submit' value="로그인"/>
           <button onClick={() => {navigate("/register")}}>회원가입</button>
         </form>
+        <button onClick={() => {GetToken()}}>gettoken</button>
+        <button onClick={() => {console.log(localStorage.getItem("accessToken"))}}>getaccess</button>
+        <button onClick={() => {RemoveAtoken()}}>remove accessToken</button>
+        <button onClick={() => {RemoveRtoken()}}>remove refreshToken</button>
       </div>
     </div>
   );
