@@ -27,6 +27,14 @@ export function ProductOrder() {
     }));
   };
 
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProduct((product: Product) => ({
+      ...product,
+      [name]: value
+    }));
+  };
+
   return (
     <div className="modal show"
      style={{ display: 'block', position: 'initial' }}>
@@ -43,13 +51,21 @@ export function ProductOrder() {
           </Dropdown>
           <Form>
             <Form.Group>
-              <Form.Control type="text" value="123" />
+              <Form.Control type="text" placeholder='pname' name='pName'
+               value={product.pName}
+               onChange={handleChange}/>
+              <Form.Control type="number" placeholder='price' name='price'
+               value={product.price} 
+               onChange={handleChange}/>
+              <Form.Control type="number" placeholder='quantity' name='quantity'
+               value={product.quantity}
+               onChange={handleChange}/>
             </Form.Group>
           </Form>
         </Modal.Body>
 
         <Modal.Footer className="d-flex justify-content-center">
-          <Button variant="primary">Save changes</Button>
+          <Button variant="primary">등록</Button>
         </Modal.Footer>
       </Modal.Dialog>
     </div>
