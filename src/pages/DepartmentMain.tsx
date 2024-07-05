@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PModal from '../components/ProductModal';
+import { ProductOrder } from '../components/ProductModal';
 import Spinner from '../components/Spinner';
 
 export default function DepartmentMain() {
@@ -64,7 +64,7 @@ export default function DepartmentMain() {
           </tr>
         </table>
       </div>
-      <input type='button' value="버튼" onClick={() => {setState(!state)}}/> {state? PModal() : ""}
+      {ProductOrder()}
     </div>
   );
 }
