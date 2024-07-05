@@ -1,5 +1,6 @@
+import axios from 'axios';
 import * as React from 'react';
-import { userData } from '../utils/SampleData';
+//import { userData } from '../utils/SampleData';
 
 interface User {
   deptCode: string;
@@ -21,17 +22,28 @@ export default function Register() {
   });
 
   // 인증 버튼
-  // '/varify/department'
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if(user.deptCode !== '') {
-      setUser((user: User) => ({
-        ...user,
-        deptName: "null",
-        btnState: true
-      }));
+      try {
+        const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/verify/department`, {
+          "deptCode": user.deptCode
+        });
+        setUser((user: User) => ({
+          ...user,
+          deptName: res.data.deptName,
+          btnState: true
+        }));
+      } catch (error: unknown) {
+        alert("등록되어 있지 않은 부서입니다.");
+        setUser((user: User) => ({
+          ...user,
+          deptCode: ''
+        }));
+      }
     }
-  }
+    else alert("부서 코드를 입력해주세요.");
+}
 
   // 텍스트 수정
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,10 +55,9 @@ export default function Register() {
   }
 
   // 회원가입 버튼
-  // '/signup'
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert(`deptcode = ${user.deptCode}\ndeptname = ${user.deptName}\nbtnstate = ${user.btnState}\nusername = ${user.name}\nuserid = ${user.id}\nuserpassword = ${user.password}`)
+    
   }
 
   return (
