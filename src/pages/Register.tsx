@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as React from 'react';
-//import { userData } from '../utils/SampleData';
+import { useNavigate } from "react-router-dom";
 
 interface User {
   deptCode: string;
@@ -20,6 +20,8 @@ export default function Register() {
     id: '',
     password: ''
   });
+
+  const navigate = useNavigate();
 
   // 인증 버튼
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -57,7 +59,19 @@ export default function Register() {
   // 회원가입 버튼
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/signup`, {
+        "deptCode": user.deptCode,
+        "userName": user.name,
+        "loginId": user.id,
+        "password": user.password
+      });
+      console.log(res.data);
+      alert("회원가입 성공!");
+    } catch (error) {
+      console.log(error);
+    }
+    navigate("/");
   }
 
   return (
