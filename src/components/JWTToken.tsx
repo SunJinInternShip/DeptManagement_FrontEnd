@@ -1,28 +1,18 @@
 import axios from "axios";
 
 export function SetToken(aToken: string, rToken: string) {
-  const aTokenExpireDate: number = Date.now() + 1000 * 60 * 60 * 24; // 1D
-  const rTokenExpireDate: number = Date.now() + 1000 * 60 * 60 * 24 * 14; // 14D
-  const rTokenExpire: string = new Date(rTokenExpireDate).toUTCString();
-  const accessToken: object = {
-    token: aToken,
-    expire: aTokenExpireDate
-  }
-  const accessTokenString: string = JSON.stringify(accessToken);
-
-  localStorage.setItem("accessToken", accessTokenString);
-
-  document.cookie = `refreshToken=${rToken}; expires=${rTokenExpire}; Path=/;`;
+  localStorage.setItem("accessToken", aToken);
+  document.cookie = `refreshToken=${rToken}; Path=/;`;
 }
 
-export async function GetToken() {
-  const accessTokenString: string | null = localStorage.getItem("accessToken");
-  const refreshToken: string | undefined = getCookieValue("refreshToken");
-  console.log(accessTokenString);
-  console.log(refreshToken);
-  console.log(document.cookie.length);
-  
-  if(accessTokenString === null) {
+export function GetToken(): string | null {
+  const accessToken: string | null = localStorage.getItem("accessToken");
+  //const refreshToken: string | undefined = getCookieValue("refreshToken");
+  console.log(accessToken);
+  //console.log(refreshToken);
+  return accessToken;
+/*
+  if(accessToken === null) {
     if(refreshToken === undefined){
       return null; // accessToken = X, refreshToken = X
     }
@@ -65,7 +55,7 @@ export async function GetToken() {
       return accessToken.token; // accessToken = O, refreshToken = ?
     }
   }
-
+*/
 }
 
 function getCookieValue(cookieName: string): string | undefined {
@@ -78,7 +68,7 @@ function getCookieValue(cookieName: string): string | undefined {
   }
   return undefined;
 }
-
+/*
 export function RemoveAtoken() {
   localStorage.removeItem("accessToken");
 }
@@ -86,3 +76,4 @@ export function RemoveAtoken() {
 export function RemoveRtoken() {
   document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
+*/
