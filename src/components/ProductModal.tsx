@@ -9,8 +9,8 @@ import Form from 'react-bootstrap/Form';
 interface Product {
   pType: string;
   pName: string;
-  price: number;
-  quantity: number;
+  price: number | string;
+  quantity: number | string;
 }
 
 // 종료 시 초기화 로직 필요 or 실행 시 초기화 로직
@@ -19,8 +19,8 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
   const [product, setProduct] = React.useState<Product>({
     pType: '비품',
     pName: '',
-    price: 0,
-    quantity: 0
+    price: '',
+    quantity: ''
   });
 
   const handleSelect = async (e: any) => {
