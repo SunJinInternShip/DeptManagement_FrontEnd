@@ -26,17 +26,20 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(user.id);
+
     try {
       const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/login`, {
         "loginId": user.id,
         "password": user.password
       });
-      SetToken(res.data.accessToken, res.data.refreshToken);
-      alert("로그인 성공!");
+      console.log(res.data);
+      
+      await SetToken(res.data.accessToken, res.data.refreshToken, res.data.userName);
+      user.id === "admin" ? navigate("/home/admin") : navigate("/home");
     } catch (error) {
       console.log(error);
     }
-    navigate("/home");
   };
 
   return (

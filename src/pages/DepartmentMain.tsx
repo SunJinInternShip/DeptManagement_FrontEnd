@@ -5,6 +5,8 @@ import Spinner from '../components/Spinner';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
+import { useNavigate } from "react-router-dom";
+import { GetToken } from '../components/JWTToken';
 
 interface Product {
   pType: string;
@@ -13,8 +15,10 @@ interface Product {
   quantity: number | string;
 }
 
+const accessToken: string | null = localStorage.getItem("accessToken");
+const name: string | null = localStorage.getItem("name");
+
 export default function DepartmentMain() {
-  const accessToken: string | null = localStorage.getItem("accessToken");
   const [orderModalShow, setOrderModalShow] = React.useState<boolean>(false);
   const [productOrderData, setProductOrderData] = React.useState<Object>([]);
   const [editModalShow, setEditModalShow] = React.useState<boolean>(false);
@@ -27,6 +31,8 @@ export default function DepartmentMain() {
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
   const [orderId, setOrderId] = React.useState<number>(0);
   const [deptName, setDeptName] = React.useState<string>('');
+
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setOrderModalShow(false);
@@ -50,7 +56,7 @@ export default function DepartmentMain() {
         response.then((res) => {
           setProductOrderData(res.data.orders);
           setTotalAmount(res.data.totalAmount);
-          setDeptName(res.data.orders[0] === undefined ? '' : res.data.orders[0].applicantDeptName)
+          setDeptName(res.data.orders[0] === undefined ? '' : res.data.orders[0].applicantDeptName);
         })
       } catch (error) {
         console.log(error);
@@ -58,11 +64,16 @@ export default function DepartmentMain() {
     }
   },[orderModalShow, editModalShow])
 
+  React.useEffect(() => {
+    GetToken();
+    if(name === "seyun") navigate("/home/admin"); // 어드민이면 어드민 페이지
+  },[])
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
         <Card style={{ fontSize: 20, padding: 5 }}>로고</Card>
-        <Card style={{ fontSize: 20, padding: 5 }}>test</Card>
+        <Card hidden={name === null ? true : false} style={{ fontSize: 20, padding: 5 }}>{name}</Card>
       </div>
       <div style={{ textAlign: 'center' }}>
         <Card hidden={deptName === '' ? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{deptName} 부서의 총 사용 금액: {totalAmount}원</Card>
