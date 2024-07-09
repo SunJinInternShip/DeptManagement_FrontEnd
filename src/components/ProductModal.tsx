@@ -13,7 +13,6 @@ interface Product {
   quantity: number | string;
 }
 
-// 종료 시 초기화 로직 필요 or 실행 시 초기화 로직
 export function ProductOrder(modalShow: boolean, handleClose: any) {
   const accessToken: string | null = localStorage.getItem("accessToken");
   const [product, setProduct] = React.useState<Product>({
@@ -26,7 +25,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
   const handleSelect = async (e: any) => {
     setProduct((product: Product) => ({
       ...product,
-      pType: e,
+      pType: e
     }));
   };
 
@@ -59,6 +58,17 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
       console.log(error);
     }
   }
+
+  React.useEffect(() => {
+    if(modalShow === false) {
+      setProduct({
+        pType: '비품',
+        pName: '',
+        price: '',
+        quantity: ''
+      });
+    }
+  },[modalShow])
 
   return (
     <div style={{ display: 'block', position: 'initial' }}>
@@ -97,21 +107,16 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
 }
 
 export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: Product) {
-  const [product, setProduct] = React.useState<Product>({
-    pType: productInfo.pType,
-    pName: productInfo.pName,
-    price: productInfo.price,
-    quantity: productInfo.quantity
-  });
-
-  const handleSelect = async (e: any) => {
+  const [product, setProduct] = React.useState<Product>(productInfo);
+  
+  const handleSelect = (e: any) => {
     setProduct((product: Product) => ({
       ...product,
       pType: e,
     }));
   };
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProduct((product: Product) => ({
       ...product,
@@ -119,26 +124,35 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
     }));
   };
 
+  const handleClick = () => {
+    alert(`open`);
+  }
+
+  React.useEffect(() => {
+    if(modalShow === true) {
+      setProduct(productInfo);
+    }
+  },[modalShow])
+
   return (
-    <div
-     style={{ display: 'block', position: 'initial' }}>
+    <div style={{ display: 'block', position: 'initial' }}>
       <Modal show={modalShow} onHide={handleClose} animation centered>
         <Modal.Header closeButton/>
 
         <Modal.Body className="d-flex flex-column align-items-center">
           <Dropdown>
-            <DropdownButton id="dropdown-basic-button" title={product.pType} onSelect={handleSelect}>
-              <Dropdown.Item eventKey="1" active={product.pType === "1"}>1</Dropdown.Item>
-              <Dropdown.Item eventKey="2" active={product.pType === "2"}>2</Dropdown.Item>
-              <Dropdown.Item eventKey="3" active={product.pType === "3"}>3</Dropdown.Item>
+            <DropdownButton id="dropdown-basic-button" title={product.pType} onSelect={handleSelect} style={{width: "100%"}}>
+              <Dropdown.Item eventKey="비품" active={product.pType === "비품"}>비품</Dropdown.Item>
+              <Dropdown.Item eventKey="간식" active={product.pType === "간식"}>간식</Dropdown.Item>
+              <Dropdown.Item eventKey="기타" active={product.pType === "기타"}>기타</Dropdown.Item>
             </DropdownButton>
           </Dropdown>
           <Form>
             <Form.Group>
-              <Form.Control type="text" placeholder='pname' name='pName'
+              <Form.Control type="text" placeholder='pname' name='pName' required
                value={product.pName}
                onChange={handleChange}/>
-              <Form.Control type="number" placeholder='price' name='price'
+              <Form.Control type="number" placeholder='price' name='price' required
                value={product.price} 
                onChange={handleChange}/>
               <Form.Control type="number" placeholder='quantity' name='quantity'
@@ -149,7 +163,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
         </Modal.Body>
 
         <Modal.Footer className="d-flex justify-content-center">
-          <Button variant="primary" onClick={handleClose}>수정</Button>
+          <Button variant="primary" onClick={handleClick}>등록</Button>
         </Modal.Footer>
       </Modal>
     </div>

@@ -7,19 +7,33 @@ import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import { productData } from '../utils/SampleData';
 
+interface Product {
+  pType: string;
+  pName: string;
+  price: number | string;
+  quantity: number | string;
+}
+
 export default function DepartmentMain() {
+  const accessToken: string | null = localStorage.getItem("accessToken");
   const [orderModalShow, setOrderModalShow] = React.useState<boolean>(false);
   const [productOrderData, setProductOrderData] = React.useState<Object>([]);
   const [editModalShow, setEditModalShow] = React.useState<boolean>(false);
-  const accessToken: string | null = localStorage.getItem("accessToken");
+  const [product, setProduct] = React.useState<Product>({
+    pType: '비품',
+    pName: '',
+    price: '',
+    quantity: ''
+  });
 
   const handleClose = () => {
     setOrderModalShow(false);
     setEditModalShow(false);
   };
 
-  const handleClick = async (key: number | string) => {
-    alert(`open ${key}`);
+  const handleClick = (v: any) => {
+    setProduct({pType: v.productType, pName: v.productName, price: v.price, quantity: v.quantity});
+    setEditModalShow(!editModalShow);
   }
 
   React.useEffect(() => {
@@ -70,7 +84,7 @@ export default function DepartmentMain() {
           </thead>
           <tbody>
             {Object.entries(productOrderData).map(([k,v]) => (
-              <tr onClick={() => {handleClick(k)}}>
+              <tr key={k} onClick={() => {handleClick(v)}}>
                 <td>{k}</td>
                 <td>{v.createTime}</td>
                 <td>{v.processDate}</td>
@@ -94,7 +108,7 @@ export default function DepartmentMain() {
         <table style={{ width: '100%' }}>
         </table>
         {ProductOrder(orderModalShow, handleClose)}
-        {ProductEdit(editModalShow, handleClose, {pType: '2', pName: 'hello!!', price: 10000, quantity: 1})}
+        {ProductEdit(editModalShow, handleClose, product)}
       </div>
     </div>
   );
