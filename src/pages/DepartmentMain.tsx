@@ -25,6 +25,7 @@ export default function DepartmentMain() {
     price: '',
     quantity: ''
   });
+  const [totalAmount, setTotalAmount] = React.useState<number>(0);
 
   const handleClose = () => {
     setOrderModalShow(false);
@@ -46,6 +47,7 @@ export default function DepartmentMain() {
         });
         response.then((res) => {
           setProductOrderData(res.data.orders);
+          setTotalAmount(res.data.totalAmount);
         })
       } catch (error) {
         console.log(error);
@@ -57,10 +59,10 @@ export default function DepartmentMain() {
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
         <Card style={{ fontSize: 20, padding: 5 }}>로고</Card>
-        <Card style={{ fontSize: 20, padding: 5 }}>test님 반갑습니다!</Card>
+        <Card style={{ fontSize: 20, padding: 5 }}>test</Card>
       </div>
       <div style={{ textAlign: 'center' }}>
-        <Card style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>YYY 부서의 총 사용 금액: 123,456,789 원</Card>
+        <Card style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>YYY 부서의 총 사용 금액: {totalAmount} 원</Card>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
         <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>버튼1</Button>
