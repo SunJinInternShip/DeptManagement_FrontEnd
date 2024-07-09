@@ -26,6 +26,7 @@ export default function DepartmentMain() {
     quantity: ''
   });
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
+  const [orderId, setOrderId] = React.useState<number>(0);
   const [deptName, setDeptName] = React.useState<string>('');
 
   const handleClose = () => {
@@ -35,11 +36,12 @@ export default function DepartmentMain() {
 
   const handleClick = (v: any) => {
     setProduct({pType: v.productType, pName: v.productName, price: v.price, quantity: v.quantity});
+    setOrderId(v.orderId);
     setEditModalShow(!editModalShow);
   }
 
   React.useEffect(() => {
-    if(orderModalShow === false) {
+    if(orderModalShow === false || editModalShow === false) {
       try {
         const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/api/orders`, {
           headers: {
@@ -49,13 +51,13 @@ export default function DepartmentMain() {
         response.then((res) => {
           setProductOrderData(res.data.orders);
           setTotalAmount(res.data.totalAmount);
-          setDeptName(res.data.orders[0].applicantDeptName)
+          setDeptName(res.data.orders[0] === undefined ? '' : res.data.orders[0].applicantDeptName)
         })
       } catch (error) {
         console.log(error);
       }
     }
-  },[orderModalShow])
+  },[orderModalShow, editModalShow])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
@@ -64,7 +66,7 @@ export default function DepartmentMain() {
         <Card style={{ fontSize: 20, padding: 5 }}>test</Card>
       </div>
       <div style={{ textAlign: 'center' }}>
-        <Card hidden={deptName === ''? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{deptName} 부서의 총 사용 금액: {totalAmount}원</Card>
+        <Card hidden={deptName === '' ? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{deptName} 부서의 총 사용 금액: {totalAmount}원</Card>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
         <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>추가하기</Button>
@@ -90,7 +92,7 @@ export default function DepartmentMain() {
             {Object.entries(productOrderData).map(([k,v]) => (
               <tr key={k} onClick={() => {handleClick(v)}}>
                 <td>{v.orderId}</td>
-                <td>{v.createTime}</td>
+                <td>{v.latestTime}</td>
                 <td>{v.processDate}</td>
                 <td>{v.applicantDeptName}</td>
                 <td>{v.applicant}</td>
@@ -112,7 +114,7 @@ export default function DepartmentMain() {
         <table style={{ width: '100%' }}>
         </table>
         {ProductOrder(orderModalShow, handleClose)}
-        {ProductEdit(editModalShow, handleClose, product)}
+        {ProductEdit(editModalShow, handleClose, product, orderId)}
       </div>
     </div>
   );

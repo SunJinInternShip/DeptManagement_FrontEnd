@@ -12,9 +12,9 @@ interface Product {
   price: number | string;
   quantity: number | string;
 }
+const accessToken: string | null = localStorage.getItem("accessToken");
 
 export function ProductOrder(modalShow: boolean, handleClose: any) {
-  const accessToken: string | null = localStorage.getItem("accessToken");
   const [product, setProduct] = React.useState<Product>({
     pType: '비품',
     pName: '',
@@ -105,7 +105,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
   );
 }
 
-export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: Product) {
+export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: Product, orderId: number) {
   const [product, setProduct] = React.useState<Product>(productInfo);
   
   const handleSelect = (e: any) => {
@@ -124,11 +124,27 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
   };
 
   const handleEdit = async () => {
-    alert(`handleEdit`);
+    try {
+      const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/api/orders/${orderId}`, {
+        "productType": product.pType,
+        "productName": product.pName,
+        "price": product.price,
+        "quantity": product.quantity
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}` 
+        }
+      });
+      alert(res.data);
+      handleClose();
+    } catch (error) {
+      console.log(error); 
+    }
   }
 
   const handleDelete = async () => {
-    alert(`handleDelete`);
+    alert(orderId);
   }
 
   React.useEffect(() => {
