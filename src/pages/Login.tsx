@@ -16,7 +16,7 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser((user: User) => ({
       ...user,

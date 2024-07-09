@@ -48,7 +48,7 @@ export default function Register() {
 }
 
   // 텍스트 수정
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser((user: User) => ({
       ...user,

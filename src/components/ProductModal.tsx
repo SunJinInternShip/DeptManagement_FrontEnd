@@ -22,14 +22,14 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
     quantity: ''
   });
 
-  const handleSelect = async (e: any) => {
+  const handleSelect = (e: any) => {
     setProduct((product: Product) => ({
       ...product,
       pType: e
     }));
   };
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProduct((product: Product) => ({
       ...product,
@@ -39,7 +39,6 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
     try {
       const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/orders`, {
         "productType": product.pType,
@@ -89,10 +88,10 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
                value={product.pName}
                onChange={handleChange}/>
               <Form.Control type="number" placeholder='price' name='price' required
-               value={product.price} 
+               value={product.price} min={0}
                onChange={handleChange}/>
               <Form.Control type="number" placeholder='quantity' name='quantity'
-               value={product.quantity}
+               value={product.quantity} min={1}
                onChange={handleChange}/>
             </Form.Group>
           </Form>
