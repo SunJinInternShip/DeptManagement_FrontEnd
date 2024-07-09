@@ -123,8 +123,12 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
     }));
   };
 
-  const handleClick = () => {
-    alert(`open`);
+  const handleEdit = async () => {
+    alert(`handleEdit`);
+  }
+
+  const handleDelete = async () => {
+    alert(`handleDelete`);
   }
 
   React.useEffect(() => {
@@ -162,7 +166,8 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
         </Modal.Body>
 
         <Modal.Footer className="d-flex justify-content-center">
-          <Button variant="primary" onClick={handleClick}>등록</Button>
+          <Button variant="primary" onClick={handleEdit}>수정</Button>
+          <Button variant="primary" onClick={handleDelete}>삭제</Button>
         </Modal.Footer>
       </Modal>
     </div>

@@ -26,6 +26,7 @@ export default function DepartmentMain() {
     quantity: ''
   });
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
+  const [deptName, setDeptName] = React.useState<string>('');
 
   const handleClose = () => {
     setOrderModalShow(false);
@@ -48,6 +49,7 @@ export default function DepartmentMain() {
         response.then((res) => {
           setProductOrderData(res.data.orders);
           setTotalAmount(res.data.totalAmount);
+          setDeptName(res.data.orders[0].applicantDeptName)
         })
       } catch (error) {
         console.log(error);
@@ -62,18 +64,18 @@ export default function DepartmentMain() {
         <Card style={{ fontSize: 20, padding: 5 }}>test</Card>
       </div>
       <div style={{ textAlign: 'center' }}>
-        <Card style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>YYY 부서의 총 사용 금액: {totalAmount} 원</Card>
+        <Card hidden={deptName === ''? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{deptName} 부서의 총 사용 금액: {totalAmount}원</Card>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-        <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>버튼1</Button>
+        <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>추가하기</Button>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Table bordered hover style={{ width: '100%' }}>
           <thead>
             <tr>
               <th>*</th>
-              <th>신청날짜</th>
-              <th>처리날짜</th>
+              <th>신청/수정 날짜</th>
+              <th>처리 날짜</th>
               <th>부서</th>
               <th>신청자</th>
               <th>종류</th>
@@ -87,7 +89,7 @@ export default function DepartmentMain() {
           <tbody>
             {Object.entries(productOrderData).map(([k,v]) => (
               <tr key={k} onClick={() => {handleClick(v)}}>
-                <td>{k}</td>
+                <td>{v.orderId}</td>
                 <td>{v.createTime}</td>
                 <td>{v.processDate}</td>
                 <td>{v.applicantDeptName}</td>
