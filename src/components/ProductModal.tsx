@@ -111,7 +111,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
   const handleSelect = (e: any) => {
     setProduct((product: Product) => ({
       ...product,
-      pType: e,
+      pType: e
     }));
   };
 
@@ -133,7 +133,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
       },
       {
         headers: {
-          Authorization: `Bearer ${accessToken}` 
+          Authorization: `Bearer ${accessToken}`
         }
       });
       alert(res.data);
@@ -144,7 +144,18 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
   }
 
   const handleDelete = async () => {
-    alert(orderId);
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/orders/${orderId}`, {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      alert(res.data);
+      handleClose();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   React.useEffect(() => {
