@@ -12,6 +12,7 @@ interface User {
   password: string;
 }
 
+// 회원가입
 export default function Register() {
   const [user, setUser] = React.useState<User>({
     deptCode: '',
@@ -25,7 +26,7 @@ export default function Register() {
 
   const navigate = useNavigate();
 
-  // 인증 버튼
+  // 부서 인증
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setSpinnerShow(true);
@@ -51,7 +52,7 @@ export default function Register() {
     setSpinnerShow(false);
 }
 
-  // 텍스트 수정
+  // 내용 수정
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser((user: User) => ({
@@ -60,7 +61,7 @@ export default function Register() {
     }));
   }
 
-  // 회원가입 버튼
+  // 회원가입 요청
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSpinnerShow(true);

@@ -9,6 +9,7 @@ interface User {
   password: string;
 }
 
+// 로그인
 export default function Login() {
   const [userName, setUserName] = React.useState<string | null>(GetUserInfo().name);
   const [user, setUser] = React.useState<User>({
@@ -19,6 +20,7 @@ export default function Login() {
 
   const navigate = useNavigate();
 
+  // 내용 변경
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser((user: User) => ({
@@ -27,6 +29,7 @@ export default function Login() {
     }));
   }
 
+  // 로그인 요청
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSpinnerShow(true);
@@ -44,6 +47,7 @@ export default function Login() {
     setSpinnerShow(false);
   };
 
+  // 로그인한 유저가 없다면 기본 페이지(로그인 페이지)로
   React.useEffect(() => {
     if(userName !== null) navigate("/home", { replace: true });
   },[])

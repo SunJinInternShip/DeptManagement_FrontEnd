@@ -9,6 +9,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import { useNavigate } from "react-router-dom";
 import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
 
+// 관리자 페이지
 export default function AdminMain() {
   const userName = GetUserInfo().name;
   const accessToken = GetUserInfo().accessToken;
@@ -22,6 +23,7 @@ export default function AdminMain() {
 
   const navigate = useNavigate();
 
+  // 조회할 부서 선택
   const handleSelectDept = (e: any) => {
     if(e === "0") {
       setStatus(0);
@@ -45,6 +47,7 @@ export default function AdminMain() {
     }
   };
 
+  // 물품 상태 처리
   const handleSelectStatus = async (e: any) => {
     setSpinnerShow(true);
     const param: Array<string> = e.split(" "); // [status, orderId]
@@ -65,6 +68,7 @@ export default function AdminMain() {
     setSpinnerShow(false);
   };
 
+  // 로그아웃
   const handleLogout = async () => {
     setSpinnerShow(true);
     try {
@@ -83,13 +87,16 @@ export default function AdminMain() {
     }
   };
 
+  // 로그인한 유저가 관리자가 아니면, home으로
   React.useEffect(() => {
     if(userName !== "admin") navigate("/home", { replace: true });
   });
 
+  // 선택한 부서의 물품 주문 조회
   React.useEffect(() => {
     setSpinnerShow(true);
     try {
+      // 전체
       if(status === 0) {
         const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/admin/orders`, {
           headers: {
@@ -101,6 +108,7 @@ export default function AdminMain() {
           setTotalAmount(0);
         })
       }
+      // Human Resources, Finance, IT, Admin
       else {
         const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/admin/orders/${status}`, {
           headers: {

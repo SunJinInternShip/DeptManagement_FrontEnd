@@ -15,6 +15,7 @@ interface Product {
   quantity: number | string;
 }
 
+// 사원 페이지
 export default function DepartmentMain() {
   const userName = GetUserInfo().name;
   const accessToken = GetUserInfo().accessToken;
@@ -35,11 +36,13 @@ export default function DepartmentMain() {
 
   const navigate = useNavigate();
 
+  // 모달이 닫힐 때
   const handleClose = () => {
     setOrderModalShow(false);
     setEditModalShow(false);
   };
 
+  // 물품 주문 수정
   const handleClick = (v: any) => {
     setSpinnerShow(true);
     if(v.status === "대기") {
@@ -50,6 +53,7 @@ export default function DepartmentMain() {
     setSpinnerShow(false);
   };
 
+  // 로그아웃
   const handleLogout = async () => {
     setSpinnerShow(true);
     try {
@@ -68,11 +72,13 @@ export default function DepartmentMain() {
     }
   };
 
+  // 로그인한 유저가 관리자면 home/admin으로, 로그인한 유저가 없다면 기본 페이지(로그인 페이지)로
   React.useEffect(() => {
     if(userName === "admin") navigate("/home/admin", { replace: true });
     if(userName === null) navigate("/", { replace: true });
   });
 
+  // 모달이 닫히면 부서 요청 물품 다시 조회
   React.useEffect(() => {
     setSpinnerShow(true);
     if((orderModalShow === false && editModalShow === false)) {
