@@ -145,8 +145,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
 
   const handleDelete = async () => {
     try {
-      const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/orders/${orderId}`, {},
-      {
+      const res = await axios.delete(`${process.env.REACT_APP_SERVER_URL}/api/orders/${orderId}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
