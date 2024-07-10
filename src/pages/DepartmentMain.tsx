@@ -149,9 +149,9 @@ export default function DepartmentMain() {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <table style={{ width: '100%' }}>
         </table>
-        {ProductOrder(orderModalShow, handleClose)}
-        {ProductEdit(editModalShow, handleClose, product, orderId)}
       </div>
+      {ProductOrder(orderModalShow, handleClose)}
+      {ProductEdit(editModalShow, handleClose, product, orderId)}
       {LoadingSpinner(spinnerShow)}
     </div>
   );
