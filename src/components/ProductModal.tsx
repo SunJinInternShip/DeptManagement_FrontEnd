@@ -15,6 +15,7 @@ interface Product {
   quantity: number | string;
 }
 
+// 부서에서 물품 주문
 export function ProductOrder(modalShow: boolean, handleClose: any) {
   const accessToken = GetUserInfo().accessToken;
 
@@ -26,6 +27,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
   });
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
+  // 물품 타입 선택
   const handleSelect = (e: any) => {
     setProduct((product: Product) => ({
       ...product,
@@ -33,6 +35,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
     }));
   };
 
+  // 내용 변경
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProduct((product: Product) => ({
@@ -41,6 +44,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
     }));
   };
 
+  // 물품 주문 요청
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setSpinnerShow(true);
@@ -64,6 +68,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
     setSpinnerShow(false);
   }
 
+  // 모달이 닫히면 값 초기화
   React.useEffect(() => {
     setSpinnerShow(true);
     if(modalShow === false) {
@@ -114,12 +119,14 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
   );
 }
 
+// 부서에서 물품 수정
 export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: Product, orderId: number) {
   const accessToken = GetUserInfo().accessToken;
 
   const [product, setProduct] = React.useState<Product>(productInfo);
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
-  
+
+  // 물품 타입 선택
   const handleSelect = (e: any) => {
     setProduct((product: Product) => ({
       ...product,
@@ -127,6 +134,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
     }));
   };
 
+  // 내용 변경
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProduct((product: Product) => ({
@@ -135,6 +143,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
     }));
   };
 
+  // 물품 수정 요청
   const handleEdit = async () => {
     setSpinnerShow(true);
     try {
@@ -157,6 +166,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
     setSpinnerShow(false);
   }
 
+  // 물품 삭제 요청
   const handleDelete = async () => {
     setSpinnerShow(true);
     try {
@@ -173,6 +183,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
     setSpinnerShow(false);
   }
 
+  // 모달이 열리면 선택된 물품 값으로 변경
   React.useEffect(() => {
     setSpinnerShow(true);
     if(modalShow === true) {

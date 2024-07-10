@@ -1,5 +1,6 @@
 import Spinner from 'react-bootstrap/Spinner';
 
+// 페이지가 로드 중일 때, 보여줄 Spinner
 export default function LoadingSpinner(spinnerShow) {
   return (
     <div className="spinner-overlay" style={{
