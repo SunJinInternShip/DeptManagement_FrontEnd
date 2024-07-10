@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as React from 'react';
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from '../components/LoadingSpinner';
 import { GetUserInfo, SetUserInfo } from '../components/JWTToken';
 
 interface User {
@@ -10,11 +11,11 @@ interface User {
 
 export default function Login() {
   const [userName, setUserName] = React.useState<string | null>(GetUserInfo().name);
-
   const [user, setUser] = React.useState<User>({
     id: '',
     password: ''
   });
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -28,6 +29,7 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSpinnerShow(true);
     try {
       const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/login`, {
         "loginId": user.id,
@@ -39,6 +41,7 @@ export default function Login() {
     } catch (error) {
       console.log(error);
     }
+    setSpinnerShow(false);
   };
 
   React.useEffect(() => {
@@ -59,6 +62,7 @@ export default function Login() {
           <button onClick={() => {navigate("/register")}}>회원가입</button>
         </form>
       </div>
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }

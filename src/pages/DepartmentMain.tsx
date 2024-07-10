@@ -1,7 +1,7 @@
 import * as React from 'react';
 import axios from 'axios';
 import { ProductOrder, ProductEdit } from '../components/ProductModal';
-import Spinner from '../components/Spinner';
+import LoadingSpinner from '../components/LoadingSpinner';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
@@ -31,6 +31,7 @@ export default function DepartmentMain() {
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
   const [orderId, setOrderId] = React.useState<number>(0);
   const [deptName, setDeptName] = React.useState<string>('');
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -40,12 +41,17 @@ export default function DepartmentMain() {
   };
 
   const handleClick = (v: any) => {
-    setProduct({pType: v.productType, pName: v.productName, price: v.price, quantity: v.quantity});
-    setOrderId(v.orderId);
-    setEditModalShow(!editModalShow);
+    setSpinnerShow(true);
+    if(v.status === "대기") {
+      setProduct({pType: v.productType, pName: v.productName, price: v.price, quantity: v.quantity});
+      setOrderId(v.orderId);
+      setEditModalShow(!editModalShow);
+    }
+    setSpinnerShow(false);
   };
 
   const handleLogout = async () => {
+    setSpinnerShow(true);
     try {
       const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/logout`, {},
       {
@@ -55,6 +61,7 @@ export default function DepartmentMain() {
       });
       await RemoveUserInfo();
       alert(res.data);
+      setSpinnerShow(false);
       navigate("/", { replace: true });
     } catch (error) {
       console.log(error); 
@@ -67,6 +74,7 @@ export default function DepartmentMain() {
   });
 
   React.useEffect(() => {
+    setSpinnerShow(true);
     if((orderModalShow === false && editModalShow === false)) {
       try {
         const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/api/orders`, {
@@ -83,6 +91,7 @@ export default function DepartmentMain() {
         console.log(error);
       }
     }
+    setSpinnerShow(false);
   },[orderModalShow, editModalShow]);
 
   return (
@@ -104,7 +113,6 @@ export default function DepartmentMain() {
         <Table bordered hover style={{ width: '100%' }}>
           <thead>
             <tr>
-              <th>*</th>
               <th>신청/수정 날짜</th>
               <th>처리 날짜</th>
               <th>부서</th>
@@ -118,9 +126,8 @@ export default function DepartmentMain() {
             </tr>
           </thead>
           <tbody>
-            {Object.entries(productOrderData).map(([k,v]) => (
+            {Object.entries(productOrderData).reverse().map(([k,v]) => (
               <tr key={k} onClick={() => {handleClick(v)}}>
-                <td>{v.orderId}</td>
                 <td>{v.latestTime}</td>
                 <td>{v.processDate}</td>
                 <td>{v.applicantDeptName}</td>
@@ -145,6 +152,7 @@ export default function DepartmentMain() {
         {ProductOrder(orderModalShow, handleClose)}
         {ProductEdit(editModalShow, handleClose, product, orderId)}
       </div>
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }

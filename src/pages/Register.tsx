@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as React from 'react';
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from '../components/LoadingSpinner';
 
 interface User {
   deptCode: string;
@@ -20,12 +21,14 @@ export default function Register() {
     id: '',
     password: ''
   });
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
   const navigate = useNavigate();
 
   // 인증 버튼
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setSpinnerShow(true);
     if(user.deptCode !== '') {
       try {
         const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/verify/department`, {
@@ -45,6 +48,7 @@ export default function Register() {
       }
     }
     else alert("부서 코드를 입력해주세요.");
+    setSpinnerShow(false);
 }
 
   // 텍스트 수정
@@ -59,6 +63,7 @@ export default function Register() {
   // 회원가입 버튼
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSpinnerShow(true);
     try {
       const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/signup`, {
         "deptCode": user.deptCode,
@@ -70,6 +75,7 @@ export default function Register() {
     } catch (error) {
       console.log(error);
     }
+    setSpinnerShow(false);
     navigate("/");
   }
 
@@ -95,6 +101,7 @@ export default function Register() {
           <input type='submit' value="회원가입" disabled={!user.btnState}/>
         </form>
       </div>
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }

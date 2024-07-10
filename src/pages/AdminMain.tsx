@@ -1,6 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
-import Spinner from '../components/Spinner';
+import LoadingSpinner from '../components/LoadingSpinner';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
@@ -9,13 +9,6 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import { useNavigate } from "react-router-dom";
 import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
 
-interface Product {
-  pType: string;
-  pName: string;
-  price: number | string;
-  quantity: number | string;
-}
-
 export default function AdminMain() {
   const userName = GetUserInfo().name;
   const accessToken = GetUserInfo().accessToken;
@@ -23,51 +16,37 @@ export default function AdminMain() {
   const [productOrderData, setProductOrderData] = React.useState<Object>([]);
   const [dept, setDept] = React.useState<string>("전체");
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
-  const [deptName, setDeptName] = React.useState<string>('');
+  const [status, setStatus] = React.useState<number>(0);
+  const [orderStatus, setOrderStatus] = React.useState<string>("");
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const handleSelectDept = (e: any) => {
     if(e === "0") {
+      setStatus(0);
       setDept("전체");
-      try {
-        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/admin/orders`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
-        response.then((res) => {
-          setProductOrderData(res.data);
-          setTotalAmount(0);
-          setDeptName('');
-        })
-      } catch (error) {
-        console.log(error);
-      }
     }
-    else {
-      if(e === "1") setDept("Human Resources");
-      else if(e === "2") setDept("Finance");
-      else if(e === "3") setDept("IT");
-      else if(e === "4") setDept("Admin");
-      try {
-        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/admin/orders/${e}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
-        response.then((res) => {
-          setProductOrderData(res.data.orders);
-          setTotalAmount(res.data.totalAmount);
-          setDeptName(res.data.orders[0] === undefined ? '' : res.data.orders[0].applicantDeptName);
-        })
-      } catch (error) {
-        console.log(error);
-      }
+    else if(e === "1") {
+      setStatus(1);
+      setDept("Human Resources");
+    }
+    else if(e === "2") {
+      setStatus(2);
+      setDept("Finance");
+    }
+    else if(e === "3") {
+      setStatus(3);
+      setDept("IT");
+    }
+    else if(e === "4") {
+      setStatus(4);
+      setDept("Admin");
     }
   };
 
   const handleSelectStatus = async (e: any) => {
+    setSpinnerShow(true);
     const param: Array<string> = e.split(" "); // [status, orderId]
     try {
       const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/admin/orders/${param[1]}`, {
@@ -78,13 +57,16 @@ export default function AdminMain() {
           Authorization: `Bearer ${accessToken}`
         }
       });
+      setOrderStatus(param[0]);
       alert(res.data);
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     }
+    setSpinnerShow(false);
   };
 
   const handleLogout = async () => {
+    setSpinnerShow(true);
     try {
       const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/logout`, {},
       {
@@ -94,9 +76,10 @@ export default function AdminMain() {
       });
       await RemoveUserInfo();
       alert(res.data);
+      setSpinnerShow(false);
       navigate("/", { replace: true });
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     }
   };
 
@@ -105,19 +88,35 @@ export default function AdminMain() {
   });
 
   React.useEffect(() => {
+    setSpinnerShow(true);
     try {
-      const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/admin/orders`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-      response.then((res) => {
-        setProductOrderData(res.data);
-      })
+      if(status === 0) {
+        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/admin/orders`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        response.then((res) => {
+          setProductOrderData(res.data);
+          setTotalAmount(0);
+        })
+      }
+      else {
+        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/admin/orders/${status}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        response.then((res) => {
+          setProductOrderData(res.data.orders);
+          setTotalAmount(res.data.totalAmount);
+        })
+      }
     } catch (error) {
       console.log(error);
     }
-  },[]);
+    setSpinnerShow(false);
+  },[dept,orderStatus]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
@@ -128,9 +127,6 @@ export default function AdminMain() {
           <Button hidden={userName === null ? true : false} style={{ fontSize: 20 }} onClick={handleLogout}>로그아웃</Button>
         </div>
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <Card hidden={deptName === '' ? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{deptName} 부서의 총 사용 금액: {totalAmount}원</Card>
-      </div>
       <div>
         <DropdownButton id="dropdown-basic-button" title={dept} onSelect={handleSelectDept} style={{width: "100%"}}>
           <Dropdown.Item eventKey="0" active={dept === "전체"}>전체</Dropdown.Item>
@@ -140,11 +136,13 @@ export default function AdminMain() {
           <Dropdown.Item eventKey="4" active={dept === "Admin"}>Admin</Dropdown.Item>
         </DropdownButton>
       </div>
+      <div style={{ textAlign: 'center' }}>
+        <Card hidden={dept === "전체" ? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{dept} 부서의 총 사용 금액: {totalAmount}원</Card>
+      </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Table bordered hover style={{ width: '100%' }}>
           <thead>
             <tr>
-              <th>*</th>
               <th>신청/수정 날짜</th>
               <th>처리 날짜</th>
               <th>부서</th>
@@ -158,9 +156,8 @@ export default function AdminMain() {
             </tr>
           </thead>
           <tbody>
-            {Object.entries(productOrderData).map(([k,v]) => (
+            {Object.entries(productOrderData).reverse().map(([k,v]) => (
               <tr key={k}>
-                <td>{v.orderId}</td>
                 <td>{v.latestTime}</td>
                 <td>{v.processDate}</td>
                 <td>{v.applicantDeptName}</td>
@@ -171,11 +168,15 @@ export default function AdminMain() {
                 <td>{v.quantity}</td>
                 <td>{v.totalPrice}</td>
                 <td>
-                  <DropdownButton id="dropdown-basic-button" title={v.status} onSelect={handleSelectStatus}>
-                    <Dropdown.Item eventKey={`대기 ${v.orderId}`} active={v.status === "대기"}>대기</Dropdown.Item>
-                    <Dropdown.Item eventKey={`반려 ${v.orderId}`} active={v.status === "반려"}>반려</Dropdown.Item>
-                    <Dropdown.Item eventKey={`승인 ${v.orderId}`} active={v.status === "승인"}>승인</Dropdown.Item>
-                  </DropdownButton>
+                  {v.status === "대기" ?
+                    <DropdownButton id="dropdown-basic-button" title={v.status} onSelect={handleSelectStatus}>
+                      <Dropdown.Item eventKey={`대기 ${v.orderId}`} active={v.status === "대기"}>대기</Dropdown.Item>
+                      <Dropdown.Item eventKey={`반려 ${v.orderId}`} active={v.status === "반려"}>반려</Dropdown.Item>
+                      <Dropdown.Item eventKey={`승인 ${v.orderId}`} active={v.status === "승인"}>승인</Dropdown.Item>
+                    </DropdownButton>
+                    :
+                    v.status
+                  }
                 </td>
               </tr>
             ))}
@@ -186,6 +187,7 @@ export default function AdminMain() {
         <table style={{ width: '100%' }}>
         </table>
       </div>
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }

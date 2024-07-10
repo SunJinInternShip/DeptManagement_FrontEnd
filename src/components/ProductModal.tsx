@@ -5,6 +5,8 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import { GetUserInfo } from './JWTToken';
+import LoadingSpinner from './LoadingSpinner';
 
 interface Product {
   pType: string;
@@ -12,15 +14,17 @@ interface Product {
   price: number | string;
   quantity: number | string;
 }
-const accessToken: string | null = localStorage.getItem("accessToken");
 
 export function ProductOrder(modalShow: boolean, handleClose: any) {
+  const accessToken = GetUserInfo().accessToken;
+
   const [product, setProduct] = React.useState<Product>({
     pType: '비품',
     pName: '',
     price: '',
     quantity: ''
   });
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
   const handleSelect = (e: any) => {
     setProduct((product: Product) => ({
@@ -39,6 +43,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setSpinnerShow(true);
     try {
       const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/orders`, {
         "productType": product.pType,
@@ -56,9 +61,11 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
     } catch (error: unknown) {
       console.log(error);
     }
+    setSpinnerShow(false);
   }
 
   React.useEffect(() => {
+    setSpinnerShow(true);
     if(modalShow === false) {
       setProduct({
         pType: '비품',
@@ -67,6 +74,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
         quantity: ''
       });
     }
+    setSpinnerShow(false);
   },[modalShow])
 
   return (
@@ -101,12 +109,16 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
           <Button variant="primary" onClick={handleClick}>등록</Button>
         </Modal.Footer>
       </Modal>
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }
 
 export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: Product, orderId: number) {
+  const accessToken = GetUserInfo().accessToken;
+
   const [product, setProduct] = React.useState<Product>(productInfo);
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
   
   const handleSelect = (e: any) => {
     setProduct((product: Product) => ({
@@ -124,6 +136,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
   };
 
   const handleEdit = async () => {
+    setSpinnerShow(true);
     try {
       const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/api/orders/${orderId}`, {
         "productType": product.pType,
@@ -141,9 +154,11 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
     } catch (error) {
       console.log(error); 
     }
+    setSpinnerShow(false);
   }
 
   const handleDelete = async () => {
+    setSpinnerShow(true);
     try {
       const res = await axios.delete(`${process.env.REACT_APP_SERVER_URL}/api/orders/${orderId}`, {
         headers: {
@@ -155,12 +170,15 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
     } catch (error) {
       console.log(error);
     }
+    setSpinnerShow(false);
   }
 
   React.useEffect(() => {
+    setSpinnerShow(true);
     if(modalShow === true) {
       setProduct(productInfo);
     }
+    setSpinnerShow(false);
   },[modalShow])
 
   return (
@@ -196,6 +214,7 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
           <Button variant="primary" onClick={handleDelete}>삭제</Button>
         </Modal.Footer>
       </Modal>
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }
