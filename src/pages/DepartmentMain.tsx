@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import { useNavigate } from "react-router-dom";
-import { GetUserInfo } from '../components/JWTToken';
+import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
 
 interface Product {
   pType: string;
@@ -45,8 +45,25 @@ export default function DepartmentMain() {
     setEditModalShow(!editModalShow);
   };
 
+  const handleLogout = async () => {
+    try {
+      const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/logout`, {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      await RemoveUserInfo();
+      alert(res.data);
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.log(error); 
+    }
+  };
+
   React.useEffect(() => {
-    if(userName === "admin") navigate("/home/admin");
+    if(userName === "admin") navigate("/home/admin", { replace: true });
+    if(userName === null) navigate("/", { replace: true });
   });
 
   React.useEffect(() => {
@@ -72,7 +89,10 @@ export default function DepartmentMain() {
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
         <Card style={{ fontSize: 20, padding: 5 }}>로고</Card>
+        <div style={{ display: 'flex', flexDirection: 'row'}}>
         <Card hidden={userName === null ? true : false} style={{ fontSize: 20, padding: 5 }}>{userName}</Card>
+        <Button hidden={userName === null ? true : false} style={{ fontSize: 20 }} onClick={handleLogout}>로그아웃</Button>
+        </div>
       </div>
       <div style={{ textAlign: 'center' }}>
         <Card hidden={deptName === '' ? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{deptName} 부서의 총 사용 금액: {totalAmount}원</Card>

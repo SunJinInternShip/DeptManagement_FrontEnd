@@ -34,14 +34,15 @@ export default function Login() {
         "password": user.password
       });
       await SetUserInfo(res.data.accessToken, res.data.refreshToken, res.data.userName);
-      GetUserInfo().name === "admin" ? navigate("/home/admin") : navigate("/home");
+      alert(`${GetUserInfo().name}님 환영합니다`);
+      GetUserInfo().name === "admin" ? navigate("/home/admin", { replace: true }) : navigate("/home", { replace: true });
     } catch (error) {
       console.log(error);
     }
   };
 
   React.useEffect(() => {
-    //if(userName !== null) navigate("/home");
+    if(userName !== null) navigate("/home", { replace: true });
   },[])
 
   return (

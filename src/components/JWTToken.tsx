@@ -15,6 +15,12 @@ export function GetUserInfo(): UserInfo {
   return {accessToken, name};
 }
 
+export async function RemoveUserInfo(): Promise<void> {
+  localStorage.removeItem("accessToken");
+  document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  localStorage.removeItem("name");
+}
+
 /*
 function getCookieValue(cookieName: string): string | undefined {
   const cookies = document.cookie.split(';');
@@ -25,13 +31,5 @@ function getCookieValue(cookieName: string): string | undefined {
     }
   }
   return undefined;
-}
-
-export function RemoveAtoken() {
-  localStorage.removeItem("accessToken");
-}
-
-export function RemoveRtoken() {
-  document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 }
 */
