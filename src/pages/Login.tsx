@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as React from 'react';
 import { useNavigate } from "react-router-dom";
-import { SetToken } from '../components/JWTToken';
+import { GetUserInfo, SetUserInfo } from '../components/JWTToken';
 
 interface User {
   id: string;
@@ -9,6 +9,8 @@ interface User {
 }
 
 export default function Login() {
+  const [userName, setUserName] = React.useState<string | null>(GetUserInfo().name);
+
   const [user, setUser] = React.useState<User>({
     id: '',
     password: ''
@@ -26,21 +28,21 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(user.id);
-
     try {
       const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/login`, {
         "loginId": user.id,
         "password": user.password
       });
-      console.log(res.data);
-      
-      await SetToken(res.data.accessToken, res.data.refreshToken, res.data.userName);
-      user.id === "admin" ? navigate("/home/admin") : navigate("/home");
+      await SetUserInfo(res.data.accessToken, res.data.refreshToken, res.data.userName);
+      GetUserInfo().name === "admin" ? navigate("/home/admin") : navigate("/home");
     } catch (error) {
       console.log(error);
     }
   };
+
+  React.useEffect(() => {
+    if(userName !== null) navigate("/home");
+  },[])
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

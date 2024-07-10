@@ -1,18 +1,21 @@
-import axios from "axios";
+interface UserInfo {
+  accessToken: string | null;
+  name: string | null;
+}
 
-export async function SetToken(aToken: string, rToken: string, userName: string): Promise<void> {
+export async function SetUserInfo(aToken: string, rToken: string, userName: string): Promise<void> {
   localStorage.setItem('accessToken', aToken);
   document.cookie = `refreshToken=${rToken}; Path=/;`;
   localStorage.setItem('name', userName);
+  //console.log("setting");
 };
 
-
-export function GetToken() {
+export function GetUserInfo(): UserInfo {
   const accessToken: string | null = localStorage.getItem("accessToken");
   const name: string | null = localStorage.getItem("name");
   //const refreshToken: string | undefined = getCookieValue("refreshToken");
-  console.log(accessToken);
-  console.log(name);
+  //console.log(name);
+  return {accessToken, name};
   //console.log(refreshToken);
 /*
   if(accessToken === null) {

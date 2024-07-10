@@ -7,7 +7,7 @@ import Table from 'react-bootstrap/Table';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { useNavigate } from "react-router-dom";
-import { GetToken } from '../components/JWTToken';
+import { GetUserInfo } from '../components/JWTToken';
 
 interface Product {
   pType: string;
@@ -17,8 +17,9 @@ interface Product {
 }
 
 export default function AdminMain() {
-  const accessToken: string | null = localStorage.getItem("accessToken");
-  const name: string | null = localStorage.getItem("name");
+  const userName = GetUserInfo().name;
+  const accessToken = GetUserInfo().accessToken;
+
   const [productOrderData, setProductOrderData] = React.useState<Object>([]);
   const [dept, setDept] = React.useState<string>("전체");
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
@@ -84,6 +85,10 @@ export default function AdminMain() {
   };
 
   React.useEffect(() => {
+    if(userName !== "admin") navigate("/home");
+  });
+
+  React.useEffect(() => {
     try {
       const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/admin/orders`, {
         headers: {
@@ -96,18 +101,13 @@ export default function AdminMain() {
     } catch (error) {
       console.log(error);
     }
-  },[])
-
-  React.useEffect(() => {
-    GetToken();
-    if(name !== "seyun") navigate("/home"); // 사원이면 사원 페이지
-  },[])
+  },[]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
         <Card style={{ fontSize: 20, padding: 5 }}>로고</Card>
-        <Card hidden={name === null ? true : false} style={{ fontSize: 20, padding: 5 }}>{name}</Card>
+        <Card hidden={userName === null ? true : false} style={{ fontSize: 20, padding: 5 }}>{userName}</Card>
       </div>
       <div style={{ textAlign: 'center' }}>
         <Card hidden={deptName === '' ? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{deptName} 부서의 총 사용 금액: {totalAmount}원</Card>
