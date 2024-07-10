@@ -41,7 +41,7 @@ export default function Login() {
   };
 
   React.useEffect(() => {
-    if(userName !== null) navigate("/home");
+    //if(userName !== null) navigate("/home");
   },[])
 
   return (

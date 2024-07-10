@@ -66,7 +66,6 @@ export default function Register() {
         "loginId": user.id,
         "password": user.password
       });
-      console.log(res.data);
       alert("회원가입 성공!");
     } catch (error) {
       console.log(error);
