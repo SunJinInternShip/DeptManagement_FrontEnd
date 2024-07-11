@@ -213,14 +213,11 @@ export function ProductEdit(modalShow: boolean, handleClose: any, productInfo: P
               <Form.Control type="number" placeholder='quantity' name='quantity'
                value={product.quantity}
                onChange={handleChange}/>
+              <Form.Control type="button" value="수정" onClick={handleEdit}/>
+              <Form.Control type="button" value="삭제" onClick={handleDelete}/>
             </Form.Group>
           </Form>
         </Modal.Body>
-
-        <Modal.Footer className="d-flex justify-content-center">
-          <Button variant="primary" onClick={handleEdit}>수정</Button>
-          <Button variant="primary" onClick={handleDelete}>삭제</Button>
-        </Modal.Footer>
       </Modal>
       {LoadingSpinner(spinnerShow)}
     </div>
