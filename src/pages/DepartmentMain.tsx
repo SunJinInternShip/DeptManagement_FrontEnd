@@ -7,6 +7,7 @@ import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import { useNavigate } from "react-router-dom";
 import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
+import ReceiptModal from '../components/ReceiptModal';
 
 interface Product {
   pType: string;
@@ -32,6 +33,8 @@ export default function DepartmentMain() {
   const [totalAmount, setTotalAmount] = React.useState<number>(0);
   const [orderId, setOrderId] = React.useState<number>(0);
   const [deptName, setDeptName] = React.useState<string>('');
+  const [receiptModalShow, setReceiptModalShow] = React.useState<boolean>(false);
+  const [receiptData, setReceiptData] = React.useState<Object>([]);
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -40,6 +43,7 @@ export default function DepartmentMain() {
   const handleClose = () => {
     setOrderModalShow(false);
     setEditModalShow(false);
+    setReceiptModalShow(false);
   };
 
   // 물품 주문 수정
@@ -96,9 +100,10 @@ export default function DepartmentMain() {
       } catch (error) {
         console.log(error);
       }
+      //try catch ---> receipt
     }
     setSpinnerShow(false);
-  },[orderModalShow, editModalShow]);
+  },[orderModalShow, editModalShow, receiptModalShow]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
@@ -150,14 +155,33 @@ export default function DepartmentMain() {
         </Table>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-        <Button>버튼2</Button>
+        <Button onClick={() => {setReceiptModalShow(!receiptModalShow)}}>추가하기</Button>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <table style={{ width: '100%' }}>
-        </table>
+        <Table bordered hover style={{ width: '100%' }}>
+          <thead>
+            <tr>
+              <th>날짜</th>
+              <th>부서</th>
+              <th>가게명</th>
+              <th>금액</th>
+              <th>이미지</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                <td>날짜</td>
+                <td>부서</td>
+                <td>가게명</td>
+                <td>금액</td>
+                <td>이미지</td>
+              </tr>
+          </tbody>
+        </Table>
       </div>
       {ProductOrder(orderModalShow, handleClose)}
       {ProductEdit(editModalShow, handleClose, product, orderId)}
+      {ReceiptModal(receiptModalShow, handleClose)}
       {LoadingSpinner(spinnerShow)}
     </div>
   );
