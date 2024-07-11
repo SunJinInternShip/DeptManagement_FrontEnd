@@ -45,7 +45,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
   };
 
   // 물품 주문 요청
-  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSpinnerShow(true);
     try {
@@ -95,7 +95,7 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
               <Dropdown.Item eventKey="기타" active={product.pType === "기타"}>기타</Dropdown.Item>
             </DropdownButton>
           </Dropdown>
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <Form.Group>
               <Form.Control type="text" placeholder='pname' name='pName' required
                value={product.pName}
@@ -106,13 +106,10 @@ export function ProductOrder(modalShow: boolean, handleClose: any) {
               <Form.Control type="number" placeholder='quantity' name='quantity'
                value={product.quantity} min={1}
                onChange={handleChange}/>
+              <Form.Control type='submit' value="등록"/>
             </Form.Group>
           </Form>
         </Modal.Body>
-
-        <Modal.Footer className="d-flex justify-content-center">
-          <Button variant="primary" onClick={handleClick}>등록</Button>
-        </Modal.Footer>
       </Modal>
       {LoadingSpinner(spinnerShow)}
     </div>
