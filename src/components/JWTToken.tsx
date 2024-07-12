@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 interface UserInfo {
   accessToken: string | null;
   name: string | null;
