@@ -8,6 +8,7 @@ import Table from 'react-bootstrap/Table';
 import { useNavigate } from "react-router-dom";
 import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
 import ReceiptModal from '../components/ReceiptModal';
+import TopBar from '../components/TopBar';
 
 interface Product {
   pType: string;
@@ -106,83 +107,86 @@ export default function DepartmentMain() {
   },[orderModalShow, editModalShow, receiptModalShow]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-        <Card style={{ fontSize: 20, padding: 5 }}>로고</Card>
-        <div style={{ display: 'flex', flexDirection: 'row'}}>
-        <Card hidden={userName === null ? true : false} style={{ fontSize: 20, padding: 5 }}>{userName}</Card>
-        <Button hidden={userName === null ? true : false} style={{ fontSize: 20 }} onClick={handleLogout}>로그아웃</Button>
+    <>
+      <TopBar/>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <Card style={{ fontSize: 20, padding: 5 }}>로고</Card>
+          <div style={{ display: 'flex', flexDirection: 'row'}}>
+          <Card hidden={userName === null ? true : false} style={{ fontSize: 20, padding: 5 }}>{userName}</Card>
+          <Button hidden={userName === null ? true : false} style={{ fontSize: 20 }} onClick={handleLogout}>로그아웃</Button>
+          </div>
         </div>
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <Card hidden={deptName === '' ? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{deptName} 부서의 총 사용 금액: {totalAmount}원</Card>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-        <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>추가하기</Button>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Table bordered hover style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>신청/수정 날짜</th>
-              <th>처리 날짜</th>
-              <th>부서</th>
-              <th>신청자</th>
-              <th>종류</th>
-              <th>제품명</th>
-              <th>금액</th>
-              <th>수량</th>
-              <th>총 금액</th>
-              <th>처리 현황</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(productOrderData).reverse().map(([k,v]) => (
-              <tr key={k} onClick={() => {handleClick(v)}}>
-                <td>{v.latestTime}</td>
-                <td>{v.processDate}</td>
-                <td>{v.applicantDeptName}</td>
-                <td>{v.applicant}</td>
-                <td>{v.productType}</td>
-                <td>{v.productName}</td>
-                <td>{v.price}</td>
-                <td>{v.quantity}</td>
-                <td>{v.totalPrice}</td>
-                <td>{v.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-        <Button onClick={() => {setReceiptModalShow(!receiptModalShow)}}>추가하기</Button>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Table bordered hover style={{ width: '100%' }}>
-          <thead>
-            <tr>
-              <th>날짜</th>
-              <th>부서</th>
-              <th>가게명</th>
-              <th>금액</th>
-              <th>이미지</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div style={{ textAlign: 'center' }}>
+          <Card hidden={deptName === '' ? true : false} style={{ fontSize: 40, padding: 10, paddingLeft: 100, paddingRight: 100 }}>{deptName} 부서의 총 사용 금액: {totalAmount}원</Card>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+          <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>추가하기</Button>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Table bordered hover style={{ width: '100%' }}>
+            <thead>
               <tr>
-                <td>날짜</td>
-                <td>부서</td>
-                <td>가게명</td>
-                <td>금액</td>
-                <td>이미지</td>
+                <th>신청/수정 날짜</th>
+                <th>처리 날짜</th>
+                <th>부서</th>
+                <th>신청자</th>
+                <th>종류</th>
+                <th>제품명</th>
+                <th>금액</th>
+                <th>수량</th>
+                <th>총 금액</th>
+                <th>처리 현황</th>
               </tr>
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {Object.entries(productOrderData).reverse().map(([k,v]) => (
+                <tr key={k} onClick={() => {handleClick(v)}}>
+                  <td>{v.latestTime}</td>
+                  <td>{v.processDate}</td>
+                  <td>{v.applicantDeptName}</td>
+                  <td>{v.applicant}</td>
+                  <td>{v.productType}</td>
+                  <td>{v.productName}</td>
+                  <td>{v.price}</td>
+                  <td>{v.quantity}</td>
+                  <td>{v.totalPrice}</td>
+                  <td>{v.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+          <Button onClick={() => {setReceiptModalShow(!receiptModalShow)}}>추가하기</Button>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Table bordered hover style={{ width: '100%' }}>
+            <thead>
+              <tr>
+                <th>날짜</th>
+                <th>부서</th>
+                <th>가게명</th>
+                <th>금액</th>
+                <th>이미지</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td>날짜</td>
+                  <td>부서</td>
+                  <td>가게명</td>
+                  <td>금액</td>
+                  <td>이미지</td>
+                </tr>
+            </tbody>
+          </Table>
+        </div>
+        {ProductOrder(orderModalShow, handleClose)}
+        {ProductEdit(editModalShow, handleClose, product, orderId)}
+        {ReceiptModal(receiptModalShow, handleClose)}
+        {LoadingSpinner(spinnerShow)}
       </div>
-      {ProductOrder(orderModalShow, handleClose)}
-      {ProductEdit(editModalShow, handleClose, product, orderId)}
-      {ReceiptModal(receiptModalShow, handleClose)}
-      {LoadingSpinner(spinnerShow)}
-    </div>
+    </>
   );
 }

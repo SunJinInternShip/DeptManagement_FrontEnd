@@ -1,6 +1,8 @@
 // src/App.js
 import * as React from 'react';
-import { GetUserInfo } from './JWTToken';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { GetUserInfo, RemoveUserInfo } from './JWTToken';
 
 const styles = {
   navbar: {
@@ -45,49 +47,56 @@ const styles = {
 };
 
 export default function TopBar() {
-  const [userName, setUserName] = React.useState<string | null>('');
-  React.useEffect(() => {
-    const handleStorageChange = () => {
-      console.log("fff");
-      
-    };
+  const userName = GetUserInfo().name;
+  const accessToken = GetUserInfo().accessToken;
 
-    window.addEventListener("storage", handleStorageChange);
+  const navigate = useNavigate();
 
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
+  // 로그아웃
+  const handleLogout = async () => {
+    //setSpinnerShow(true);
+    try {
+      const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/logout`, {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      await RemoveUserInfo();
+      alert(res.data);
+      //setSpinnerShow(false);
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   
   return (
     <div style={styles.navbar}>
       <div style={styles.leftSection}>
         <img src="https://via.placeholder.com/40" alt="Logo" style={styles.image} />
-      </div>
-      <div style={styles.centerSection}>
-        <button
+        <button onClick={() => {navigate("/temp/home", { replace: true })}}
           style={styles.button}
         >
-          Button 1
+          홈
         </button>
-        <button
+        <button onClick={() => {navigate("/temp/search", { replace: true })}}
           style={styles.button}
         >
-          Button 2
+          조회
         </button>
-        <button
+        <button onClick={() => {navigate("/temp/manage", { replace: true })}}
           style={styles.button}
         >
-          Button 3
+          승인 및 반려
         </button>
       </div>
       <div style={styles.rightSection}>
         <span style={styles.text}>{userName}</span>
-        <button
+        <button onClick={handleLogout}
           style={styles.button}
         >
-          Button 4
+          로그아웃
         </button>
       </div>
     </div>
