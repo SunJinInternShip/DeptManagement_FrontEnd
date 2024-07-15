@@ -85,7 +85,7 @@ export default function TopBar() {
         >
           조회
         </button>
-        <button onClick={() => {navigate("/temp/manage", { replace: true })}}
+        <button onClick={() => {navigate("/temp/management", { replace: true })}}
           style={styles.button}
         >
           승인 및 반려

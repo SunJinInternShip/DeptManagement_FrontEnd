@@ -20,8 +20,7 @@ interface Product {
 
 // 사원 페이지
 export default function Home() {
-  const userName = GetUserInfo().name;
-
+  
   return (
     <div>
       <TopBar/>
