@@ -1,8 +1,5 @@
 import * as React from 'react';
 import axios from 'axios';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -35,7 +32,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     price: '',
     detail: ''
   })
-  //const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
   // 내용 변경
   const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +52,9 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     }));
   };
 
+  // 이미지 미리 보기
   React.useEffect(() => {
+    setSpinnerShow(true);
     if(receipt.file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -72,11 +71,12 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
         preview: null
       }));
     }
+    setSpinnerShow(false);
   },[receipt.file])
 
   // 모달이 닫히면 값 초기화
   React.useEffect(() => {
-    //setSpinnerShow(true);
+    setSpinnerShow(true);
     if(modalShow === false) {
       setReceipt({
         file: null,
@@ -89,7 +89,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
         detail: ''
       });
     }
-    //setSpinnerShow(false);
+    setSpinnerShow(false);
   },[modalShow])
 
   return (
@@ -120,6 +120,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
           </Form>
         </Modal.Body>
       </Modal>
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }

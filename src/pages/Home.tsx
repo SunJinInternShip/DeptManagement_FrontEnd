@@ -22,17 +22,32 @@ interface Product {
 // 사원 페이지
 export default function Home() {
   const [orderModalShow, setOrderModalShow] = React.useState<boolean>(false);
+  const [checkedItems, setCheckedItems] = React.useState<Array<any>>([]);
+
   // 모달이 닫힐 때
   const handleClose = () => {
     setOrderModalShow(false);
+  };
+
+  const handleClick = (itemId: number) => {
+    if(checkedItems.find((item) => item === itemId) === undefined) {
+      setCheckedItems([...checkedItems, itemId]);
+    }
+    else {
+      setCheckedItems(checkedItems.filter(item => item !== itemId));
+    }
   };
 
   return (
     <div>
       <TopBar/>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
+        {checkedItems.length > 0 ?
+          <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>수정</Button>
+          :
+          <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>추가</Button>
+        }
         <Button>상신</Button>
-        <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>추가</Button>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Table bordered hover style={{ width: '90%' }}>
@@ -50,8 +65,30 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><Form.Check/></td>
+            <tr onClick={() => {handleClick(1)}}>
+              <td><Form.Check onClick={() => {handleClick(1)}} readOnly checked={checkedItems.find((item) => item === 1) !== undefined}/></td>
+              <td>SCM</td>
+              <td>김아무개</td>
+              <td>비품</td>
+              <td>XX상사</td>
+              <td>15000</td>
+              <td>7/15 A 구매</td>
+              <td>대기</td>
+              <td>2024.07.15</td>
+            </tr>
+            <tr onClick={() => {handleClick(2)}}>
+              <td><Form.Check onClick={() => {handleClick(2)}} readOnly checked={checkedItems.find((item) => item === 2) !== undefined}/></td>
+              <td>SCM</td>
+              <td>김아무개</td>
+              <td>비품</td>
+              <td>XX상사</td>
+              <td>15000</td>
+              <td>7/15 A 구매</td>
+              <td>대기</td>
+              <td>2024.07.15</td>
+            </tr>
+            <tr onClick={() => {handleClick(3)}}>
+              <td><Form.Check onClick={() => {handleClick(3)}} readOnly checked={checkedItems.find((item) => item === 3) !== undefined}/></td>
               <td>SCM</td>
               <td>김아무개</td>
               <td>비품</td>
