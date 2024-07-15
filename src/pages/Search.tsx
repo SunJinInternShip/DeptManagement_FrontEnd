@@ -26,7 +26,7 @@ export default function Search() {
   return (
     <div>
       <TopBar/>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         부서:
         <div>
           <DropdownButton id="dropdown-basic-button" title="전체" onSelect={() => {}}>
