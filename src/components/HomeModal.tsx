@@ -18,7 +18,7 @@ interface Order {
   detail: string;
 }
 
-// 홈에서 추가 버튼
+// 홈 - 추가 버튼
 export function HomeOrder(modalShow: boolean, handleClose: any) {
   const accessToken = GetUserInfo().accessToken;
 
@@ -52,12 +52,48 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     }));
   };
 
+  // 물품 주문 요청
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSpinnerShow(true);
+
+    let formData = new FormData();
+    const img: any = receipt.file;
+    const requestData = {
+      "productType": order.account,
+      "storeName": order.bName,
+      "totalPrice": order.price,
+      "description": order.detail
+    };
+    const blob = new Blob([JSON.stringify(requestData)], {type: 'application/json'});
+
+    formData.append("image", img);
+    formData.append("request", blob);
+
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      alert(res.data);
+      handleClose();
+    } catch (error: unknown) {
+      console.log(error);
+    }
+    setSpinnerShow(false);
+  }
+
   // 이미지 미리 보기
   React.useEffect(() => {
     setSpinnerShow(true);
     if(receipt.file) {
       const reader = new FileReader();
       reader.onloadend = () => {
+        console.log(reader.result);
+        
         setReceipt((receipt: Receipt) => ({
           ...receipt,
           preview: reader.result
@@ -98,10 +134,11 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
         <Modal.Header closeButton/>
 
         <Modal.Body className="d-flex flex-column align-items-center">
-          <Form style={{display: 'flex', justifyContent: 'space-between'}}>
-            <Image src={receipt.preview?.toString()} rounded/>
+          <Form style={{display: 'flex', justifyContent: 'space-between'}} onSubmit={handleSubmit} encType='multipart/form-data'>
+            <Image rounded
+             src={receipt.preview?.toString()}/>
             <Form.Group>
-              <Form.Control type="file" placeholder='img' name='file' required
+              <Form.Control type="file" placeholder='img' name='file'
                onChange={handleChangeImage}/>
               <Form.Control type="text" placeholder='account' name='account' required
                value={order.account}
@@ -114,8 +151,190 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
                onChange={handleChangeText}/>
               <Form.Control type="text" placeholder='detail' name='detail' required
                value={order.detail}
-               onChange={handleChangeText}/>'
+               onChange={handleChangeText}/>
               <Form.Control type="submit"/>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+      </Modal>
+      {LoadingSpinner(spinnerShow)}
+    </div>
+  );
+}
+
+export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order, orderId: number) {
+  const accessToken = GetUserInfo().accessToken;
+
+  const [currentReceipt, setCurrentReceipt] = React.useState<Receipt>({
+    file: null,
+    preview: null
+  });
+  const [newReceipt, setNewReceipt] = React.useState<Receipt>({
+    file: null,
+    preview: null
+  });
+  const [order, setOrder] = React.useState<Order>(orderInfo)
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
+
+  // 내용 변경
+  const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setOrder((order: Order) => ({
+      ...order,
+      [name]: value
+    }));
+  };
+
+  // 내용 변경
+  const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const img: any = e.target.files;
+    setNewReceipt((receipt: Receipt) => ({
+      ...receipt,
+      file: img?.item(0)
+    }));
+  };
+
+  // 물품 삭제 요청
+  const handleDelete = async () => {
+    setSpinnerShow(true);
+    try {
+      const res = await axios.delete(`${process.env.REACT_APP_SERVER_URL}/employee/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      alert(res.data);
+      handleClose();
+    } catch (error) {
+      console.log(error);
+    }
+    setSpinnerShow(false);
+  }
+
+  // 물품 수정 요청
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSpinnerShow(true);
+
+    let formData = new FormData();
+    const img: any = newReceipt.file ? newReceipt.file : currentReceipt.file;
+    const requestData = {
+      "productType": order.account,
+      "storeName": order.bName,
+      "totalPrice": order.price,
+      "description": order.detail
+    };
+    const blob = new Blob([JSON.stringify(requestData)], {type: 'application/json'});
+
+    formData.append("image", img);
+    formData.append("request", blob);
+
+    console.log(formData);
+    
+    setSpinnerShow(false);
+  }
+
+  // 모달이 열리면 선택된 물품 값으로 변경, 닫히면 값 초기화
+  React.useEffect(() => {
+    setSpinnerShow(true);
+    if(modalShow === true) {
+      setOrder(orderInfo);
+    }
+    else {
+      setNewReceipt({
+        file: null,
+        preview: null
+      });
+    }
+    setSpinnerShow(false);
+  },[modalShow])
+
+  // 이미지 미리 보기
+  React.useEffect(() => {
+    setSpinnerShow(true);
+    if(newReceipt.file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewReceipt((receipt: Receipt) => ({
+          ...receipt,
+          preview: reader.result
+        }));
+      };
+      reader.readAsDataURL(newReceipt.file);
+    }
+    else if(newReceipt.file === null) {
+      setNewReceipt((receipt: Receipt) => ({
+        ...receipt,
+        preview: null
+      }));
+    }
+    setSpinnerShow(false);
+  },[newReceipt.file])
+
+  // 수정 시, orderId에 따른 이미지
+  React.useEffect(() => {
+    if(orderId !== undefined) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCurrentReceipt((receipt: Receipt) => ({
+          ...receipt,
+          preview: reader.result
+        }));
+      };
+
+      const loadImg = async () => {
+        try {
+          const response: any = await axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/img/${orderId}`, {
+              responseType: 'blob',
+              headers: {
+                Authorization: `Bearer ${accessToken}`
+              },
+          });
+          setCurrentReceipt((receipt: Receipt) => ({
+            ...receipt,
+            file: response.data
+          }));
+          reader.readAsDataURL(response.data);
+        } catch (error) {
+          console.log(error);
+          setCurrentReceipt({
+            file: null,
+            preview: null
+          });
+        }
+      }
+
+      loadImg()
+    }
+  },[orderId]);
+
+  return (
+    <div style={{ display: 'block', position: 'initial' }}>
+      <Modal show={modalShow} onHide={handleClose} animation centered>
+        <Modal.Header closeButton/>
+
+        <Modal.Body className="d-flex flex-column align-items-center">
+          <Form style={{display: 'flex', justifyContent: 'space-between'}}
+           onSubmit={handleSubmit}>
+            <Image rounded
+             src={newReceipt.file ? newReceipt.preview?.toString() : currentReceipt.preview?.toString()}/>
+            <Form.Group>
+              <Form.Control type="file" placeholder='img' name='file' required
+               onChange={handleChangeImage}/>
+              <Form.Control type="text" placeholder='account' name='account' required
+               value={order.account}
+               onChange={handleChangeText}/>
+              <Form.Control type="text" placeholder='bName' name='bName' required
+               value={order.bName}
+               onChange={handleChangeText}/>
+              <Form.Control type="number" placeholder='price' name='price' required
+               value={order.price} min={0}
+               onChange={handleChangeText}/>
+              <Form.Control type="text" placeholder='detail' name='detail'
+               value={order.detail}
+               onChange={handleChangeText}/>
+              <Form.Control type="submit" value="수정"/>
+              <Form.Control type="button" value="삭제" onClick={handleDelete}/>
             </Form.Group>
           </Form>
         </Modal.Body>

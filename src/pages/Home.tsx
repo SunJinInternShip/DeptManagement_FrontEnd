@@ -1,53 +1,118 @@
 import * as React from 'react';
 import axios from 'axios';
-import { ProductOrder, ProductEdit } from '../components/ProductModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
+import Alert from 'react-bootstrap/Alert';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
 import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
-import ReceiptModal from '../components/ReceiptModal';
 import TopBar from '../components/TopBar';
-import { HomeOrder } from '../components/HomeModal';
+import { HomeEdit, HomeOrder } from '../components/HomeModal';
 
-interface Product {
-  pType: string;
-  pName: string;
+interface Order {
+  account: string;
+  bName: string;
   price: number | string;
-  quantity: number | string;
+  detail: string;
 }
 
 // 사원 페이지
 export default function Home() {
+  const accessToken = GetUserInfo().accessToken;
+
+  const [orderData, setOrderData] = React.useState<Object>([]);
   const [orderModalShow, setOrderModalShow] = React.useState<boolean>(false);
-  const [checkedItems, setCheckedItems] = React.useState<Array<any>>([]);
+  const [editModalShow, setEditModalShow] = React.useState<boolean>(false);
+  const [checkedOrders, setCheckedOrders] = React.useState<Array<any>>([]);
+  const [order, setOrder] = React.useState<Order>({
+    account: '',
+    bName: '',
+    price: '',
+    detail: ''
+  });
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false)
 
   // 모달이 닫힐 때
   const handleClose = () => {
     setOrderModalShow(false);
+    setEditModalShow(false);
   };
 
-  const handleClick = (itemId: number) => {
-    if(checkedItems.find((item) => item === itemId) === undefined) {
-      setCheckedItems([...checkedItems, itemId]);
+  const handleClick = (v: any) => {
+    // 체크 여부
+    if(checkedOrders.find((item) => item === v.orderId) === undefined) {
+      setCheckedOrders([...checkedOrders, v.orderId]);
     }
     else {
-      setCheckedItems(checkedItems.filter(item => item !== itemId));
+      setCheckedOrders(checkedOrders.filter(item => item !== v.orderId));
     }
   };
+
+  // 모달이 닫히면 부서 요청 물품 다시 조회
+  React.useEffect(() => {
+    setSpinnerShow(true);
+    if((orderModalShow === false && editModalShow === false)) {
+      try {
+        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
+          params: {
+            status: "wait"
+          },
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        response.then((res) => {
+          setOrderData(res.data);
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    setSpinnerShow(false);
+  },[orderModalShow, editModalShow]);
+
+  // checkedOrders가 삭제, 상신된 경우 체크 해제
+  React.useEffect(() => {
+    if(Object.values(orderData).find((item) => item.orderId === checkedOrders[0]) === undefined) {
+      setCheckedOrders([]);
+    }
+  },[orderData])
+
+  // 수정 관련 현재 체크 확인
+  React.useEffect(() => {
+    setSpinnerShow(true);
+    const currentChecked: any = Object.values(orderData).find((item) => item.orderId === checkedOrders[0]);
+    
+    if(currentChecked !== undefined) {
+      setOrder({
+        account: currentChecked.productType,
+        bName: currentChecked.storeName,
+        price: currentChecked.totalPrice,
+        detail: currentChecked.description
+      })
+    }
+    else {
+      setOrder({
+        account: '',
+        bName: '',
+        price: '',
+        detail: ''
+      })
+    }
+    setSpinnerShow(false);
+  },[checkedOrders])
 
   return (
     <div>
       <TopBar/>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
-        {checkedItems.length > 0 ?
-          <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>수정</Button>
+        {checkedOrders.length > 0 ?
+          <Button disabled={checkedOrders.length > 1 ? true : false} onClick={() => {setEditModalShow(!editModalShow)}}>수정</Button>
           :
           <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>추가</Button>
         }
-        <Button>상신</Button>
+        <Button disabled={checkedOrders.length > 0 ? false : true} onClick={handleClose}>상신</Button>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Table bordered hover style={{ width: '90%' }}>
@@ -65,43 +130,25 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            <tr onClick={() => {handleClick(1)}}>
-              <td><Form.Check onClick={() => {handleClick(1)}} readOnly checked={checkedItems.find((item) => item === 1) !== undefined}/></td>
-              <td>SCM</td>
-              <td>김아무개</td>
-              <td>비품</td>
-              <td>XX상사</td>
-              <td>15000</td>
-              <td>7/15 A 구매</td>
-              <td>대기</td>
-              <td>2024.07.15</td>
-            </tr>
-            <tr onClick={() => {handleClick(2)}}>
-              <td><Form.Check onClick={() => {handleClick(2)}} readOnly checked={checkedItems.find((item) => item === 2) !== undefined}/></td>
-              <td>SCM</td>
-              <td>김아무개</td>
-              <td>비품</td>
-              <td>XX상사</td>
-              <td>15000</td>
-              <td>7/15 A 구매</td>
-              <td>대기</td>
-              <td>2024.07.15</td>
-            </tr>
-            <tr onClick={() => {handleClick(3)}}>
-              <td><Form.Check onClick={() => {handleClick(3)}} readOnly checked={checkedItems.find((item) => item === 3) !== undefined}/></td>
-              <td>SCM</td>
-              <td>김아무개</td>
-              <td>비품</td>
-              <td>XX상사</td>
-              <td>15000</td>
-              <td>7/15 A 구매</td>
-              <td>대기</td>
-              <td>2024.07.15</td>
-            </tr>
+            {Object.entries(orderData).reverse().map(([k,v]) => (
+              <tr key={k} onClick={() => {handleClick(v)}}>
+                <td><Form.Check onClick={() => {handleClick(v)}} readOnly checked={checkedOrders.find((item) => item === v.orderId) !== undefined}/></td>
+                <td>{v.applicantDeptName}</td>
+                <td>{v.applicant}</td>
+                <td>{v.productType}</td>
+                <td>{v.storeName}</td>
+                <td>{v.totalPrice}</td>
+                <td>{v.description}</td>
+                <td>{v.orderStatus}</td>
+                <td>{v.createdAt}</td>
+              </tr>
+            ))}
           </tbody>
         </Table>
       </div>
       {HomeOrder(orderModalShow, handleClose)}
+      {HomeEdit(editModalShow, handleClose, order, checkedOrders[0])}
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }
