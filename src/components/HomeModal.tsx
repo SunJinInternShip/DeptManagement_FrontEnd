@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { GetUserInfo } from './JWTToken';
 import LoadingSpinner from './LoadingSpinner';
+import image from '../assets/blank_receipt.jpg';
 
 interface Receipt {
   file: File | null;
@@ -26,6 +27,12 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     file: null,
     preview: null
   });
+
+  const [aa, setaa] = React.useState<Receipt>({
+    file: null,
+    preview: null
+  });
+
   const [order, setOrder] = React.useState<Order>({
     account: '',
     bName: '',
@@ -33,6 +40,25 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     detail: ''
   })
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
+
+  const a = async () => {
+    try {
+      const blob: any = new Blob([image], {type: 'image/jpeg'});
+      console.log(blob);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log(reader.result);
+        
+        setaa({
+          file: blob,
+          preview: reader.result
+        });
+      };
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   // 내용 변경
   const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +153,10 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     }
     setSpinnerShow(false);
   },[modalShow])
+
+  React.useEffect(() => {
+    a();
+  },[])
 
   return (
     <div style={{ display: 'block', position: 'initial' }}>
