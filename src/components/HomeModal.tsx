@@ -273,6 +273,19 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
     formData.append("image", img);
     formData.append("request", blob);
     
+    try {
+      const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/employee/${orderId}`, formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      alert(res.data);
+      handleClose();
+    } catch (error: unknown) {
+      console.log(error);
+    }
     setSpinnerShow(false);
   }
 
@@ -330,7 +343,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
               responseType: 'blob',
               headers: {
                 Authorization: `Bearer ${accessToken}`
-              },
+              }
           });
           setCurrentReceipt((receipt: Receipt) => ({
             ...receipt,
@@ -361,7 +374,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
             <Image rounded
              src={newReceipt.file ? newReceipt.preview?.toString() : currentReceipt.preview?.toString()}/>
             <Form.Group>
-              <Form.Control type="file" placeholder='img' name='file' required
+              <Form.Control type="file" placeholder='img' name='file'
                onChange={handleChangeImage}/>
               <Form.Control type="text" placeholder='account' name='account' required
                value={order.account}

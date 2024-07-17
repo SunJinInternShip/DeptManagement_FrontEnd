@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
 import TopBar from '../components/TopBar';
 import { HomeEdit, HomeOrder } from '../components/HomeModal';
+import qs from 'qs';
 
 interface Order {
   account: string;
@@ -39,8 +40,8 @@ export default function Home() {
     setEditModalShow(false);
   };
 
+  // 체크 시
   const handleClick = (v: any) => {
-    // 체크 여부
     if(checkedOrders.find((item) => item === v.orderId) === undefined) {
       setCheckedOrders([...checkedOrders, v.orderId]);
     }
@@ -48,6 +49,24 @@ export default function Home() {
       setCheckedOrders(checkedOrders.filter(item => item !== v.orderId));
     }
   };
+
+  const handleClickBtn = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/submit`, {
+        params: { id: checkedOrders },
+        paramsSerializer: params => {
+          return qs.stringify(params, { arrayFormat: 'repeat' })
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      alert(res.data);
+      handleClose();
+    } catch (error: unknown) {
+      console.log(error);
+    }
+  }
 
   // 모달이 닫히면 부서 요청 물품 다시 조회
   React.useEffect(() => {
@@ -112,7 +131,7 @@ export default function Home() {
           :
           <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>추가</Button>
         }
-        <Button disabled={checkedOrders.length > 0 ? false : true} onClick={handleClose}>상신</Button>
+        <Button disabled={checkedOrders.length > 0 ? false : true} onClick={handleClickBtn}>상신</Button>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Table bordered hover style={{ width: '90%' }}>
