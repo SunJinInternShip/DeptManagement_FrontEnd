@@ -21,6 +21,7 @@ interface Order {
 // 사원 페이지
 export default function Home() {
   const accessToken = GetUserInfo().accessToken;
+  const role = GetUserInfo().role;
 
   const [orderData, setOrderData] = React.useState<Object>([]);
   const [orderModalShow, setOrderModalShow] = React.useState<boolean>(false);
@@ -50,10 +51,11 @@ export default function Home() {
     }
   };
 
+  // 다시 로드하는 거 필요
   const handleClickBtn = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/submit`, {
-        params: { id: checkedOrders },
+        params: { order: checkedOrders },
         paramsSerializer: params => {
           return qs.stringify(params, { arrayFormat: 'repeat' })
         },
@@ -68,24 +70,47 @@ export default function Home() {
     }
   }
 
-  // 모달이 닫히면 부서 요청 물품 다시 조회
+  // 처음 페이지 로드 시, 조회 | 모달이 닫히면 부서 요청 물품 다시 조회
   React.useEffect(() => {
     setSpinnerShow(true);
     if((orderModalShow === false && editModalShow === false)) {
-      try {
-        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
-          params: {
-            status: "wait"
-          },
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
-        response.then((res) => {
-          setOrderData(res.data);
-        })
-      } catch (error) {
-        console.log(error);
+      if(role === "EMPLOYEE") {
+        try {
+          const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
+            params: {
+              status: "wait"
+            },
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          });
+          response.then((res) => {
+            console.log(res.data);
+            
+            setOrderData(res.data);
+          })
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      else if(role === "TEAMLEADER") {
+        try {
+          const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/orders`, {
+            params: {
+              status: "wait"
+            },
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          });
+          response.then((res) => {
+            console.log(res.data);
+            
+            setOrderData(res.data);
+          })
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
     setSpinnerShow(false);
