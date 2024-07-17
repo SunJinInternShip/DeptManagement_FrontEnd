@@ -27,12 +27,10 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     file: null,
     preview: null
   });
-
-  const [aa, setaa] = React.useState<Receipt>({
+  const [blankReceipt, setBlankReceipt] = React.useState<Receipt>({
     file: null,
     preview: null
   });
-
   const [order, setOrder] = React.useState<Order>({
     account: '',
     bName: '',
@@ -41,25 +39,30 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
   })
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
-  const a = async () => {
+  // 빈 이미지 File으로
+  const blankImageToFile = () => {
     try {
-      const blob: any = new Blob([image], {type: 'image/jpeg'});
-      console.log(blob);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        console.log(reader.result);
-        
-        setaa({
-          file: blob,
-          preview: reader.result
-        });
-      };
-      reader.readAsDataURL(blob);
+      let img = new window.Image();
+      img.src = image;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx: any = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob((blob: any) => {
+          const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+          setBlankReceipt((receipt: Receipt) => ({
+            ...receipt,
+            file: file
+          }));
+        }, 'image/jpeg');
+      }
     } catch (error) {
       console.log(error);
     }
   }
-
+  
   // 내용 변경
   const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -84,7 +87,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     setSpinnerShow(true);
 
     let formData = new FormData();
-    const img: any = receipt.file;
+    const img: any = receipt.file ? receipt.file : blankReceipt.file;
     const requestData = {
       "productType": order.account,
       "storeName": order.bName,
@@ -95,7 +98,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
 
     formData.append("image", img);
     formData.append("request", blob);
-
+    
     try {
       const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, formData,
       {
@@ -115,11 +118,9 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
   // 이미지 미리 보기
   React.useEffect(() => {
     setSpinnerShow(true);
-    if(receipt.file) {
-      const reader = new FileReader();
+    const reader = new FileReader();
+    if(receipt.file !== null) {
       reader.onloadend = () => {
-        console.log(reader.result);
-        
         setReceipt((receipt: Receipt) => ({
           ...receipt,
           preview: reader.result
@@ -132,9 +133,19 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
         ...receipt,
         preview: null
       }));
+
+      if(blankReceipt.preview === null && blankReceipt.file !== null) {
+        reader.onloadend = () => {
+          setBlankReceipt((receipt: Receipt) => ({
+            ...receipt,
+            preview: reader.result
+          }));
+        };
+        reader.readAsDataURL(blankReceipt.file);
+      }
     }
     setSpinnerShow(false);
-  },[receipt.file])
+  },[receipt.file, blankReceipt.file])
 
   // 모달이 닫히면 값 초기화
   React.useEffect(() => {
@@ -154,8 +165,11 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     setSpinnerShow(false);
   },[modalShow])
 
+  // 빈 이미지 로드
   React.useEffect(() => {
-    a();
+    setSpinnerShow(true);
+    blankImageToFile();
+    setSpinnerShow(false);
   },[])
 
   return (
@@ -166,7 +180,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
         <Modal.Body className="d-flex flex-column align-items-center">
           <Form style={{display: 'flex', justifyContent: 'space-between'}} onSubmit={handleSubmit} encType='multipart/form-data'>
             <Image rounded
-             src={receipt.preview?.toString()}/>
+             src={receipt.file ? receipt.preview?.toString() : blankReceipt.preview?.toString()}/>
             <Form.Group>
               <Form.Control type="file" placeholder='img' name='file'
                onChange={handleChangeImage}/>
@@ -258,8 +272,6 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
 
     formData.append("image", img);
     formData.append("request", blob);
-
-    console.log(formData);
     
     setSpinnerShow(false);
   }
