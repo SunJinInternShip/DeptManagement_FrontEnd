@@ -47,8 +47,9 @@ const styles = {
 };
 
 export default function TopBar() {
-  const userName = GetUserInfo().name;
   const accessToken = GetUserInfo().accessToken;
+  const userName = GetUserInfo().name;
+  const role = GetUserInfo().role;
 
   const navigate = useNavigate();
 
@@ -75,24 +76,26 @@ export default function TopBar() {
     <div style={styles.navbar}>
       <div style={styles.leftSection}>
         <img src="https://via.placeholder.com/40" alt="Logo" style={styles.image} />
-        <button onClick={() => {navigate("/temp/home", { replace: true })}}
+        <button onClick={() => {navigate("/temp/home")}}
           style={styles.button}
+          hidden={role === "CENTERDIRECTOR"}
         >
           홈
         </button>
-        <button onClick={() => {navigate("/temp/search", { replace: true })}}
+        <button onClick={() => {navigate("/temp/search")}}
           style={styles.button}
         >
           조회
         </button>
-        <button onClick={() => {navigate("/temp/management", { replace: true })}}
+        <button onClick={() => {navigate("/temp/management")}}
           style={styles.button}
+          hidden={role === "EMPLOYEE"}
         >
           승인 및 반려
         </button>
       </div>
       <div style={styles.rightSection}>
-        <span style={styles.text}>{userName}</span>
+        <span style={styles.text}>{role} | {userName}</span>
         <button onClick={handleLogout}
           style={styles.button}
         >

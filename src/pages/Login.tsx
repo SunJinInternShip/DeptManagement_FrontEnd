@@ -11,7 +11,8 @@ interface User {
 
 // 로그인
 export default function Login() {
-  const [userName, setUserName] = React.useState<string | null>(GetUserInfo().name);
+  const accessToken = GetUserInfo().accessToken;
+
   const [user, setUser] = React.useState<User>({
     id: '',
     password: ''
@@ -38,9 +39,9 @@ export default function Login() {
         "loginId": user.id,
         "password": user.password
       });
-      await SetUserInfo(res.data.accessToken, res.data.refreshToken, res.data.userName);
+      await SetUserInfo(res.data.accessToken, res.data.refreshToken, res.data.userName, res.data.role);
       alert(`${GetUserInfo().name}님 환영합니다`);
-      GetUserInfo().name === "admin" ? navigate("/home/admin", { replace: true }) : navigate("/home", { replace: true });
+      navigate("/temp/home", { replace: true });
     } catch (error) {
       console.log(error);
     }
@@ -49,7 +50,7 @@ export default function Login() {
 
   // 로그인한 유저가 없다면 기본 페이지(로그인 페이지)로
   React.useEffect(() => {
-    if(userName !== null) navigate("/home", { replace: true });
+    if(accessToken !== null) navigate("/temp/home", { replace: true });
   },[])
 
   return (
