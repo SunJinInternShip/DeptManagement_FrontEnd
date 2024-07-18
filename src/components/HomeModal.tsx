@@ -8,7 +8,7 @@ import LoadingSpinner from './LoadingSpinner';
 import image from '../assets/blank_receipt.jpg';
 
 interface Receipt {
-  file: File | null;
+  file: File | Blob | null;
   preview: string | ArrayBuffer | null;
 }
 
@@ -193,7 +193,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
               <Form.Control type="number" placeholder='price' name='price' required
                value={order.price} min={0}
                onChange={handleChangeText}/>
-              <Form.Control type="text" placeholder='detail' name='detail' required
+              <Form.Control type="text" placeholder='detail' name='detail'
                value={order.detail}
                onChange={handleChangeText}/>
               <Form.Control type="submit"/>
@@ -261,7 +261,14 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
     setSpinnerShow(true);
 
     let formData = new FormData();
-    const img: any = newReceipt.file ? newReceipt.file : currentReceipt.file;
+    let img: any;
+    if(newReceipt.file === null && currentReceipt.file !== null) {
+      img = new File([currentReceipt.file], 'image.jpg', { type: 'image/jpeg' });
+    }
+    else {
+      img = newReceipt.file
+    }
+
     const requestData = {
       "productType": order.account,
       "storeName": order.bName,
