@@ -96,6 +96,7 @@ export default function Search() {
             Authorization: `Bearer ${accessToken}`
           }
         });
+        console.log(res.data);
         setOrderData(res.data);
       } catch (error) {
         console.log(error);

@@ -24,6 +24,11 @@ export default function Management() {
 
   const [orderData, setOrderData] = React.useState<Object>([]);
 
+  const handleClick = (v: any) => {
+    // 승인 반려 모달 열기
+    console.log(v);
+  }
+
   // 나에게 상신된 목록 조회
   React.useEffect(() => {
     if(role === "TEAMLEADER") {
@@ -34,7 +39,21 @@ export default function Management() {
               Authorization: `Bearer ${accessToken}`
             }
           });
-          console.log(res.data);
+          setOrderData(res.data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      loadOrders();
+    }
+    else if(role === "CENTERDIRECTOR") {
+      const loadOrders = async () => {
+        try {
+          const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/centerdirector/department/progress`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          });
           setOrderData(res.data);
         } catch (error) {
           console.log(error);
@@ -63,7 +82,7 @@ export default function Management() {
             </thead>
             <tbody>
               {Object.entries(orderData).reverse().map(([k,v]) => (
-                <tr key={k}>
+                <tr key={k} onClick={() => {handleClick(v)}}>
                   <td>{v.applicantDeptName}</td>
                   <td>{v.applicant}</td>
                   <td>{v.productType}</td>
