@@ -189,36 +189,6 @@ export default function Search() {
     }
   },[]);
 
-  React.useEffect(() => {
-    //console.log(orderData);
-    //console.log(deptData);
-    //console.log(memberData);
-    //console.log(deptMemberData.arguments[0]);
-    //console.log(Array.);
-    //console.log(deptMemberData.length);
-    //console.log(deptMemberData.map(([k,v]: any) => (k)));
-    //console.log(deptMemberData.map((k: any) => (k)));
-    //deptMemberData.forEach((element: any) => {
-      //console.log(element);
-      //console.log(element.members);
-    //});
-    //console.log(deptMemberData.map((dept: any) => (dept.deptName)));
-    //console.log(deptMemberData.map((dept: any) => (dept.members.map((member: any) => (member)))));
-    //const a: any = [{id: 1, name: "kim"}, {id: 2, name: "lee"}, {id: 2, name: "lee2"}];
-    //console.log(a.filter((item: any) => item.id === 2));
-    
-    // user = [{ deptId, memberId, memberName }, ...]
-    // dept = [{ deptId, deptName }, ...]
-
-    /*
-    {memberData.map((e: any) => {
-              <Dropdown.Item eventKey={`${e.memberId} ${e.memberName}`} active={requirement.userName === `${e.memberName}`}>
-                {e.memberName}
-              </Dropdown.Item>
-            })}
-    */
-  },[memberData]);
-
   return (
     <div>
       <TopBar/>
@@ -275,40 +245,40 @@ export default function Search() {
           <Button onClick={searchToDB}>조회</Button>
         </div>
       </div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Table bordered hover style={{ width: '90%' }}>
-            <thead>
-              <tr>
-                <th>부서</th>
-                <th>사원</th>
-                <th>계정</th>
-                <th>상호명</th>
-                <th>비용</th>
-                <th>적요</th>
-                <th>처리 현황</th>
-                <th>비고</th>
-                <th>신청 날짜</th>
-                <th>처리 날짜</th>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Table bordered hover style={{ width: '90%' }}>
+          <thead>
+            <tr>
+              <th>부서</th>
+              <th>사원</th>
+              <th>계정</th>
+              <th>상호명</th>
+              <th>비용</th>
+              <th>적요</th>
+              <th>처리 현황</th>
+              <th>비고</th>
+              <th>신청 날짜</th>
+              <th>처리 날짜</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(orderData).reverse().map(([k,v]) => (
+              <tr key={k}>
+                <td>{v.applicantDeptName}</td>
+                <td>{v.applicant}</td>
+                <td>{v.productType}</td>
+                <td>{v.storeName}</td>
+                <td>{v.totalPrice}</td>
+                <td>{v.description}</td>
+                <td>{v.orderStatus}</td>
+                <td>{v.rejectionDescription}</td>
+                <td>{v.createdAt}</td>
+                <td>{v.procDate}</td>
               </tr>
-            </thead>
-            <tbody>
-              {Object.entries(orderData).reverse().map(([k,v]) => (
-                <tr key={k}>
-                  <td>{v.applicantDeptName}</td>
-                  <td>{v.applicant}</td>
-                  <td>{v.productType}</td>
-                  <td>{v.storeName}</td>
-                  <td>{v.totalPrice}</td>
-                  <td>{v.description}</td>
-                  <td>{v.orderStatus}</td>
-                  <td>{v.rejectionDescription}</td>
-                  <td>{v.createdAt}</td>
-                  <td>{v.procDate}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }
