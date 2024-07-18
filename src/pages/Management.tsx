@@ -11,14 +11,38 @@ import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
 import ReceiptModal from '../components/ReceiptModal';
 import TopBar from '../components/TopBar';
 
-interface Product {
-  pType: string;
-  pName: string;
+interface Order {
+  account: string;
+  bName: string;
   price: number | string;
-  quantity: number | string;
+  detail: string;
 }
 
 export default function Management() {
+  const accessToken = GetUserInfo().accessToken;
+  const role = GetUserInfo().role;
+
+  const [orderData, setOrderData] = React.useState<Object>([]);
+
+  // 나에게 상신된 목록 조회
+  React.useEffect(() => {
+    if(role === "TEAMLEADER") {
+      const loadOrders = async () => {
+        try {
+          const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/department/progress`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          });
+          console.log(res.data);
+          setOrderData(res.data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      loadOrders();
+    }
+  },[])
 
   return (
     <div>
@@ -38,16 +62,18 @@ export default function Management() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>SCM</td>
-                <td>김아무개</td>
-                <td>비품</td>
-                <td>XX상사</td>
-                <td>15000</td>
-                <td>7/15 A 구매</td>
-                <td>처리중</td>
-                <td>2024.07.15</td>
-              </tr>
+              {Object.entries(orderData).reverse().map(([k,v]) => (
+                <tr key={k}>
+                  <td>{v.applicantDeptName}</td>
+                  <td>{v.applicant}</td>
+                  <td>{v.productType}</td>
+                  <td>{v.storeName}</td>
+                  <td>{v.totalPrice}</td>
+                  <td>{v.description}</td>
+                  <td>{v.orderStatus}</td>
+                  <td>{v.createdAt}</td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </div>

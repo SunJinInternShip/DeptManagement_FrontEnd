@@ -122,11 +122,11 @@ export default function Search() {
   };
 
   const handleSelectStatus = (e: any) => {
-    const array: Array<string> = e.split(" "); // [statusId, statusName]
+    const array: Array<string> = e.split(" "); // [statusId, statusName1, statusName2]
     setRequirement((requirement: Requirement) => ({
       ...requirement,
       statusId: array[0],
-      statusName: array[1]
+      statusName: array[2] === "처리중" ? `${array[1]} ${array[2]}` : array[1]
     }));
   };
   
@@ -189,6 +189,7 @@ export default function Search() {
   },[]);
 
   React.useEffect(() => {
+    //console.log(orderData);
     //console.log(deptData);
     //console.log(memberData);
     //console.log(deptMemberData.arguments[0]);
@@ -255,8 +256,11 @@ export default function Search() {
             <Dropdown.Item eventKey="전체 전체" active={requirement.statusName === "전체"}>
               전체
             </Dropdown.Item>
-            <Dropdown.Item eventKey="progress 처리중" active={requirement.statusName === "처리중"}>
-              처리중
+            <Dropdown.Item eventKey="first 1차 처리중" active={requirement.statusName === "1차 처리중"}>
+              1차 처리중
+            </Dropdown.Item>
+            <Dropdown.Item eventKey="second 2차 처리중" active={requirement.statusName === "2차 처리중"}>
+              2차 처리중
             </Dropdown.Item>
             <Dropdown.Item eventKey="approve 승인" active={requirement.statusName === "승인"}>
               승인
@@ -281,7 +285,7 @@ export default function Search() {
                 <th>비용</th>
                 <th>적요</th>
                 <th>처리 현황</th>
-                <th>반려 사유</th>
+                <th>비고</th>
                 <th>신청 날짜</th>
                 <th>처리 날짜</th>
               </tr>
