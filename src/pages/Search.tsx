@@ -15,12 +15,12 @@ import TopBar from '../components/TopBar';
 import qs from 'qs';
 
 interface Requirement {
-  statusName: string;
   statusId: string;
-  userName: string;
+  statusName: string;
   userId: number;
-  deptName: string;
+  userName: string;
   deptId: number;
+  deptName: string;
 }
 
 // 사원 페이지
@@ -28,17 +28,20 @@ export default function Search() {
   const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
-  const [orderData, setOrderData] = React.useState<Object>([]);
+  const [orderData, setOrderData] = React.useState<Array<any>>([]);
   const [requirement, setRequirement] = React.useState<Requirement>({
-    // Name = 프론트 || Id = 백엔드
-    statusName: "전체",
+    // Id = 백엔드 | Name = 프론트
     statusId: "전체",
-    userName: "전체",
+    statusName: "전체",
     userId: 0,
-    deptName: "전체",
+    userName: "전체",
     deptId: 0,
+    deptName: "전체"
   })
+  const [deptData, setDeptData] = React.useState<any>([]);
+  const [memberData, setMemberData] = React.useState<any>([]);
 
+  // 
   const searchToDB = async () => {
     const oStatus = requirement.statusName === "전체" ? null : requirement.statusId;
     const uId = requirement.userName === "전체" ? null : requirement.userId;
@@ -49,10 +52,42 @@ export default function Search() {
     if(oStatus !== null) obj = {...obj, status: oStatus}
     if(uId !== null) obj = {...obj, member: uId}
     if(dId !== null) obj = {...obj, department: dId}
-    
+  
     if(role === "EMPLOYEE") {
       try {
         const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
+          params: obj,
+          paramsSerializer: params => {
+            return qs.stringify(params)
+          },
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        setOrderData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    else if(role === "TEAMLEADER") {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/department/details`, {
+          params: obj,
+          paramsSerializer: params => {
+            return qs.stringify(params)
+          },
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        setOrderData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    else if(role === "CENTERDIRECTOR") {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/centerdirector/department/details`, {
           params: obj,
           paramsSerializer: params => {
             return qs.stringify(params)
@@ -76,24 +111,77 @@ export default function Search() {
   };
 
   const handleSelectName = (e: any) => {
+    const array: any[] = e.split(" "); // [userId, userName]
     setRequirement((requirement: Requirement) => ({
       ...requirement,
-      userId: e
+      userId: array[0],
+      userName: array[1]
     }));
   };
 
   const handleSelectStatus = (e: any) => {
-    const array: Array<string> = e.split(" "); // [statusName, statusId]
+    const array: Array<string> = e.split(" "); // [statusId, statusName]
     setRequirement((requirement: Requirement) => ({
       ...requirement,
-      statusName: array[0],
-      statusId: array[1]
+      statusId: array[0],
+      statusName: array[1]
     }));
   };
   
   React.useEffect(() => {
     searchToDB();
+    if(role === "TEAMLEADER") {
+      const loadDeptAndUserInfo = async () => {
+        try {
+          const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/department`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          });
+          let mData: Array<any> = [];
+          res.data.members.forEach((e: any) => {
+            mData.push({
+              deptId: res.data.deptId,
+              memberId: e.memberId,
+              memberName: e.memberName
+            })
+          });
+          setMemberData(mData);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      loadDeptAndUserInfo();
+    }
   },[]);
+
+  React.useEffect(() => {
+    //console.log(memberData);
+    //console.log(deptMemberData.arguments[0]);
+    //console.log(Array.);
+    //console.log(deptMemberData.length);
+    //console.log(deptMemberData.map(([k,v]: any) => (k)));
+    //console.log(deptMemberData.map((k: any) => (k)));
+    //deptMemberData.forEach((element: any) => {
+      //console.log(element);
+      //console.log(element.members);
+    //});
+    //console.log(deptMemberData.map((dept: any) => (dept.deptName)));
+    //console.log(deptMemberData.map((dept: any) => (dept.members.map((member: any) => (member)))));
+    //const a: any = [{id: 1, name: "kim"}, {id: 2, name: "lee"}, {id: 2, name: "lee2"}];
+    //console.log(a.filter((item: any) => item.id === 2));
+    
+    // user = [{ deptId, memberId, memberName }, ...]
+    // dept = [{ deptId, deptName }, ...]
+
+    /*
+    {memberData.map((e: any) => {
+              <Dropdown.Item eventKey={`${e.memberId} ${e.memberName}`} active={requirement.userName === `${e.memberName}`}>
+                {e.memberName}
+              </Dropdown.Item>
+            })}
+    */
+  },[memberData]);
 
   return (
     <div>
@@ -104,34 +192,42 @@ export default function Search() {
           <DropdownButton id="dropdown-basic-button" title={requirement.deptId} onSelect={handleSelectDept}>
             <Dropdown.Item eventKey="0">전체</Dropdown.Item>
             <Dropdown.Item eventKey="1" active={requirement.deptId === 1}>
-             Human Resources
+              Human Resources
             </Dropdown.Item>
             <Dropdown.Item eventKey="2" active={requirement.deptId === 2}>
-             Finance
+              Finance
             </Dropdown.Item>
           </DropdownButton>
         </div>
         <div hidden={role === "EMPLOYEE" ? true : false}>
           이름:
-          <DropdownButton id="dropdown-basic-button" title="전체" onSelect={handleSelectName}>
-            <Dropdown.Item eventKey="0">전체</Dropdown.Item>
-            <Dropdown.Item eventKey="1">김아무개</Dropdown.Item>
+          <DropdownButton id="dropdown-basic-button" title={requirement.userName} onSelect={handleSelectName}>
+            <Dropdown.Item eventKey="전체 전체" active={requirement.userName === "전체"}>
+              전체
+            </Dropdown.Item>
+            {Object.entries(memberData).map(([k,v]: any) => (
+              
+              <Dropdown.Item key={k} eventKey={`${v.memberId} ${v.memberName}`}
+               active={requirement.userName === `${v.memberName}`}>
+                {v.memberName}
+              </Dropdown.Item>
+            ))}
           </DropdownButton>
         </div>
         <div>
           처리 현황:
           <DropdownButton id="dropdown-basic-button" title={requirement.statusName} onSelect={handleSelectStatus}>
             <Dropdown.Item eventKey="전체 전체" active={requirement.statusName === "전체"}>
-             전체
+              전체
             </Dropdown.Item>
-            <Dropdown.Item eventKey="처리중 progress" active={requirement.statusName === "처리중"}>
-             처리중
+            <Dropdown.Item eventKey="progress 처리중" active={requirement.statusName === "처리중"}>
+              처리중
             </Dropdown.Item>
-            <Dropdown.Item eventKey="승인 approve" active={requirement.statusName === "승인"}>
-             승인
+            <Dropdown.Item eventKey="approve 승인" active={requirement.statusName === "승인"}>
+              승인
             </Dropdown.Item>
-            <Dropdown.Item eventKey="반려 denied" active={requirement.statusName === "반려"}>
-             반려
+            <Dropdown.Item eventKey="denied 반려" active={requirement.statusName === "반려"}>
+              반려
             </Dropdown.Item>
           </DropdownButton>
         </div>
@@ -167,7 +263,7 @@ export default function Search() {
                   <td>{v.orderStatus}</td>
                   <td>{v.rejectionDescription}</td>
                   <td>{v.createdAt}</td>
-                  <td>{v.updatedAt}</td>
+                  <td>{v.procDate}</td>
                 </tr>
               ))}
             </tbody>
