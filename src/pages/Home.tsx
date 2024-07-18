@@ -63,10 +63,47 @@ export default function Home() {
           Authorization: `Bearer ${accessToken}`
         }
       })
+      reloadOrders();
       alert(res.data);
-      handleClose();
     } catch (error: unknown) {
       console.log(error);
+    }
+  }
+
+  const reloadOrders = async () => {
+    if(role === "EMPLOYEE") {
+      try {
+        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
+          params: {
+            status: "wait"
+          },
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        response.then((res) => {
+          setOrderData(res.data);
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    else if(role === "TEAMLEADER") {
+      try {
+        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/orders`, {
+          params: {
+            status: "wait"
+          },
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        response.then((res) => {
+          setOrderData(res.data);
+        })
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
@@ -74,44 +111,7 @@ export default function Home() {
   React.useEffect(() => {
     setSpinnerShow(true);
     if((orderModalShow === false && editModalShow === false)) {
-      if(role === "EMPLOYEE") {
-        try {
-          const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
-            params: {
-              status: "wait"
-            },
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          });
-          response.then((res) => {
-            console.log(res.data);
-            
-            setOrderData(res.data);
-          })
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      else if(role === "TEAMLEADER") {
-        try {
-          const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/orders`, {
-            params: {
-              status: "wait"
-            },
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          });
-          response.then((res) => {
-            console.log(res.data);
-            
-            setOrderData(res.data);
-          })
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      reloadOrders();
     }
     setSpinnerShow(false);
   },[orderModalShow, editModalShow]);
