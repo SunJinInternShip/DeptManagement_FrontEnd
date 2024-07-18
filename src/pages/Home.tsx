@@ -51,10 +51,15 @@ export default function Home() {
     }
   };
 
-  // 다시 로드하는 거 필요
+  // 상신
   const handleClickBtn = async () => {
+    let apiURL: string = "";
+    
+    if(role === "EMPLOYEE") apiURL = `${process.env.REACT_APP_SERVER_URL}/employee/submit`;
+    else if(role === "TEAMLEADER") apiURL = `${process.env.REACT_APP_SERVER_URL}/teamleader/submit`;
+
     try {
-      const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/submit`, {
+      const res = await axios.get(apiURL, {
         params: { order: checkedOrders },
         paramsSerializer: params => {
           return qs.stringify(params, { arrayFormat: 'repeat' })
@@ -63,14 +68,15 @@ export default function Home() {
           Authorization: `Bearer ${accessToken}`
         }
       })
-      reloadOrders();
+      loadOrders();
       alert(res.data);
     } catch (error: unknown) {
       console.log(error);
     }
   }
 
-  const reloadOrders = async () => {
+  // 물품 조회
+  const loadOrders = async () => {
     if(role === "EMPLOYEE") {
       try {
         const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
@@ -107,11 +113,11 @@ export default function Home() {
     }
   }
 
-  // 처음 페이지 로드 시, 조회 | 모달이 닫히면 부서 요청 물품 다시 조회
+  // 처음 페이지 로드 시, 조회 | 모달이 닫히면 부서 요청 물품 조회
   React.useEffect(() => {
     setSpinnerShow(true);
     if((orderModalShow === false && editModalShow === false)) {
-      reloadOrders();
+      loadOrders();
     }
     setSpinnerShow(false);
   },[orderModalShow, editModalShow]);

@@ -18,7 +18,6 @@ interface Product {
   quantity: number | string;
 }
 
-// 사원 페이지
 export default function Management() {
 
   return (

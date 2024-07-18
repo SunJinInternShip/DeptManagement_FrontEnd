@@ -80,7 +80,6 @@ export default function Search() {
             Authorization: `Bearer ${accessToken}`
           }
         });
-        console.log(res);
         setOrderData(res.data);
       } catch (error) {
         console.log(error);
