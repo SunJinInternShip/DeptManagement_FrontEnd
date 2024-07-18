@@ -41,7 +41,7 @@ export default function Search() {
   const [deptData, setDeptData] = React.useState<any>([]);
   const [memberData, setMemberData] = React.useState<any>([]);
 
-  // 
+  // 데이터 조회
   const searchToDB = async () => {
     const oStatus = requirement.statusName === "전체" ? null : requirement.statusId;
     const uId = requirement.userName === "전체" ? null : requirement.userId;
@@ -80,6 +80,7 @@ export default function Search() {
             Authorization: `Bearer ${accessToken}`
           }
         });
+        console.log(res);
         setOrderData(res.data);
       } catch (error) {
         console.log(error);
@@ -104,9 +105,11 @@ export default function Search() {
   }
 
   const handleSelectDept = (e: any) => {
+    const array: any[] = e.split(" "); // [deptId, deptName1, deptName2]
     setRequirement((requirement: Requirement) => ({
       ...requirement,
-      deptId: e
+      deptId: array[0],
+      deptName: array[1] === "전체" ? array[1] : `${array[1]} ${array[2]}`
     }));
   };
 
@@ -153,9 +156,41 @@ export default function Search() {
       }
       loadDeptAndUserInfo();
     }
+    else if(role === "CENTERDIRECTOR") {
+      const loadDeptAndUserInfo = async () => {
+        try {
+          const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/centerdirector/department`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          });
+          let dData: Array<any> = [];
+          let mData: Array<any> = [];
+          res.data.forEach((e1: any) => {
+            dData.push({
+              deptId: e1.deptId,
+              deptName: e1.deptName
+            })
+            e1.members.forEach((e2: any) => {
+              mData.push({
+                deptId: e1.deptId,
+                memberId: e2.memberId,
+                memberName: e2.memberName
+              })
+            });
+          });
+          setMemberData(mData);
+          setDeptData(dData);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      loadDeptAndUserInfo();
+    }
   },[]);
 
   React.useEffect(() => {
+    //console.log(deptData);
     //console.log(memberData);
     //console.log(deptMemberData.arguments[0]);
     //console.log(Array.);
@@ -189,24 +224,25 @@ export default function Search() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div hidden={role !== "CENTERDIRECTOR" ? true : false}>
           부서:
-          <DropdownButton id="dropdown-basic-button" title={requirement.deptId} onSelect={handleSelectDept}>
-            <Dropdown.Item eventKey="0">전체</Dropdown.Item>
-            <Dropdown.Item eventKey="1" active={requirement.deptId === 1}>
-              Human Resources
+          <DropdownButton id="dropdown-basic-button" title={requirement.deptName} onSelect={handleSelectDept}>
+            <Dropdown.Item eventKey={`${0} 전체`} active={requirement.deptName === "전체"}>
+              전체
             </Dropdown.Item>
-            <Dropdown.Item eventKey="2" active={requirement.deptId === 2}>
-              Finance
-            </Dropdown.Item>
+            {Object.entries(deptData).map(([k,v]: any) => (
+              <Dropdown.Item key={k} eventKey={`${v.deptId} ${v.deptName}`}
+               active={requirement.deptName === `${v.deptName}`}>
+                {v.deptName}
+              </Dropdown.Item>
+            ))}
           </DropdownButton>
         </div>
         <div hidden={role === "EMPLOYEE" ? true : false}>
           이름:
           <DropdownButton id="dropdown-basic-button" title={requirement.userName} onSelect={handleSelectName}>
-            <Dropdown.Item eventKey="전체 전체" active={requirement.userName === "전체"}>
+            <Dropdown.Item eventKey={`${0} 전체`} active={requirement.userName === "전체"}>
               전체
             </Dropdown.Item>
             {Object.entries(memberData).map(([k,v]: any) => (
-              
               <Dropdown.Item key={k} eventKey={`${v.memberId} ${v.memberName}`}
                active={requirement.userName === `${v.memberName}`}>
                 {v.memberName}
