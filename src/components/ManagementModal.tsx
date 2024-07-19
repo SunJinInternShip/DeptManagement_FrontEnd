@@ -79,7 +79,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
       if(role === "TEAMLEADER") {
         const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/temleader/department/submit/${order.orderId}`, {
           deniedDescription: approval.deniedDescription,
-          approved: ApprovedToStr
+          isApproved: ApprovedToStr
         }, {
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -91,7 +91,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
       else if(role === "CENTERDIRECTOR") {
         const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/centerdirector/department/submit/${order.orderId}`, {
           deniedDescription: approval.deniedDescription,
-          approved: ApprovedToStr
+          isApproved: ApprovedToStr
         }, {
           headers: {
             Authorization: `Bearer ${accessToken}`
