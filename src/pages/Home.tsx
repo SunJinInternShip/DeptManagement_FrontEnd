@@ -116,7 +116,7 @@ export default function Home() {
   }
 
   React.useEffect(() => {
-    if(role === "CENTERDIRECTOR") navigate("/temp/search", { replace: true });
+    if(role === "CENTERDIRECTOR") navigate("/search", { replace: true });
   },[])
 
   // 처음 페이지 로드 시, 조회 | 모달이 닫히면 부서 요청 물품 조회

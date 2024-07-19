@@ -76,18 +76,18 @@ export default function TopBar() {
     <div style={styles.navbar}>
       <div style={styles.leftSection}>
         <img src="https://via.placeholder.com/40" alt="Logo" style={styles.image} />
-        <button onClick={() => {navigate("/temp/home")}}
+        <button onClick={() => {navigate("/home")}}
           style={styles.button}
           hidden={role === "CENTERDIRECTOR"}
         >
           홈
         </button>
-        <button onClick={() => {navigate("/temp/search")}}
+        <button onClick={() => {navigate("/search")}}
           style={styles.button}
         >
           조회
         </button>
-        <button onClick={() => {navigate("/temp/management")}}
+        <button onClick={() => {navigate("/management")}}
           style={styles.button}
           hidden={role === "EMPLOYEE"}
         >

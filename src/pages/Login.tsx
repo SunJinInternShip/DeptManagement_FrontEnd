@@ -42,7 +42,7 @@ export default function Login() {
       });
       await SetUserInfo(res.data.accessToken, res.data.refreshToken, res.data.userName, res.data.role);
       alert(`${GetUserInfo().name}님 환영합니다`);
-      GetUserInfo().role === "CENTERDIRECTOR" ? navigate("/temp/search", { replace: true }) : navigate("/temp/home", { replace: true });
+      GetUserInfo().role === "CENTERDIRECTOR" ? navigate("/search", { replace: true }) : navigate("/home", { replace: true });
     } catch (error) {
       console.log(error);
     }
@@ -52,7 +52,7 @@ export default function Login() {
   // 로그인한 유저가 없다면 기본 페이지(로그인 페이지)로
   React.useEffect(() => {
     if(accessToken !== null) {
-      role === "CENTERDIRECTOR" ? navigate("/temp/search", { replace: true }) : navigate("/temp/home", { replace: true });
+      role === "CENTERDIRECTOR" ? navigate("/search", { replace: true }) : navigate("/home", { replace: true });
     }
   },[])
 
