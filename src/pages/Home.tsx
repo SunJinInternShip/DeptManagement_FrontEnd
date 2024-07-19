@@ -35,6 +35,8 @@ export default function Home() {
   });
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false)
 
+  const navigate = useNavigate();
+
   // 모달이 닫힐 때
   const handleClose = () => {
     setOrderModalShow(false);
@@ -112,6 +114,10 @@ export default function Home() {
       }
     }
   }
+
+  React.useEffect(() => {
+    if(role === "CENTERDIRECTOR") navigate("/temp/search", { replace: true });
+  },[])
 
   // 처음 페이지 로드 시, 조회 | 모달이 닫히면 부서 요청 물품 조회
   React.useEffect(() => {
