@@ -13,14 +13,20 @@ import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
 import ReceiptModal from '../components/ReceiptModal';
 import TopBar from '../components/TopBar';
 import qs from 'qs';
+import Accordion from 'react-bootstrap/Accordion';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 interface Requirement {
-  statusId: string;
-  statusName: string;
   userId: number;
   userName: string;
   deptId: number;
   deptName: string;
+  reqStatus: Status[];
+}
+
+interface Status {
+  statusId: string;
+  statusName: string;
 }
 
 // 사원 페이지
@@ -31,25 +37,46 @@ export default function Search() {
   const [orderData, setOrderData] = React.useState<Array<any>>([]);
   const [requirement, setRequirement] = React.useState<Requirement>({
     // Id = 백엔드 | Name = 프론트
-    statusId: "전체",
-    statusName: "전체",
     userId: 0,
     userName: "전체",
     deptId: 0,
-    deptName: "전체"
+    deptName: "전체",
+    reqStatus: [
+      {
+        statusId: "first",
+        statusName: "1차 처리중"
+      },
+      {
+        statusId: "second",
+        statusName: "2차 처리중"
+      },
+      {
+        statusId: "approve",
+        statusName: "승인"
+      },
+      {
+        statusId: "denied",
+        statusName: "반려"
+      }
+    ]
   })
   const [deptData, setDeptData] = React.useState<any>([]);
   const [memberData, setMemberData] = React.useState<any>([]);
 
   // 데이터 조회
   const searchToDB = async () => {
-    const oStatus = requirement.statusName === "전체" ? null : requirement.statusId;
+    const oStatus = Object.entries(requirement.reqStatus).map(([k,v]) => (v.statusId))
     const uId = requirement.userName === "전체" ? null : requirement.userId;
     const dId = requirement.deptName === "전체" ? null : requirement.deptId;
 
+    if(oStatus.length === 0) {
+      alert("하나 이상의 [처리 현황]을 선택해주세요.")
+      return
+    }
+
     let obj: Object = {}
 
-    if(oStatus !== null) obj = {...obj, status: oStatus}
+    obj = {...obj, status: oStatus}
     if(uId !== null) obj = {...obj, member: uId}
     if(dId !== null) obj = {...obj, department: dId}
   
@@ -58,7 +85,7 @@ export default function Search() {
         const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
           params: obj,
           paramsSerializer: params => {
-            return qs.stringify(params)
+            return qs.stringify(params, { arrayFormat: 'repeat' })
           },
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -74,7 +101,7 @@ export default function Search() {
         const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/department/details`, {
           params: obj,
           paramsSerializer: params => {
-            return qs.stringify(params)
+            return qs.stringify(params, { arrayFormat: 'repeat' })
           },
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -90,13 +117,12 @@ export default function Search() {
         const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/centerdirector/department/details`, {
           params: obj,
           paramsSerializer: params => {
-            return qs.stringify(params)
+            return qs.stringify(params, { arrayFormat: 'repeat' })
           },
           headers: {
             Authorization: `Bearer ${accessToken}`
           }
         });
-        console.log(res.data);
         setOrderData(res.data);
       } catch (error) {
         console.log(error);
@@ -104,6 +130,7 @@ export default function Search() {
     }
   }
 
+  // 부서 선택
   const handleSelectDept = (e: any) => {
     const array: any[] = e.split(" "); // [deptId, deptName1, deptName2]
     setRequirement((requirement: Requirement) => ({
@@ -113,24 +140,92 @@ export default function Search() {
     }));
   };
 
+  // 이름 선택
   const handleSelectName = (e: any) => {
-    const array: any[] = e.split(" "); // [userId, userName]
-    setRequirement((requirement: Requirement) => ({
-      ...requirement,
-      userId: array[0],
-      userName: array[1]
-    }));
+    if(e.target.value === "전체") {
+      setRequirement((requirement: Requirement) => ({
+        ...requirement,
+        userId: 0,
+        userName: e.target.value
+      }));
+    }
+    else {
+      Object.entries(memberData).forEach(e1 => {
+        e1.forEach((e2: any) => {
+          if(e2.memberName === e.target.value) {
+            setRequirement((requirement: Requirement) => ({
+              ...requirement,
+              userId: e2.memberId,
+              userName: e2.memberName
+            }));
+          } 
+        });
+      });
+    }
   };
 
+  // 상태 선택
   const handleSelectStatus = (e: any) => {
     const array: Array<string> = e.split(" "); // [statusId, statusName1, statusName2]
-    setRequirement((requirement: Requirement) => ({
-      ...requirement,
-      statusId: array[0],
-      statusName: array[2] === "처리중" ? `${array[1]} ${array[2]}` : array[1]
-    }));
+    // 전체 선택 시
+    if(array[0] === "전체") {
+      // 이미 전부 선택되어 있으면 전체 선택 취소
+      if(requirement.reqStatus.length === 4) {
+        setRequirement((requirement: Requirement) => ({
+          ...requirement,
+          reqStatus: []
+        }));
+      }
+      // 전부 선택되어 있지 않으면 전체 선택
+      else {
+        setRequirement((requirement: Requirement) => ({
+          ...requirement,
+          reqStatus: [
+            {
+              statusId: "first",
+              statusName: "1차 처리중"
+            },
+            {
+              statusId: "second",
+              statusName: "2차 처리중"
+            },
+            {
+              statusId: "approve",
+              statusName: "승인"
+            },
+            {
+              statusId: "denied",
+              statusName: "반려"
+            }
+          ]
+        }));
+      }
+    }
+    // 그 외에 선택 시
+    else {
+      // status에 이미 있다면 삭제
+      if(requirement.reqStatus.filter(status => status.statusId === array[0]).length === 1) {
+        setRequirement((requirement: Requirement) => ({
+          ...requirement,
+          reqStatus: requirement.reqStatus.filter(status => status.statusId !== array[0])
+        }));
+      }
+      // 없다면 추가
+      else {
+        setRequirement((requirement: Requirement) => ({
+          ...requirement,
+          reqStatus: [
+              ...requirement.reqStatus, {
+                statusId: array[0],
+                statusName: array[2] === "처리중" ? `${array[1]} ${array[2]}` : array[1]
+              }
+          ]
+        }));
+      }
+    }
   };
-  
+
+  // 최초 페이지 로드 시, 데이터 조회
   React.useEffect(() => {
     searchToDB();
     if(role === "TEAMLEADER") {
@@ -192,59 +287,77 @@ export default function Search() {
   return (
     <div>
       <TopBar/>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div hidden={role !== "CENTERDIRECTOR" ? true : false}>
-          부서:
-          <DropdownButton id="dropdown-basic-button" title={requirement.deptName} onSelect={handleSelectDept}>
-            <Dropdown.Item eventKey={`${0} 전체`} active={requirement.deptName === "전체"}>
-              전체
-            </Dropdown.Item>
-            {Object.entries(deptData).map(([k,v]: any) => (
-              <Dropdown.Item key={k} eventKey={`${v.deptId} ${v.deptName}`}
-               active={requirement.deptName === `${v.deptName}`}>
-                {v.deptName}
-              </Dropdown.Item>
+      <Accordion style={{ display: 'flex', justifyContent: 'center' }}>
+        <Accordion.Item eventKey='0' style={{width: '90%'}}>
+          <Accordion.Header>
+            <span style={{ border: '1px solid black', borderRadius: '10px', padding: '5px', marginRight: '20px' }}>{requirement.deptName}</span>
+            <span style={{ border: '1px solid black', borderRadius: '10px', padding: '5px', marginRight: '20px' }}>{requirement.userName}</span>
+            {Object.entries(requirement.reqStatus).map(([k, v]) => (
+              <span key={k} style={{ border: '1px solid black', borderRadius: '10px', padding: '5px', marginRight: '20px' }}>
+                {v.statusName}
+              </span>
             ))}
-          </DropdownButton>
-        </div>
-        <div hidden={role === "EMPLOYEE" ? true : false}>
-          이름:
-          <DropdownButton id="dropdown-basic-button" title={requirement.userName} onSelect={handleSelectName}>
-            <Dropdown.Item eventKey={`${0} 전체`} active={requirement.userName === "전체"}>
-              전체
-            </Dropdown.Item>
-            {Object.entries(memberData).map(([k,v]: any) => (
-              <Dropdown.Item key={k} eventKey={`${v.memberId} ${v.memberName}`}
-               active={requirement.userName === `${v.memberName}`}>
-                {v.memberName}
-              </Dropdown.Item>
-            ))}
-          </DropdownButton>
-        </div>
-        <div>
-          처리 현황:
-          <DropdownButton id="dropdown-basic-button" title={requirement.statusName} onSelect={handleSelectStatus}>
-            <Dropdown.Item eventKey="전체 전체" active={requirement.statusName === "전체"}>
-              전체
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="first 1차 처리중" active={requirement.statusName === "1차 처리중"}>
-              1차 처리중
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="second 2차 처리중" active={requirement.statusName === "2차 처리중"}>
-              2차 처리중
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="approve 승인" active={requirement.statusName === "승인"}>
-              승인
-            </Dropdown.Item>
-            <Dropdown.Item eventKey="denied 반려" active={requirement.statusName === "반려"}>
-              반려
-            </Dropdown.Item>
-          </DropdownButton>
-        </div>
-        <div>
-          <Button onClick={searchToDB}>조회</Button>
-        </div>
-      </div>
+          </Accordion.Header>
+
+          <Accordion.Body hidden={role !== "CENTERDIRECTOR" ? true : false}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <InputGroup>
+                <InputGroup.Text>부서</InputGroup.Text>
+                <Button onClick={() => handleSelectDept('전체 전체')}>전체</Button>
+                {Object.entries(deptData).map(([k,v]: any) => (
+                  <Button key={k} style={{ background: '#FFFFFF', color: '#0D6EFD'}}
+                   onClick={() => handleSelectDept(`${v.deptId} ${v.deptName}`)}>
+                    {v.deptName}
+                  </Button>
+                ))}
+              </InputGroup>
+            </div>
+          </Accordion.Body>
+          <Accordion.Body hidden={role === "EMPLOYEE" ? true : false}>
+            <div>
+              <InputGroup>
+                <InputGroup.Text>사원</InputGroup.Text>
+                <Form.Select onChange={handleSelectName}>
+                  <option>
+                    전체
+                  </option>
+                  {Object.entries(memberData).map(([k,v]: any) => (
+                    <option key={k}>
+                      {v.memberName}
+                    </option>
+                  ))}
+                </Form.Select>
+
+              </InputGroup>
+            </div>
+          </Accordion.Body>
+          <Accordion.Body>
+            <div>
+              <InputGroup>
+                <InputGroup.Text>처리 현황</InputGroup.Text>
+                <Button
+                 style={requirement.reqStatus.length === 4 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
+                 onClick={() => {handleSelectStatus('전체')}}>전체</Button>
+                <Button
+                 style={requirement.reqStatus.filter(status => status.statusId === "first").length === 1 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
+                 onClick={() => {handleSelectStatus('first 1차 처리중')}}>1차 처리중</Button>
+                <Button
+                 style={requirement.reqStatus.filter(status => status.statusId === "second").length === 1 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
+                 onClick={() => {handleSelectStatus('second 2차 처리중')}}>2차 처리중</Button>
+                <Button
+                 style={requirement.reqStatus.filter(status => status.statusId === "approve").length === 1 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
+                 onClick={() => {handleSelectStatus('approve 승인')}}>승인</Button>
+                <Button
+                 style={requirement.reqStatus.filter(status => status.statusId === "denied").length === 1 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
+                 onClick={() => {handleSelectStatus('denied 반려')}}>반려</Button>
+              </InputGroup>
+            </div>
+          </Accordion.Body>
+          <Accordion.Body>
+            <Button onClick={searchToDB}>조회</Button>
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Table bordered hover style={{ width: '90%' }}>
           <thead>
@@ -271,7 +384,7 @@ export default function Search() {
                 <td>{v.totalPrice}</td>
                 <td>{v.description}</td>
                 <td>{v.orderStatus}</td>
-                <td>{v.rejectionDescription}</td>
+                <td>{v.deniedDescription}</td>
                 <td>{v.createdAt}</td>
                 <td>{v.procDate}</td>
               </tr>
