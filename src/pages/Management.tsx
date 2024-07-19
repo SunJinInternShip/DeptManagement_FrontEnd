@@ -92,36 +92,7 @@ export default function Management() {
 
   // 나에게 상신된 목록 조회
   React.useEffect(() => {
-    if(role === "TEAMLEADER") {
-      const loadOrders = async () => {
-        try {
-          const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/department/progress`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          });
-          setOrderData(res.data);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      loadOrders();
-    }
-    else if(role === "CENTERDIRECTOR") {
-      const loadOrders = async () => {
-        try {
-          const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/centerdirector/department/progress`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          });
-          setOrderData(res.data);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      loadOrders();
-    }
+    loadOrders();
   },[])
 
   return (
