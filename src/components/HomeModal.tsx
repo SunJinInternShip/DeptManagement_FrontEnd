@@ -179,7 +179,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
 
         <Modal.Body className="d-flex flex-column align-items-center">
           <Form style={{display: 'flex', justifyContent: 'space-between'}} onSubmit={handleSubmit} encType='multipart/form-data'>
-            <Image rounded
+            <Image rounded style={{ maxHeight: "50%", maxWidth: "50%"}}
              src={receipt.file ? receipt.preview?.toString() : blankReceipt.preview?.toString()}/>
             <Form.Group>
               <Form.Control type="file" placeholder='img' name='file'
@@ -378,7 +378,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
         <Modal.Body className="d-flex flex-column align-items-center">
           <Form style={{display: 'flex', justifyContent: 'space-between'}}
            onSubmit={handleSubmit}>
-            <Image rounded
+            <Image rounded style={{ maxHeight: "50%", maxWidth: "50%"}}
              src={newReceipt.file ? newReceipt.preview?.toString() : currentReceipt.preview?.toString()}/>
             <Form.Group>
               <Form.Control type="file" placeholder='img' name='file'
