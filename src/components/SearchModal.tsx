@@ -5,6 +5,8 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { GetUserInfo } from './JWTToken';
 import LoadingSpinner from './LoadingSpinner';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Button from 'react-bootstrap/Button';
 
 interface Receipt {
   file: File | Blob | null;
@@ -12,21 +14,25 @@ interface Receipt {
 }
 
 interface Order {
-  account: string;
-  bName: string;
-  price: number | string;
-  detail: string;
+  applicant: string | null;
+  applicantDeptName: string | null;
+  createdAt: string | null;
+  description: string | null;
+  orderId: number | null;
+  orderStatus: string | null;
+  productType: string | null;
+  storeName: string | null;
+  totalPrice: number | null;
 }
 
 
-export default function SearchModal(modalShow: boolean, handleClose: any, orderInfo: Order, orderId: number) {
+export default function SearchModal(modalShow: boolean, handleClose: any, order: Order) {
   const accessToken = GetUserInfo().accessToken;
 
   const [receipt, setReceipt] = React.useState<Receipt>({
     file: null,
     preview: null
   });
-  const [order, setOrder] = React.useState<Order>(orderInfo)
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
   return (
@@ -36,20 +42,39 @@ export default function SearchModal(modalShow: boolean, handleClose: any, orderI
 
         <Modal.Body className="d-flex flex-column align-items-center">
           <Form style={{display: 'flex', justifyContent: 'space-between'}}>
-            <Image rounded/>
+            <div>
+              <Image rounded/>
+              {order.orderStatus}
+            </div>
             <Form.Group>
-              <Form.Check
-               type='radio'
-               name='g1'
-              />
-              <Form.Check
-               type='radio'
-               name='g1'
-              />
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>사원</InputGroup.Text>
+                <Form.Control value={`${order.applicantDeptName} ${order.applicant}`} readOnly/>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
+                <Form.Control value={`${order.description}`} readOnly/>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>
+                <Form.Control value={`${order.storeName}`} readOnly/>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>비용</InputGroup.Text>
+                <Form.Control value={`${order.totalPrice}`} readOnly/>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>적요</InputGroup.Text>
+                <Form.Control value={`${order.description}`} readOnly/>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>신청일</InputGroup.Text>
+                <Form.Control value={`${order.createdAt}`} readOnly/>
+              </InputGroup>
             </Form.Group>
           </Form>
         </Modal.Body>
       </Modal>
     </div>
-  );
+  )
 }

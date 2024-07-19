@@ -15,6 +15,7 @@ import TopBar from '../components/TopBar';
 import qs from 'qs';
 import Accordion from 'react-bootstrap/Accordion';
 import InputGroup from 'react-bootstrap/InputGroup';
+import SearchModal from '../components/SearchModal';
 
 interface Requirement {
   userId: number;
@@ -27,6 +28,18 @@ interface Requirement {
 interface Status {
   statusId: string;
   statusName: string;
+}
+
+interface Order {
+  applicant: string | null;
+  applicantDeptName: string | null;
+  createdAt: string | null;
+  description: string | null;
+  orderId: number | null;
+  orderStatus: string | null;
+  productType: string | null;
+  storeName: string | null;
+  totalPrice: number | null;
 }
 
 // 사원 페이지
@@ -62,6 +75,18 @@ export default function Search() {
   })
   const [deptData, setDeptData] = React.useState<any>([]);
   const [memberData, setMemberData] = React.useState<any>([]);
+  const [modalShow, setModalShow] = React.useState<boolean>(false);
+  const [order, setOrder] = React.useState<Order>({
+    applicant: '',
+    applicantDeptName: '',
+    createdAt: '',
+    description: '',
+    orderId: 0,
+    orderStatus: '',
+    productType: '',
+    storeName: '',
+    totalPrice: 0
+  });
 
   // 데이터 조회
   const searchToDB = async () => {
@@ -129,6 +154,17 @@ export default function Search() {
       }
     }
   }
+
+  // 상세 조회 모달 열기
+  const handleClick = (o: Order) => {
+    setOrder(o);
+    setModalShow(true);
+  }
+
+  // 모달이 닫힐 때
+  const handleClose = () => {
+    setModalShow(false);
+  };
 
   // 부서 선택
   const handleSelectDept = (e: any) => {
@@ -392,7 +428,7 @@ export default function Search() {
           </thead>
           <tbody>
             {Object.entries(orderData).reverse().map(([k,v]) => (
-              <tr key={k}>
+              <tr key={k} onClick={() => handleClick(v)}>
                 <td>{v.applicantDeptName}</td>
                 <td>{v.applicant}</td>
                 <td>{v.productType}</td>
@@ -407,6 +443,7 @@ export default function Search() {
             ))}
           </tbody>
         </Table>
+        {SearchModal(modalShow, handleClose, order)}
       </div>
     </div>
   );
