@@ -115,6 +115,7 @@ export default function Home() {
     }
   }
 
+  // 관리자 홈 페이지 제한
   React.useEffect(() => {
     if(role === "CENTERDIRECTOR") navigate("/search", { replace: true });
   },[])

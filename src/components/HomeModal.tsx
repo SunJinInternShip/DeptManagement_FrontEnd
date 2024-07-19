@@ -22,6 +22,7 @@ interface Order {
 // 홈 - 추가 버튼
 export function HomeOrder(modalShow: boolean, handleClose: any) {
   const accessToken = GetUserInfo().accessToken;
+  const role = GetUserInfo().role;
 
   const [receipt, setReceipt] = React.useState<Receipt>({
     file: null,
@@ -99,8 +100,11 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     formData.append("image", img);
     formData.append("request", blob);
     
+    let url: string;
+    url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/orders` : `${process.env.REACT_APP_SERVER_URL}/teamleader/orders`;
+
     try {
-      const res = await axios.post(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, formData,
+      const res = await axios.post(url, formData,
       {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -208,6 +212,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
 
 export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order, orderId: number) {
   const accessToken = GetUserInfo().accessToken;
+  const role = GetUserInfo().role;
 
   const [currentReceipt, setCurrentReceipt] = React.useState<Receipt>({
     file: null,
@@ -343,6 +348,9 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
           preview: reader.result
         }));
       };
+
+      let url: string;
+      url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/img/${orderId}` : `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${orderId}`;
 
       const loadImg = async () => {
         try {
