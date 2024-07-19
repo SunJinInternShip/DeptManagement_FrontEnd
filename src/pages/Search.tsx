@@ -132,12 +132,26 @@ export default function Search() {
 
   // 부서 선택
   const handleSelectDept = (e: any) => {
-    const array: any[] = e.split(" "); // [deptId, deptName1, deptName2]
-    setRequirement((requirement: Requirement) => ({
-      ...requirement,
-      deptId: array[0],
-      deptName: array[1] === "전체" ? array[1] : `${array[1]} ${array[2]}`
-    }));
+    if(e.target.value === "전체") {
+      setRequirement((requirement: Requirement) => ({
+        ...requirement,
+        deptId: 0,
+        deptName: e.target.value
+      }));
+    }
+    else {
+      Object.entries(deptData).forEach(e1 => {
+        e1.forEach((e2: any) => {
+          if(e2.deptName === e.target.value) {
+            setRequirement((requirement: Requirement) => ({
+              ...requirement,
+              deptId: e2.deptId,
+              deptName: e2.deptName
+            }));
+          }
+        });
+      });
+    }
   };
 
   // 이름 선택
@@ -300,16 +314,19 @@ export default function Search() {
           </Accordion.Header>
 
           <Accordion.Body hidden={role !== "CENTERDIRECTOR" ? true : false}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div>
               <InputGroup>
                 <InputGroup.Text>부서</InputGroup.Text>
-                <Button onClick={() => handleSelectDept('전체 전체')}>전체</Button>
-                {Object.entries(deptData).map(([k,v]: any) => (
-                  <Button key={k} style={{ background: '#FFFFFF', color: '#0D6EFD'}}
-                   onClick={() => handleSelectDept(`${v.deptId} ${v.deptName}`)}>
-                    {v.deptName}
-                  </Button>
-                ))}
+                <Form.Select onChange={handleSelectDept}>
+                  <option>
+                    전체
+                  </option>
+                  {Object.entries(deptData).map(([k,v]: any) => (
+                    <option key={k}>
+                      {v.deptName}
+                    </option>
+                  ))}
+                </Form.Select>
               </InputGroup>
             </div>
           </Accordion.Body>
@@ -327,7 +344,6 @@ export default function Search() {
                     </option>
                   ))}
                 </Form.Select>
-
               </InputGroup>
             </div>
           </Accordion.Body>
@@ -336,7 +352,7 @@ export default function Search() {
               <InputGroup>
                 <InputGroup.Text>처리 현황</InputGroup.Text>
                 <Button
-                 style={requirement.reqStatus.length === 4 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
+                 style={requirement.reqStatus.length === 4 ? {} : { background: '#FFFFFF', color: '#0D6EFD' }}
                  onClick={() => {handleSelectStatus('전체')}}>전체</Button>
                 <Button
                  style={requirement.reqStatus.filter(status => status.statusId === "first").length === 1 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
