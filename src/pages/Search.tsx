@@ -340,11 +340,17 @@ export default function Search() {
       <Accordion style={{ display: 'flex', justifyContent: 'center' }}>
         <Accordion.Item eventKey='0' style={{width: '90%'}}>
           <Accordion.Header>
-            <span style={{ border: '1px solid black', borderRadius: '10px', padding: '5px', marginRight: '20px' }}>{requirement.deptName}</span>
-            <span style={{ border: '1px solid black', borderRadius: '10px', padding: '5px', marginRight: '20px' }}>{requirement.userName}</span>
+            <span hidden={role !== "CENTERDIRECTOR" ? true : false}
+             style={{ border: '1px solid #0D6EFD', borderRadius: '10px', padding: '5px', marginRight: '20px', background: '#0D6EFD', color: '#FFFFFF' }}>
+              부서명: {requirement.deptName}
+            </span>
+            <span hidden={role === "EMPLOYEE" ? true : false}
+             style={{ border: '1px solid #0D6EFD', borderRadius: '10px', padding: '5px', marginRight: '20px', background: '#0D6EFD', color: '#FFFFFF'  }}>
+              사원명: {requirement.userName}
+            </span>
             {Object.entries(requirement.reqStatus).map(([k, v]) => (
-              <span key={k} style={{ border: '1px solid black', borderRadius: '10px', padding: '5px', marginRight: '20px' }}>
-                {v.statusName}
+              <span key={k} style={{ border: '1px solid #0D6EFD', borderRadius: '10px', padding: '5px', marginRight: '20px', background: '#0D6EFD', color: '#FFFFFF'  }}>
+                처리 현황: {v.statusName}
               </span>
             ))}
           </Accordion.Header>
