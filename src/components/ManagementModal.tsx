@@ -60,7 +60,6 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
       ...approval,
       approved: approved
     }));
-    console.log(e.target.checked);
   }
 
   // 모달이 열리면 이미지 조회, 닫히면 값 초기화

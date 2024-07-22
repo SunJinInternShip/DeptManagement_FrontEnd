@@ -390,9 +390,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
       };
 
       let url: string;
-      if(role === 'EMPLOYEE') url = `${process.env.REACT_APP_SERVER_URL}/employee/img/${orderId}`;
-      else if(role === 'TEAMLEADER') url = `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${orderId}`;
-      else if(role === 'CENTERDIRECTOR') url = `${process.env.REACT_APP_SERVER_URL}/centerdirector/img/${orderId}`;
+      url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/img/${orderId}` : `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${orderId}`;
 
       const loadImg = async () => {
         try {

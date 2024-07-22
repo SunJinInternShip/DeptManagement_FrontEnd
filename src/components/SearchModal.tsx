@@ -49,7 +49,9 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
           }));
         };
         let url: string;
-        url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/img/${order.orderId}` : `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${order.orderId}`;
+        if(role === 'EMPLOYEE') url = `${process.env.REACT_APP_SERVER_URL}/employee/img/${order.orderId}`;
+        else if(role === 'TEAMLEADER') url = `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${order.orderId}`;
+        else if(role === 'CENTERDIRECTOR') url = `${process.env.REACT_APP_SERVER_URL}/centerdirector/img/${order.orderId}`;
         const loadImg = async () => {
           try {
             const response: any = await axios.get(url, {
