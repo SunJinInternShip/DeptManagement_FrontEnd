@@ -172,7 +172,7 @@ export default function Home() {
   return (
     <div id='home'>
       {TopBar('home')}
-      <div className={styles.btndiv}>
+      <div className='container-sm'>
         {checkedOrders.length > 0 ?
           <button className={checkedOrders.length > 1 ? styles.disablededitbtn : styles.enablededitbtn}
            disabled={checkedOrders.length > 1 ? true : false} onClick={() => {setEditModalShow(!editModalShow)}}>수정</button>
@@ -180,7 +180,7 @@ export default function Home() {
           <button className={styles.addbtn}
            onClick={() => {setOrderModalShow(!orderModalShow)}}>추가</button>
         }
-        <button className={styles.btn}
+        <button className={checkedOrders.length > 0 ? styles.enabledsubmitbtn : styles.disabledsubmitbtn}
          disabled={checkedOrders.length > 0 ? false : true} onClick={handleClickBtn}>상신</button>
       </div>
       <div className={styles.tablediv}>

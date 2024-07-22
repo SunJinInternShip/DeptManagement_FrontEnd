@@ -1,64 +1,71 @@
-.btndiv {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .tablediv {
   display: flex;
   justify-content: center;
 }
 
-.table {
-  width: 90%;
-}
-
-.btn {
+.enabledsubmitbtn {
   padding: 10px 5%;
   margin: 20px 40px;
-  background-color: #0D6EFD;
-  color: white;
-  border: none;
+  background-color: white;
+  color: #0D6EFD;
+  border: 1px solid #0D6EFD;
   border-radius: 10px;
 }
-.btn:hover {
+.enabledsubmitbtn:hover {
   cursor: pointer;
   background-color: #0B5ED7;
+  color: white;
+  border: 1px solid #0B5ED7;
+}
+
+.disabledsubmitbtn {
+  padding: 10px 5%;
+  margin: 20px 40px;
+  background-color: white;
+  color: rgba(128, 128, 128, 0.5);
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  border-radius: 10px;
 }
 
 .enablededitbtn {
   padding: 10px 5%;
   margin: 20px 40px;
-  background-color: #FFC107;
-  border: none;
+  background-color: white;
+  color: #FFC107;
+  border: 1px solid #FFC107;
   border-radius: 10px;
 }
 
 .enablededitbtn:hover {
   cursor: pointer;
   background-color: #FFCA2C;
+  color: white;
+  border: 1px solid #FFCA2C;
 }
 
 .disablededitbtn {
   padding: 10px 5%;
   margin: 20px 40px;
-  background-color: #FFC107;
-  border: none;
+  background-color: white;
+  color: rgba(128, 128, 128, 0.5);
+  border: 1px solid rgba(128, 128, 128, 0.5);
   border-radius: 10px;
 }
 
 .addbtn {
   padding: 10px 5%;
   margin: 20px 40px;
-  background-color: #198754;
-  color: white;
-  border: none;
+  background-color: white;
+  color: #0D6EFD;
+  border: 1px solid #0D6EFD;
   border-radius: 10px;
 }
 
 .addbtn:hover {
   cursor: pointer;
-  background-color: #157347;
+  background-color: #0B5ED7;
+  color: white;
+  border: 1px solid #0B5ED7;
 }
 
 .th {
@@ -67,6 +74,7 @@
 
 .tablehead .th {
   border: 1px solid black;
+  background-color: lightgray;
 }
 
 .td {
@@ -74,7 +82,7 @@
 }
 
 .tablechecked .td {
-  background-color: rgba(13, 110, 253, 0.3);
+  background-color: rgba(13, 103, 238, 0.2);
 }
 
 .td:hover {
