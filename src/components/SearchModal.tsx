@@ -121,7 +121,7 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
               </InputGroup>
               <InputGroup>
                 <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
-                <Form.Control value={`${order.description}`} readOnly/>
+                <Form.Control value={`${order.productType}`} readOnly/>
               </InputGroup>
               <InputGroup>
                 <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>

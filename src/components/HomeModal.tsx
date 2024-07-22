@@ -3,6 +3,7 @@ import axios from 'axios';
 import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 import { GetUserInfo } from './JWTToken';
 import LoadingSpinner from './LoadingSpinner';
 import image from '../assets/blank_receipt.jpg';
@@ -33,7 +34,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     preview: null
   });
   const [order, setOrder] = React.useState<Order>({
-    account: '',
+    account: '비품',
     bName: '',
     price: '',
     detail: ''
@@ -81,6 +82,15 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
       file: img?.item(0)
     }));
   };
+
+  // 내용 변경
+  const handleSelectAccount = (e: any) => {
+    setOrder((order: Order) => ({
+      ...order,
+      account: e.target.value
+    }));
+  };
+
 
   // 물품 주문 요청
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -160,7 +170,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
         preview: null
       });
       setOrder({
-        account: '',
+        account: '비품',
         bName: '',
         price: '',
         detail: ''
@@ -186,20 +196,39 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
             <Image rounded style={{ maxHeight: "30%", maxWidth: "30%"}}
              src={receipt.file ? receipt.preview?.toString() : blankReceipt.preview?.toString()}/>
             <Form.Group>
+              
               <Form.Control type="file" placeholder='img' name='file'
                onChange={handleChangeImage}/>
-              <Form.Control type="text" placeholder='account' name='account' required
-               value={order.account}
-               onChange={handleChangeText}/>
-              <Form.Control type="text" placeholder='bName' name='bName' required
-               value={order.bName}
-               onChange={handleChangeText}/>
-              <Form.Control type="number" placeholder='price' name='price' required
-               value={order.price} min={0}
-               onChange={handleChangeText}/>
-              <Form.Control type="text" placeholder='detail' name='detail'
-               value={order.detail}
-               onChange={handleChangeText}/>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
+                <Form.Select onChange={handleSelectAccount}>
+                  <option>비품</option>
+                  <option>간식</option>
+                  <option>식비</option>
+                  <option>일반 경비</option>
+                  <option>접대비</option>
+                  <option>교통비</option>
+                  <option>기타</option>
+                </Form.Select>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>
+                <Form.Control type="text" placeholder='bName' name='bName' required
+                 value={order.bName}
+                 onChange={handleChangeText}/>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>비용</InputGroup.Text>
+                <Form.Control type="number" placeholder='price' name='price' required
+                 value={order.price} min={0}
+                 onChange={handleChangeText}/>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>적요</InputGroup.Text>
+                <Form.Control type="text" placeholder='detail' name='detail'
+                 value={order.detail}
+                 onChange={handleChangeText}/>
+              </InputGroup>
               <Form.Control type="submit"/>
             </Form.Group>
           </Form>
@@ -240,6 +269,14 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
     setNewReceipt((receipt: Receipt) => ({
       ...receipt,
       file: img?.item(0)
+    }));
+  };
+
+  // 내용 변경
+  const handleSelectAccount = (e: any) => {
+    setOrder((order: Order) => ({
+      ...order,
+      account: e.target.value
     }));
   };
 
@@ -396,18 +433,36 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
             <Form.Group>
               <Form.Control type="file" placeholder='img' name='file'
                onChange={handleChangeImage}/>
-              <Form.Control type="text" placeholder='account' name='account' required
-               value={order.account}
-               onChange={handleChangeText}/>
-              <Form.Control type="text" placeholder='bName' name='bName' required
-               value={order.bName}
-               onChange={handleChangeText}/>
-              <Form.Control type="number" placeholder='price' name='price' required
-               value={order.price} min={0}
-               onChange={handleChangeText}/>
-              <Form.Control type="text" placeholder='detail' name='detail'
-               value={order.detail}
-               onChange={handleChangeText}/>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
+                <Form.Select onChange={handleSelectAccount}>
+                  <option>비품</option>
+                  <option>간식</option>
+                  <option>식비</option>
+                  <option>일반 경비</option>
+                  <option>접대비</option>
+                  <option>교통비</option>
+                  <option>기타</option>
+                </Form.Select>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>
+                <Form.Control type="text" placeholder='bName' name='bName' required
+                 value={order.bName}
+                 onChange={handleChangeText}/>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>비용</InputGroup.Text>
+                <Form.Control type="number" placeholder='price' name='price' required
+                 value={order.price} min={0}
+                 onChange={handleChangeText}/>
+              </InputGroup>
+              <InputGroup>
+                <InputGroup.Text style={{width: "25%"}}>적요</InputGroup.Text>
+                <Form.Control type="text" placeholder='detail' name='detail'
+                 value={order.detail}
+                 onChange={handleChangeText}/>
+              </InputGroup>
               <Form.Control type="submit" value="수정"/>
               <Form.Control type="button" value="삭제" onClick={handleDelete}/>
             </Form.Group>

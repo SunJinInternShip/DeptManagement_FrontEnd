@@ -186,7 +186,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
               </InputGroup>
               <InputGroup>
                 <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
-                <Form.Control value={`${order.description}`} readOnly/>
+                <Form.Control value={`${order.productType}`} readOnly/>
               </InputGroup>
               <InputGroup>
                 <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>
