@@ -10,6 +10,7 @@ import qs from 'qs';
 import Accordion from 'react-bootstrap/Accordion';
 import InputGroup from 'react-bootstrap/InputGroup';
 import SearchModal from '../components/SearchModal';
+import styles from '../styles/Search.module.css'
 
 interface Requirement {
   userId: number;
@@ -342,120 +343,120 @@ export default function Search() {
   return (
     <div>
       {TopBar('search')}
-      <Accordion style={{ display: 'flex', justifyContent: 'center' }}>
-        <Accordion.Item eventKey='0' style={{width: '90%'}}>
-          <Accordion.Header>
-            <span hidden={role !== "CENTERDIRECTOR" ? true : false}
-             style={{ border: '1px solid #0D6EFD', borderRadius: '10px', padding: '5px', marginRight: '20px', background: '#0D6EFD', color: '#FFFFFF' }}>
-              부서명: {requirement.deptName}
-            </span>
-            <span hidden={role === "EMPLOYEE" ? true : false}
-             style={{ border: '1px solid #0D6EFD', borderRadius: '10px', padding: '5px', marginRight: '20px', background: '#0D6EFD', color: '#FFFFFF'  }}>
-              사원명: {requirement.userName}
-            </span>
-            {Object.entries(requirement.reqStatus).map(([k, v]) => (
-              <span key={k} style={{ border: '1px solid #0D6EFD', borderRadius: '10px', padding: '5px', marginRight: '20px', background: '#0D6EFD', color: '#FFFFFF'  }}>
-                처리 현황: {v.statusName}
+      <div className="container-fluid justify-content-center">
+        <Accordion className="container-sm p-0 py-3">
+          <Accordion.Item eventKey='0'>
+            <Accordion.Header>
+              <span hidden={role !== "CENTERDIRECTOR" ? true : false} className={styles.tagspan}>
+                부서명: {requirement.deptName}
               </span>
-            ))}
-          </Accordion.Header>
+              <span hidden={role === "EMPLOYEE" ? true : false} className={styles.tagspan}>
+                사원명: {requirement.userName}
+              </span>
+              {Object.entries(requirement.reqStatus).map(([k, v]) => (
+                <span key={k} className={styles.tagspan}>
+                  처리 현황: {v.statusName}
+                </span>
+              ))}
+            </Accordion.Header>
 
-          <Accordion.Body hidden={role !== "CENTERDIRECTOR" ? true : false}>
-            <div>
-              <InputGroup>
-                <InputGroup.Text>부서</InputGroup.Text>
-                <Form.Select onChange={handleSelectDept}>
-                  <option>
-                    전체
-                  </option>
-                  {Object.entries(deptData).map(([k,v]: any) => (
-                    <option key={k}>
-                      {v.deptName}
+            <Accordion.Body hidden={role !== "CENTERDIRECTOR" ? true : false}>
+              <div>
+                <InputGroup>
+                  <InputGroup.Text>부서</InputGroup.Text>
+                  <Form.Select onChange={handleSelectDept}>
+                    <option>
+                      전체
                     </option>
-                  ))}
-                </Form.Select>
-              </InputGroup>
-            </div>
-          </Accordion.Body>
-          <Accordion.Body hidden={role === "EMPLOYEE" ? true : false}>
-            <div>
-              <InputGroup>
-                <InputGroup.Text>사원</InputGroup.Text>
-                <Form.Select onChange={handleSelectName}>
-                  <option>
-                    전체
-                  </option>
-                  {Object.entries(memberData).map(([k,v]: any) => (
-                    <option key={k}>
-                      {v.memberName}
+                    {Object.entries(deptData).map(([k,v]: any) => (
+                      <option key={k}>
+                        {v.deptName}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </InputGroup>
+              </div>
+            </Accordion.Body>
+            <Accordion.Body hidden={role === "EMPLOYEE" ? true : false}>
+              <div>
+                <InputGroup>
+                  <InputGroup.Text>사원</InputGroup.Text>
+                  <Form.Select onChange={handleSelectName}>
+                    <option>
+                      전체
                     </option>
-                  ))}
-                </Form.Select>
-              </InputGroup>
-            </div>
-          </Accordion.Body>
-          <Accordion.Body>
-            <div>
-              <InputGroup>
-                <InputGroup.Text>처리 현황</InputGroup.Text>
-                <Button
-                 style={requirement.reqStatus.length === 4 ? {} : { background: '#FFFFFF', color: '#0D6EFD' }}
-                 onClick={() => {handleSelectStatus('전체')}}>전체</Button>
-                <Button
-                 style={requirement.reqStatus.filter(status => status.statusId === "first").length === 1 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
-                 onClick={() => {handleSelectStatus('first 1차 처리중')}}>1차 처리중</Button>
-                <Button
-                 style={requirement.reqStatus.filter(status => status.statusId === "second").length === 1 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
-                 onClick={() => {handleSelectStatus('second 2차 처리중')}}>2차 처리중</Button>
-                <Button
-                 style={requirement.reqStatus.filter(status => status.statusId === "approve").length === 1 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
-                 onClick={() => {handleSelectStatus('approve 승인')}}>승인</Button>
-                <Button
-                 style={requirement.reqStatus.filter(status => status.statusId === "denied").length === 1 ? {} : { background: '#FFFFFF', color: '#0D6EFD'}}
-                 onClick={() => {handleSelectStatus('denied 반려')}}>반려</Button>
-              </InputGroup>
-            </div>
-          </Accordion.Body>
-          <Accordion.Body>
-            <Button onClick={searchToDB}>조회</Button>
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Table bordered hover className="container-sm">
-          <thead>
-            <tr>
-              <th>부서</th>
-              <th>사원</th>
-              <th>계정</th>
-              <th>상호명</th>
-              <th>비용</th>
-              <th>적요</th>
-              <th>처리 현황</th>
-              <th>비고</th>
-              <th>신청 날짜</th>
-              <th>처리 날짜</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(orderData).reverse().map(([k,v]) => (
-              <tr key={k} onClick={() => handleClick(v)}>
-                <td>{v.applicantDeptName}</td>
-                <td>{v.applicant}</td>
-                <td>{v.productType}</td>
-                <td>{v.storeName}</td>
-                <td>{v.totalPrice}</td>
-                <td>{v.description}</td>
-                <td>{v.orderStatus}</td>
-                <td>{v.deniedDescription}</td>
-                <td>{v.createdAt}</td>
-                <td>{v.procDate}</td>
+                    {Object.entries(memberData).map(([k,v]: any) => (
+                      <option key={k}>
+                        {v.memberName}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </InputGroup>
+              </div>
+            </Accordion.Body>
+            <Accordion.Body>
+              <div className='d-flex justify-content-center'>
+                <InputGroup className='d-flex justify-content-center'>
+                  <InputGroup.Text>처리 현황</InputGroup.Text>
+                  <button
+                   className={requirement.reqStatus.length === 4 ? styles.selectedbtn : styles.unselectedbtn}
+                   onClick={() => {handleSelectStatus('전체')}}>전체</button>
+                  <button
+                   className={requirement.reqStatus.filter(status => status.statusId === "first").length === 1 ? styles.selectedbtn : styles.unselectedbtn}
+                   onClick={() => {handleSelectStatus('first 1차 처리중')}}>1차 처리중</button>
+                  <button
+                   className={requirement.reqStatus.filter(status => status.statusId === "second").length === 1 ? styles.selectedbtn : styles.unselectedbtn}
+                   onClick={() => {handleSelectStatus('second 2차 처리중')}}>2차 처리중</button>
+                  <button
+                   className={requirement.reqStatus.filter(status => status.statusId === "approve").length === 1 ? styles.selectedbtn : styles.unselectedbtn}
+                   onClick={() => {handleSelectStatus('approve 승인')}}>승인</button>
+                  <button
+                   className={requirement.reqStatus.filter(status => status.statusId === "denied").length === 1 ? styles.selectedbtn : styles.unselectedbtn}
+                   onClick={() => {handleSelectStatus('denied 반려')}}>반려</button>
+                </InputGroup>
+              </div>
+            </Accordion.Body>
+            <Accordion.Body>
+              <Button onClick={searchToDB} className="container-sm">조회</Button>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+        <div className={styles.divtable}>
+          <Table bordered hover className="container-sm">
+            <thead className={styles.tablehead}>
+              <tr>
+                <th className={styles.th}>부서</th>
+                <th className={styles.th}>사원</th>
+                <th className={styles.th}>계정</th>
+                <th className={styles.th}>상호명</th>
+                <th className={styles.th}>비용</th>
+                <th className={styles.th}>적요</th>
+                <th className={styles.th}>처리 현황</th>
+                <th className={styles.th}>비고</th>
+                <th className={styles.th}>신청 날짜</th>
+                <th className={styles.th}>처리 날짜</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
-        {SearchModal(modalShow, handleClose, order)}
-        {LoadingSpinner(spinnerShow)}
+            </thead>
+            <tbody>
+              {Object.entries(orderData).reverse().map(([k,v]) => (
+                <tr key={k} onClick={() => handleClick(v)}>
+                  <td className={styles.td}>{v.applicantDeptName}</td>
+                  <td className={styles.td}>{v.applicant}</td>
+                  <td className={styles.td}>{v.productType}</td>
+                  <td className={styles.td}>{v.storeName}</td>
+                  <td className={styles.td}>{v.totalPrice}</td>
+                  <td className={styles.td}>{v.description}</td>
+                  <td className={styles.td}>{v.orderStatus}</td>
+                  <td className={styles.td}>{v.deniedDescription}</td>
+                  <td className={styles.td}>{v.createdAt}</td>
+                  <td className={styles.td}>{v.procDate}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          {SearchModal(modalShow, handleClose, order)}
+          {LoadingSpinner(spinnerShow)}
+        </div>
       </div>
     </div>
   );
