@@ -183,7 +183,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
 
         <Modal.Body className="d-flex flex-column align-items-center">
           <Form style={{display: 'flex', justifyContent: 'space-between'}} onSubmit={handleSubmit} encType='multipart/form-data'>
-            <Image rounded style={{ maxHeight: "50%", maxWidth: "50%"}}
+            <Image rounded style={{ maxHeight: "30%", maxWidth: "30%"}}
              src={receipt.file ? receipt.preview?.toString() : blankReceipt.preview?.toString()}/>
             <Form.Group>
               <Form.Control type="file" placeholder='img' name='file'
@@ -284,9 +284,12 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
 
     formData.append("image", img);
     formData.append("request", blob);
+
+    let url: string;
+    url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/${orderId}` : `${process.env.REACT_APP_SERVER_URL}/teamleader/${orderId}`;
     
     try {
-      const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/employee/${orderId}`, formData,
+      const res = await axios.patch(url, formData,
       {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -350,11 +353,13 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
       };
 
       let url: string;
-      url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/img/${orderId}` : `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${orderId}`;
+      if(role === 'EMPLOYEE') url = `${process.env.REACT_APP_SERVER_URL}/employee/img/${orderId}`;
+      else if(role === 'TEAMLEADER') url = `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${orderId}`;
+      else if(role === 'CENTERDIRECTOR') url = `${process.env.REACT_APP_SERVER_URL}/centerdirector/img/${orderId}`;
 
       const loadImg = async () => {
         try {
-          const response: any = await axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/img/${orderId}`, {
+          const response: any = await axios.get(url, {
               responseType: 'blob',
               headers: {
                 Authorization: `Bearer ${accessToken}`
@@ -386,7 +391,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
         <Modal.Body className="d-flex flex-column align-items-center">
           <Form style={{display: 'flex', justifyContent: 'space-between'}}
            onSubmit={handleSubmit}>
-            <Image rounded style={{ maxHeight: "50%", maxWidth: "50%"}}
+            <Image rounded style={{ maxHeight: "30%", maxWidth: "30%"}}
              src={newReceipt.file ? newReceipt.preview?.toString() : currentReceipt.preview?.toString()}/>
             <Form.Group>
               <Form.Control type="file" placeholder='img' name='file'

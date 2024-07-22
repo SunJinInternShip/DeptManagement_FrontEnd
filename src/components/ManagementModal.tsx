@@ -35,6 +35,11 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
   const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
+  const [receipt, setReceipt] = React.useState<Receipt>({
+    file: null,
+    preview: null
+  });
+
   const [approval, setApproval] = React.useState<Approval>({
     deniedDescription: "",
     approved: true
@@ -58,10 +63,49 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
     console.log(e.target.checked);
   }
 
-  // 모달이 닫히면 값 초기화
+  // 모달이 열리면 이미지 조회, 닫히면 값 초기화
   React.useEffect(() => {
     //setSpinnerShow(true);
-    if(modalShow === false) {
+    if(modalShow === true) {
+      if(order.orderId !== undefined) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setReceipt((receipt: Receipt) => ({
+            ...receipt,
+            preview: reader.result
+          }));
+        };
+        let url: string;
+        url = role === 'TEAMLEADER' ? `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${order.orderId}` : `${process.env.REACT_APP_SERVER_URL}/centerdirector/img/${order.orderId}`;
+        const loadImg = async () => {
+          try {
+            const response: any = await axios.get(url, {
+                responseType: 'blob',
+                headers: {
+                  Authorization: `Bearer ${accessToken}`
+                }
+            });
+            setReceipt((receipt: Receipt) => ({
+              ...receipt,
+              file: response.data
+            }));
+            reader.readAsDataURL(response.data);
+          } catch (error) {
+            console.log(error);
+            setReceipt({
+              file: null,
+              preview: null
+            });
+          }
+        }
+        loadImg()
+      }
+    }
+    else {
+      setReceipt({
+        file: null,
+        preview: null
+      });
       setApproval({
         deniedDescription: "",
         approved: true
@@ -70,6 +114,29 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
     //setSpinnerShow(false);
   },[modalShow])
 
+  // 이미지 미리 보기
+  React.useEffect(() => {
+    //setSpinnerShow(true);
+    if(receipt.file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setReceipt((receipt: Receipt) => ({
+          ...receipt,
+          preview: reader.result
+        }));
+      };
+      reader.readAsDataURL(receipt.file);
+    }
+    else if(receipt.file === null) {
+      setReceipt((receipt: Receipt) => ({
+        ...receipt,
+        preview: null
+      }));
+    }
+    //setSpinnerShow(false);
+  },[receipt.file])
+
+  // 승인 및 반려 처리
   const handleClick = async () => {
     if(approval.approved === false && approval.deniedDescription === "") {
       alert("반려 사유를 입력해주세요.")
@@ -105,35 +172,36 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
 
   return (
     <div style={{ display: 'block', position: 'initial' }}>
-      <Modal show={modalShow} onHide={handleClose} animation centered>
+      <Modal show={modalShow} onHide={handleClose} animation centered size="lg">
         <Modal.Header closeButton/>
 
         <Modal.Body className="d-flex flex-column align-items-center">
           <Form style={{display: 'flex', justifyContent: 'space-between'}}>
-            <Image rounded/>
+            <Image rounded style={{ maxHeight: "30%", maxWidth: "30%"}}
+             src={receipt.preview?.toString()}/>
             <Form.Group>
               <InputGroup>
-                <InputGroup.Text>사원</InputGroup.Text>
+                <InputGroup.Text style={{width: "25%"}}>사원</InputGroup.Text>
                 <Form.Control value={`${order.applicantDeptName} ${order.applicant}`} readOnly/>
               </InputGroup>
               <InputGroup>
-                <InputGroup.Text>계정</InputGroup.Text>
+                <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
                 <Form.Control value={`${order.description}`} readOnly/>
               </InputGroup>
               <InputGroup>
-                <InputGroup.Text>상호명</InputGroup.Text>
+                <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>
                 <Form.Control value={`${order.storeName}`} readOnly/>
               </InputGroup>
               <InputGroup>
-                <InputGroup.Text>비용</InputGroup.Text>
+                <InputGroup.Text style={{width: "25%"}}>비용</InputGroup.Text>
                 <Form.Control value={`${order.totalPrice}`} readOnly/>
               </InputGroup>
               <InputGroup>
-                <InputGroup.Text>적요</InputGroup.Text>
+                <InputGroup.Text style={{width: "25%"}}>적요</InputGroup.Text>
                 <Form.Control value={`${order.description}`} readOnly/>
               </InputGroup>
               <InputGroup>
-                <InputGroup.Text>신청일</InputGroup.Text>
+                <InputGroup.Text style={{width: "25%"}}>신청일</InputGroup.Text>
                 <Form.Control value={`${order.createdAt}`} readOnly/>
               </InputGroup>
             </Form.Group>
