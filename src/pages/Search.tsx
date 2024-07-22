@@ -81,6 +81,7 @@ export default function Search() {
     storeName: '',
     totalPrice: 0
   });
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false)
 
   // 데이터 조회
   const searchToDB = async () => {
@@ -93,6 +94,7 @@ export default function Search() {
       return
     }
 
+    setSpinnerShow(true);
     let obj: Object = {}
 
     obj = {...obj, status: oStatus}
@@ -147,6 +149,7 @@ export default function Search() {
         console.log(error);
       }
     }
+    setSpinnerShow(false);
   }
 
   // 상세 조회 모달 열기
@@ -162,6 +165,7 @@ export default function Search() {
 
   // 부서 선택
   const handleSelectDept = (e: any) => {
+    setSpinnerShow(true);
     if(e.target.value === "전체") {
       setRequirement((requirement: Requirement) => ({
         ...requirement,
@@ -182,10 +186,12 @@ export default function Search() {
         });
       });
     }
+    setSpinnerShow(false);
   };
 
   // 이름 선택
   const handleSelectName = (e: any) => {
+    setSpinnerShow(true);
     if(e.target.value === "전체") {
       setRequirement((requirement: Requirement) => ({
         ...requirement,
@@ -206,10 +212,12 @@ export default function Search() {
         });
       });
     }
+    setSpinnerShow(false);
   };
 
   // 상태 선택
   const handleSelectStatus = (e: any) => {
+    setSpinnerShow(true);
     const array: Array<string> = e.split(" "); // [statusId, statusName1, statusName2]
     // 전체 선택 시
     if(array[0] === "전체") {
@@ -267,10 +275,12 @@ export default function Search() {
         }));
       }
     }
+    setSpinnerShow(false);
   };
 
   // 최초 페이지 로드 시, 데이터 조회
   React.useEffect(() => {
+    setSpinnerShow(true);
     searchToDB();
     if(role === "TEAMLEADER") {
       const loadDeptAndUserInfo = async () => {
@@ -326,6 +336,7 @@ export default function Search() {
       }
       loadDeptAndUserInfo();
     }
+    setSpinnerShow(false);
   },[]);
 
   return (
@@ -411,7 +422,7 @@ export default function Search() {
         </Accordion.Item>
       </Accordion>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Table bordered hover style={{ width: '90%' }}>
+        <Table bordered hover className="container-sm">
           <thead>
             <tr>
               <th>부서</th>
@@ -444,6 +455,7 @@ export default function Search() {
           </tbody>
         </Table>
         {SearchModal(modalShow, handleClose, order)}
+        {LoadingSpinner(spinnerShow)}
       </div>
     </div>
   );
