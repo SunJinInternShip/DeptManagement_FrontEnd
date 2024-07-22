@@ -37,23 +37,20 @@ export default function TopBar(url: string) {
     <div className={styles.navbar}>
       <div className={styles.leftSection}>
         <img src={logo} alt="Logo" className={styles.image} />
-        <Button variant={url === "home" ? "primary" : "outline-primary"}
-         onClick={() => {navigate("/home")}}
-         className={styles.button}
+        <button onClick={() => {navigate("/home")}}
+         className={url === "home" ? styles.selectedtab : styles.unselectedtab}
          hidden={role === "CENTERDIRECTOR"}>
           홈
-        </Button>
-        <Button variant={url === "search" ? "primary" : "outline-primary"}
-         onClick={() => {navigate("/search")}}
-         className={styles.button}>
+        </button>
+        <button onClick={() => {navigate("/search")}}
+         className={url === "search" ? styles.selectedtab : styles.unselectedtab}>
           조회
-        </Button>
-        <Button variant={url === "management" ? "primary" : "outline-primary"}
-         onClick={() => {navigate("/management")}}
-         className={styles.button}
+        </button>
+        <button onClick={() => {navigate("/management")}}
+         className={url === "management" ? styles.selectedtab : styles.unselectedtab}
          hidden={role === "EMPLOYEE"}>
           승인 및 반려
-        </Button>
+        </button>
       </div>
       <div className={styles.rightSection}>
         <span className={styles.text}>{role} | {userName}</span>

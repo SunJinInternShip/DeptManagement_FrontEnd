@@ -33,6 +33,28 @@
   margin: 0 20px;
 }
 
+.selectedtab {
+  margin: 0 20px;
+  background-color: #F8F9FA;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.unselectedtab {
+  margin: 0 20px;
+  background-color: #F8F9FA;
+  color: black;
+  border: none;
+  border-radius: 10px;
+}
+
+.unselectedtab:hover {
+  color: black;
+  font-weight: bold;
+}
+
 .text {
   margin-right: 20px;
 }
