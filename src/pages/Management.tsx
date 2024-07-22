@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table';
 import { GetUserInfo } from '../components/JWTToken';
 import TopBar from '../components/TopBar';
 import ManagementModal from '../components/ManagementModal';
+import styles from '../styles/Management.module.css'
 
 interface Order {
   applicant: string | null;
@@ -92,31 +93,31 @@ export default function Management() {
   return (
     <div>
       {TopBar('management')}
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Table bordered hover style={{ width: '90%' }}>
-          <thead>
+      <div className="d-flex container-fluid justify-content-center p-0 py-3">
+        <Table bordered hover className="container-sm">
+          <thead className={styles.tablehead}>
             <tr>
-              <th>부서</th>
-              <th>사원</th>
-              <th>계정</th>
-              <th>상호명</th>
-              <th>비용</th>
-              <th>적요</th>
-              <th>처리 현황</th>
-              <th>신청 날짜</th>
+              <th className={styles.th}>부서</th>
+              <th className={styles.th}>사원</th>
+              <th className={styles.th}>계정</th>
+              <th className={styles.th}>상호명</th>
+              <th className={styles.th}>비용</th>
+              <th className={styles.th}>적요</th>
+              <th className={styles.th}>처리 현황</th>
+              <th className={styles.th}>신청 날짜</th>
             </tr>
           </thead>
           <tbody>
             {Object.entries(orderData).reverse().map(([k,v]) => (
               <tr key={k} onClick={() => {handleClick(v)}}>
-                <td>{v.applicantDeptName}</td>
-                <td>{v.applicant}</td>
-                <td>{v.productType}</td>
-                <td>{v.storeName}</td>
-                <td>{v.totalPrice}</td>
-                <td>{v.description}</td>
-                <td>{v.orderStatus}</td>
-                <td>{v.createdAt}</td>
+                <td className={styles.td}>{v.applicantDeptName}</td>
+                <td className={styles.td}>{v.applicant}</td>
+                <td className={styles.td}>{v.productType}</td>
+                <td className={styles.td}>{v.storeName}</td>
+                <td className={styles.td}>{v.totalPrice}</td>
+                <td className={styles.td}>{v.description}</td>
+                <td className={styles.td}>{v.orderStatus}</td>
+                <td className={styles.td}>{v.createdAt}</td>
               </tr>
             ))}
           </tbody>

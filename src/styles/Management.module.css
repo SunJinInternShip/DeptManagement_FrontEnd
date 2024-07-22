@@ -1,0 +1,16 @@
+.th {
+  text-align: center;
+}
+
+.tablehead .th {
+  border: 1px solid black;
+  background-color: lightgray;
+}
+
+.td {
+  text-align: center;
+}
+
+.td:hover {
+  cursor: pointer;
+}
