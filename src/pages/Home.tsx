@@ -1,7 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
 import LoadingSpinner from '../components/LoadingSpinner';
-import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
@@ -9,6 +8,7 @@ import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
 import TopBar from '../components/TopBar';
 import { HomeEdit, HomeOrder } from '../components/HomeModal';
 import qs from 'qs';
+import styles from '../styles/Home.module.css'
 
 interface Order {
   account: string;
@@ -44,16 +44,19 @@ export default function Home() {
 
   // 체크 시
   const handleClick = (v: any) => {
+    setSpinnerShow(true);
     if(checkedOrders.find((item) => item === v.orderId) === undefined) {
       setCheckedOrders([...checkedOrders, v.orderId]);
     }
     else {
       setCheckedOrders(checkedOrders.filter(item => item !== v.orderId));
     }
+    setSpinnerShow(false);
   };
 
   // 상신
   const handleClickBtn = async () => {
+    setSpinnerShow(true);
     let apiURL: string = "";
     
     if(role === "EMPLOYEE") apiURL = `${process.env.REACT_APP_SERVER_URL}/employee/submit`;
@@ -74,10 +77,12 @@ export default function Home() {
     } catch (error: unknown) {
       console.log(error);
     }
+    setSpinnerShow(false);
   }
 
   // 물품 조회
   const loadOrders = async () => {
+    setSpinnerShow(true);
     if(role === "EMPLOYEE") {
       try {
         const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
@@ -112,11 +117,14 @@ export default function Home() {
         console.log(error);
       }
     }
+    setSpinnerShow(false);
   }
 
   // 관리자 홈 페이지 제한
   React.useEffect(() => {
+    setSpinnerShow(true);
     if(role === "CENTERDIRECTOR") navigate("/search", { replace: true });
+    setSpinnerShow(false);
   },[])
 
   // 처음 페이지 로드 시, 조회 | 모달이 닫히면 부서 요청 물품 조회
@@ -130,9 +138,11 @@ export default function Home() {
 
   // checkedOrders가 삭제, 상신된 경우 체크 해제
   React.useEffect(() => {
+    setSpinnerShow(true);
     if(Object.values(orderData).find((item) => item.orderId === checkedOrders[0]) === undefined) {
       setCheckedOrders([]);
     }
+    setSpinnerShow(false);
   },[orderData])
 
   // 수정 관련 현재 체크 확인
@@ -160,43 +170,50 @@ export default function Home() {
   },[checkedOrders])
 
   return (
-    <div>
+    <div id='home'>
       {TopBar('home')}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
+      <div className={styles.btndiv}>
         {checkedOrders.length > 0 ?
-          <Button disabled={checkedOrders.length > 1 ? true : false} onClick={() => {setEditModalShow(!editModalShow)}}>수정</Button>
+          <button className={checkedOrders.length > 1 ? styles.disablededitbtn : styles.enablededitbtn}
+           disabled={checkedOrders.length > 1 ? true : false} onClick={() => {setEditModalShow(!editModalShow)}}>수정</button>
           :
-          <Button onClick={() => {setOrderModalShow(!orderModalShow)}}>추가</Button>
+          <button className={styles.addbtn}
+           onClick={() => {setOrderModalShow(!orderModalShow)}}>추가</button>
         }
-        <Button disabled={checkedOrders.length > 0 ? false : true} onClick={handleClickBtn}>상신</Button>
+        <button className={styles.btn}
+         disabled={checkedOrders.length > 0 ? false : true} onClick={handleClickBtn}>상신</button>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Table bordered hover style={{ width: '90%' }}>
+      <div className={styles.tablediv}>
+        <Table bordered hover className="container-sm">
           <thead>
-            <tr>
-              <th></th>
-              <th>부서</th>
-              <th>사원</th>
-              <th>계정</th>
-              <th>상호명</th>
-              <th>비용</th>
-              <th>적요</th>
-              <th>처리 현황</th>
-              <th>신청 날짜</th>
+            <tr className={styles.tablehead}>
+              <th className={styles.th}></th>
+              <th className={styles.th}>부서</th>
+              <th className={styles.th}>사원</th>
+              <th className={styles.th}>계정</th>
+              <th className={styles.th}>상호명</th>
+              <th className={styles.th}>비용</th>
+              <th className={styles.th}>적요</th>
+              <th className={styles.th}>처리 현황</th>
+              <th className={styles.th}>신청 날짜</th>
             </tr>
           </thead>
           <tbody>
             {Object.entries(orderData).reverse().map(([k,v]) => (
-              <tr key={k} onClick={() => {handleClick(v)}}>
-                <td><Form.Check onClick={() => {handleClick(v)}} readOnly checked={checkedOrders.find((item) => item === v.orderId) !== undefined}/></td>
-                <td>{v.applicantDeptName}</td>
-                <td>{v.applicant}</td>
-                <td>{v.productType}</td>
-                <td>{v.storeName}</td>
-                <td>{v.totalPrice}</td>
-                <td>{v.description}</td>
-                <td>{v.orderStatus}</td>
-                <td>{v.createdAt}</td>
+              <tr key={k} onClick={() => {handleClick(v)}}
+               className={checkedOrders.find((item) => item === v.orderId) !== undefined ? styles.tablechecked : ''}>
+                <td className={styles.td}>
+                  <Form.Check onClick={() => {handleClick(v)}} readOnly
+                   checked={checkedOrders.find((item) => item === v.orderId) !== undefined}/>
+                </td>
+                <td className={styles.td}>{v.applicantDeptName}</td>
+                <td className={styles.td}>{v.applicant}</td>
+                <td className={styles.td}>{v.productType}</td>
+                <td className={styles.td}>{v.storeName}</td>
+                <td className={styles.td}>{v.totalPrice}</td>
+                <td className={styles.td}>{v.description}</td>
+                <td className={styles.td}>{v.orderStatus}</td>
+                <td className={styles.td}>{v.createdAt}</td>
               </tr>
             ))}
           </tbody>

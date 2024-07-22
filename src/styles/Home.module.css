@@ -1,0 +1,82 @@
+.btndiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tablediv {
+  display: flex;
+  justify-content: center;
+}
+
+.table {
+  width: 90%;
+}
+
+.btn {
+  padding: 10px 5%;
+  margin: 20px 40px;
+  background-color: #0D6EFD;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+.btn:hover {
+  cursor: pointer;
+  background-color: #0B5ED7;
+}
+
+.enablededitbtn {
+  padding: 10px 5%;
+  margin: 20px 40px;
+  background-color: #FFC107;
+  border: none;
+  border-radius: 10px;
+}
+
+.enablededitbtn:hover {
+  cursor: pointer;
+  background-color: #FFCA2C;
+}
+
+.disablededitbtn {
+  padding: 10px 5%;
+  margin: 20px 40px;
+  background-color: #FFC107;
+  border: none;
+  border-radius: 10px;
+}
+
+.addbtn {
+  padding: 10px 5%;
+  margin: 20px 40px;
+  background-color: #198754;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+.addbtn:hover {
+  cursor: pointer;
+  background-color: #157347;
+}
+
+.th {
+  text-align: center;
+}
+
+.tablehead .th {
+  border: 1px solid black;
+}
+
+.td {
+  text-align: center;
+}
+
+.tablechecked .td {
+  background-color: rgba(13, 110, 253, 0.3);
+}
+
+.td:hover {
+  cursor: pointer;
+}
