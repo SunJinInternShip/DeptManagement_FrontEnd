@@ -1,14 +1,8 @@
 import * as React from 'react';
 import axios from 'axios';
-import { ProductOrder, ProductEdit } from '../components/ProductModal';
 import LoadingSpinner from '../components/LoadingSpinner';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
-import Form from 'react-bootstrap/Form';
-import { useNavigate } from "react-router-dom";
-import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
-import ReceiptModal from '../components/ReceiptModal';
+import { GetUserInfo } from '../components/JWTToken';
 import TopBar from '../components/TopBar';
 import ManagementModal from '../components/ManagementModal';
 

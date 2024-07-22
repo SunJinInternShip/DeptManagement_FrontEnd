@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form';
 import { GetUserInfo } from './JWTToken';
 import LoadingSpinner from './LoadingSpinner';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Button from 'react-bootstrap/Button';
 
 interface Receipt {
   file: File | Blob | null;
