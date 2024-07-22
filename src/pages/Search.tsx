@@ -330,7 +330,7 @@ export default function Search() {
 
   return (
     <div>
-      <TopBar/>
+      {TopBar('search')}
       <Accordion style={{ display: 'flex', justifyContent: 'center' }}>
         <Accordion.Item eventKey='0' style={{width: '90%'}}>
           <Accordion.Header>

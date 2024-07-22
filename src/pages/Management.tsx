@@ -91,7 +91,7 @@ export default function Management() {
 
   return (
     <div>
-      <TopBar />
+      {TopBar('management')}
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Table bordered hover style={{ width: '90%' }}>
           <thead>

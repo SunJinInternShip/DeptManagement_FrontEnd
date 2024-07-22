@@ -161,7 +161,7 @@ export default function Home() {
 
   return (
     <div>
-      <TopBar/>
+      {TopBar('home')}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
         {checkedOrders.length > 0 ?
           <Button disabled={checkedOrders.length > 1 ? true : false} onClick={() => {setEditModalShow(!editModalShow)}}>수정</Button>

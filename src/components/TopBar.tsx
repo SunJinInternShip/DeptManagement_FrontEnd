@@ -3,50 +3,11 @@ import * as React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { GetUserInfo, RemoveUserInfo } from './JWTToken';
+import logo from '../assets/sunjin.png';
+import { Button } from 'react-bootstrap';
+import styles from '../styles/TopBar.module.css'
 
-const styles = {
-  navbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '10px 20px',
-    backgroundColor: '#333',
-    color: 'white',
-  },
-  leftSection: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  centerSection: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  rightSection: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  image: {
-    width: '40px',
-    height: '40px',
-  },
-  button: {
-    margin: '0 10px',
-    padding: '10px 20px',
-    backgroundColor: '#555',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
-  },
-  buttonHover: {
-    backgroundColor: '#777',
-  },
-  text: {
-    marginRight: '20px',
-  },
-};
-
-export default function TopBar() {
+export default function TopBar(url: string) {
   const accessToken = GetUserInfo().accessToken;
   const userName = GetUserInfo().name;
   const role = GetUserInfo().role;
@@ -73,34 +34,34 @@ export default function TopBar() {
   };
   
   return (
-    <div style={styles.navbar}>
-      <div style={styles.leftSection}>
-        <img src="https://via.placeholder.com/40" alt="Logo" style={styles.image} />
-        <button onClick={() => {navigate("/home")}}
-          style={styles.button}
-          hidden={role === "CENTERDIRECTOR"}
-        >
+    <div className={styles.navbar}>
+      <div className={styles.leftSection}>
+        <img src={logo} alt="Logo" className={styles.image} />
+        <Button variant={url === "home" ? "primary" : "outline-primary"}
+         onClick={() => {navigate("/home")}}
+         className={styles.button}
+         hidden={role === "CENTERDIRECTOR"}>
           홈
-        </button>
-        <button onClick={() => {navigate("/search")}}
-          style={styles.button}
-        >
+        </Button>
+        <Button variant={url === "search" ? "primary" : "outline-primary"}
+         onClick={() => {navigate("/search")}}
+         className={styles.button}>
           조회
-        </button>
-        <button onClick={() => {navigate("/management")}}
-          style={styles.button}
-          hidden={role === "EMPLOYEE"}
-        >
+        </Button>
+        <Button variant={url === "management" ? "primary" : "outline-primary"}
+         onClick={() => {navigate("/management")}}
+         className={styles.button}
+         hidden={role === "EMPLOYEE"}>
           승인 및 반려
-        </button>
+        </Button>
       </div>
-      <div style={styles.rightSection}>
-        <span style={styles.text}>{role} | {userName}</span>
-        <button onClick={handleLogout}
-          style={styles.button}
-        >
+      <div className={styles.rightSection}>
+        <span className={styles.text}>{role} | {userName}</span>
+        <Button variant="outline-danger"
+         onClick={handleLogout}
+         className={styles.button}>
           로그아웃
-        </button>
+        </Button>
       </div>
     </div>
   );
