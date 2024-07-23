@@ -41,6 +41,7 @@ export default function Home() {
   const handleClose = () => {
     setOrderModalShow(false);
     setEditModalShow(false);
+    setCheckedOrders([]);
   };
 
   // 체크 시
