@@ -1,0 +1,10 @@
+.maindiv {
+  display: block;
+  position: initial;
+}
+
+.aligntext {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}

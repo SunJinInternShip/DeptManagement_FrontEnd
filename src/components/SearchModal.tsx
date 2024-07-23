@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import { GetUserInfo } from './JWTToken';
 import LoadingSpinner from './LoadingSpinner';
 import InputGroup from 'react-bootstrap/InputGroup';
+import styles from '../styles/Search.module.css'
 
 interface Receipt {
   file: File | Blob | null;
@@ -107,41 +108,39 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
   },[receipt.file])
 
   return (
-    <div style={{ display: 'block', position: 'initial' }}>
+    <div className={styles.maindiv}>
       <Modal show={modalShow} onHide={handleClose} animation centered>
         <Modal.Header closeButton/>
 
-        <Modal.Body className="d-flex flex-column align-items-center">
-          <Form style={{display: 'flex', justifyContent: 'space-between'}}>
-            <Image rounded style={{ maxHeight: "30%", maxWidth: "30%"}}
-             src={receipt.preview?.toString()}/>
-            <Form.Group>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>사원</InputGroup.Text>
-                <Form.Control value={`${order.applicantDeptName} ${order.applicant}`} readOnly/>
-              </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
-                <Form.Control value={`${order.productType}`} readOnly/>
-              </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>
-                <Form.Control value={`${order.storeName}`} readOnly/>
-              </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>비용</InputGroup.Text>
-                <Form.Control value={`${order.totalPrice}`} readOnly/>
-              </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>적요</InputGroup.Text>
-                <Form.Control value={`${order.description}`} readOnly/>
-              </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>신청일</InputGroup.Text>
-                <Form.Control value={`${order.createdAt}`} readOnly/>
-              </InputGroup>
-            </Form.Group>
-          </Form>
+        <Modal.Body className="d-flex flex-column">
+          <Image rounded className='d-flex container-sm w-50 pt-1 pb-2'
+            src={receipt.preview?.toString()}/>
+          <Form.Group>
+            <InputGroup className='p-1'>
+              <InputGroup.Text className={`w-25 ${styles.aligntext}`}>사원</InputGroup.Text>
+              <Form.Control value={`${order.applicantDeptName} ${order.applicant}`} readOnly/>
+            </InputGroup>
+            <InputGroup className='p-1'>
+              <InputGroup.Text className={`w-25 ${styles.aligntext}`}>계정</InputGroup.Text>
+              <Form.Control value={`${order.productType}`} readOnly/>
+            </InputGroup>
+            <InputGroup className='p-1'>
+              <InputGroup.Text className={`w-25 ${styles.aligntext}`}>상호명</InputGroup.Text>
+              <Form.Control value={`${order.storeName}`} readOnly/>
+            </InputGroup>
+            <InputGroup className='p-1'>
+              <InputGroup.Text className={`w-25 ${styles.aligntext}`}>비용</InputGroup.Text>
+              <Form.Control value={`${order.totalPrice}`} readOnly/>
+            </InputGroup>
+            <InputGroup className='p-1'>
+              <InputGroup.Text className={`w-25 ${styles.aligntext}`}>적요</InputGroup.Text>
+              <Form.Control value={`${order.description}`} readOnly/>
+            </InputGroup>
+            <InputGroup className='p-1'>
+              <InputGroup.Text className={`w-25 ${styles.aligntext}`}>신청일</InputGroup.Text>
+              <Form.Control value={`${order.createdAt}`} readOnly/>
+            </InputGroup>
+          </Form.Group>
         </Modal.Body>
       </Modal>
     </div>
