@@ -8,6 +8,7 @@ import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
 import TopBar from '../components/TopBar';
 import { HomeEdit, HomeOrder } from '../components/HomeModal';
 import qs from 'qs';
+import PriceComma from '../components/PriceComma';
 import styles from '../styles/Home.module.css'
 
 interface Order {
@@ -170,7 +171,7 @@ export default function Home() {
   },[checkedOrders])
 
   return (
-    <div id='home'>
+    <div>
       {TopBar('home')}
       <div className='container-sm'>
         {checkedOrders.length > 0 ?
@@ -210,7 +211,7 @@ export default function Home() {
                 <td className={styles.td}>{v.applicant}</td>
                 <td className={styles.td}>{v.productType}</td>
                 <td className={styles.td}>{v.storeName}</td>
-                <td className={styles.td}>{v.totalPrice}</td>
+                <td className={styles.td}>{PriceComma(v.totalPrice)}</td>
                 <td className={styles.td}>{v.description}</td>
                 <td className={styles.td}>{v.orderStatus}</td>
                 <td className={styles.td}>{v.createdAt}</td>

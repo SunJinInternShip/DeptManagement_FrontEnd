@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table';
 import { GetUserInfo } from '../components/JWTToken';
 import TopBar from '../components/TopBar';
 import ManagementModal from '../components/ManagementModal';
+import PriceComma from '../components/PriceComma';
 import styles from '../styles/Management.module.css'
 
 interface Order {
@@ -114,7 +115,7 @@ export default function Management() {
                 <td className={styles.td}>{v.applicant}</td>
                 <td className={styles.td}>{v.productType}</td>
                 <td className={styles.td}>{v.storeName}</td>
-                <td className={styles.td}>{v.totalPrice}</td>
+                <td className={styles.td}>{PriceComma(v.totalPrice)}</td>
                 <td className={styles.td}>{v.description}</td>
                 <td className={styles.td}>{v.orderStatus}</td>
                 <td className={styles.td}>{v.createdAt}</td>

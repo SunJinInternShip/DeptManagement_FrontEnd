@@ -10,6 +10,7 @@ import qs from 'qs';
 import Accordion from 'react-bootstrap/Accordion';
 import InputGroup from 'react-bootstrap/InputGroup';
 import SearchModal from '../components/SearchModal';
+import PriceComma from '../components/PriceComma';
 import styles from '../styles/Search.module.css'
 
 interface Requirement {
@@ -452,7 +453,7 @@ export default function Search() {
                   <td className={styles.td}>{v.applicant}</td>
                   <td className={styles.td}>{v.productType}</td>
                   <td className={styles.td}>{v.storeName}</td>
-                  <td className={styles.td}>{v.totalPrice}</td>
+                  <td className={styles.td}>{PriceComma(v.totalPrice)}</td>
                   <td className={styles.td}>{v.description}</td>
                   <td className={styles.td}>{v.orderStatus}</td>
                   <td className={styles.td}>{v.deniedDescription}</td>
