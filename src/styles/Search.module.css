@@ -4,14 +4,16 @@
   padding: 5px;
   margin-right: 20px;
   background-color: #FFFFFF;
-  color: #0B5ED7;
+  color: rgba(10, 10, 10, 0.7);
+  font-weight: bold;
 }
 
 .selectedbtn {
-  background-color: #0D6EFD;
+  background-color: rgba(9, 73, 166, 0.8);
   color: #FFFFFF;
-  border: 1px solid #0D6EFD;
+  border: 1px solid #0949A6;
   border-radius: 5px;
+  transition: all 0.15s ease-in-out;
 }
 
 .unselectedbtn {
@@ -19,6 +21,7 @@
   color: black;
   border: 1px solid lightgray;
   border-radius: 5px;
+  transition: all 0.15s ease-in-out;
 }
 
 .searchbtn {
@@ -46,4 +49,31 @@
 
 .td:hover {
   cursor: pointer;
+}
+
+.abodydiv {
+  flex-direction: column;
+}
+
+.aligntext {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.width10 {
+  width: 10%;
+}
+
+.width100 {
+  width: 100%;
+}
+
+.statustext {
+  flex: 0 0 auto;
+  width: 10%;
+}
+
+.statusbtn {
+  flex: 1 1 auto;
 }

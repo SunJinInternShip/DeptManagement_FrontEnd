@@ -343,82 +343,90 @@ export default function Search() {
   return (
     <div>
       {TopBar('search')}
-      <div className="container-fluid justify-content-center">
+      <div className="container-sm">
         <Accordion className="container-sm p-0 py-3">
           <Accordion.Item eventKey='0'>
             <Accordion.Header>
-              <span hidden={role !== "CENTERDIRECTOR" ? true : false} className={styles.tagspan}>
-                부서명: {requirement.deptName}
-              </span>
-              <span hidden={role === "EMPLOYEE" ? true : false} className={styles.tagspan}>
-                사원명: {requirement.userName}
-              </span>
-              {Object.entries(requirement.reqStatus).map(([k, v]) => (
-                <span key={k} className={styles.tagspan}>
-                  처리 현황: {v.statusName}
+              <div className='container-sm p-0'>
+                <span hidden={role !== "CENTERDIRECTOR" ? true : false} className={styles.tagspan}>
+                  부서명: {requirement.deptName}
                 </span>
-              ))}
+                <span hidden={role === "EMPLOYEE" ? true : false} className={styles.tagspan}>
+                  사원명: {requirement.userName}
+                </span>
+                {Object.entries(requirement.reqStatus).map(([k, v]) => (
+                  <span key={k} className={styles.tagspan}>
+                    처리 현황: {v.statusName}
+                  </span>
+                ))}
+              </div>
             </Accordion.Header>
 
-            <Accordion.Body hidden={role !== "CENTERDIRECTOR" ? true : false}>
-              <div>
-                <InputGroup>
-                  <InputGroup.Text>부서</InputGroup.Text>
-                  <Form.Select onChange={handleSelectDept}>
-                    <option>
-                      전체
-                    </option>
-                    {Object.entries(deptData).map(([k,v]: any) => (
-                      <option key={k}>
-                        {v.deptName}
+            <div className={`container-sm ${styles.abodydiv}`}>
+              <Accordion.Body hidden={role !== "CENTERDIRECTOR" ? true : false}>
+                <div className='d-flex'>
+                  <InputGroup>
+                    <InputGroup.Text className={`${styles.width10} ${styles.aligntext}`}>부서</InputGroup.Text>
+                    <Form.Select onChange={handleSelectDept}>
+                      <option>
+                        전체
                       </option>
-                    ))}
-                  </Form.Select>
-                </InputGroup>
-              </div>
-            </Accordion.Body>
-            <Accordion.Body hidden={role === "EMPLOYEE" ? true : false}>
-              <div>
-                <InputGroup>
-                  <InputGroup.Text>사원</InputGroup.Text>
-                  <Form.Select onChange={handleSelectName}>
-                    <option>
-                      전체
-                    </option>
-                    {Object.entries(memberData).map(([k,v]: any) => (
-                      <option key={k}>
-                        {v.memberName}
+                      {Object.entries(deptData).map(([k,v]: any) => (
+                        <option key={k}>
+                          {v.deptName}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </InputGroup>
+                </div>
+              </Accordion.Body>
+
+              <Accordion.Body hidden={role === "EMPLOYEE" ? true : false}>
+                <div className='d-flex'>
+                  <InputGroup>
+                    <InputGroup.Text className={`${styles.width10} ${styles.aligntext}`}>사원</InputGroup.Text>
+                    <Form.Select onChange={handleSelectName}>
+                      <option>
+                        전체
                       </option>
-                    ))}
-                  </Form.Select>
-                </InputGroup>
-              </div>
-            </Accordion.Body>
-            <Accordion.Body>
-              <div className='d-flex justify-content-center'>
-                <InputGroup className='d-flex justify-content-center'>
-                  <InputGroup.Text>처리 현황</InputGroup.Text>
-                  <button
-                   className={requirement.reqStatus.length === 4 ? styles.selectedbtn : styles.unselectedbtn}
-                   onClick={() => {handleSelectStatus('전체')}}>전체</button>
-                  <button
-                   className={requirement.reqStatus.filter(status => status.statusId === "first").length === 1 ? styles.selectedbtn : styles.unselectedbtn}
-                   onClick={() => {handleSelectStatus('first 1차 처리중')}}>1차 처리중</button>
-                  <button
-                   className={requirement.reqStatus.filter(status => status.statusId === "second").length === 1 ? styles.selectedbtn : styles.unselectedbtn}
-                   onClick={() => {handleSelectStatus('second 2차 처리중')}}>2차 처리중</button>
-                  <button
-                   className={requirement.reqStatus.filter(status => status.statusId === "approve").length === 1 ? styles.selectedbtn : styles.unselectedbtn}
-                   onClick={() => {handleSelectStatus('approve 승인')}}>승인</button>
-                  <button
-                   className={requirement.reqStatus.filter(status => status.statusId === "denied").length === 1 ? styles.selectedbtn : styles.unselectedbtn}
-                   onClick={() => {handleSelectStatus('denied 반려')}}>반려</button>
-                </InputGroup>
-              </div>
-            </Accordion.Body>
-            <Accordion.Body>
-              <Button onClick={searchToDB} className="container-sm">조회</Button>
-            </Accordion.Body>
+                      {Object.entries(memberData).map(([k,v]: any) => (
+                        <option key={k}>
+                          {v.memberName}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </InputGroup>
+                </div>
+              </Accordion.Body>
+              
+              <Accordion.Body>
+                <div className={`d-flex ${styles.width100}`}>
+                  <InputGroup className={`d-flex ${styles.width100}`}>
+                    <InputGroup.Text className={`d-flex ${styles.statustext} ${styles.aligntext}`}>처리 현황</InputGroup.Text>
+                    <button
+                      className={requirement.reqStatus.length === 4 ? `${styles.selectedbtn} ${styles.statusbtn}` : `${styles.unselectedbtn} ${styles.statusbtn}`}
+                      onClick={() => {handleSelectStatus('전체')}}>전체</button>
+                    <button
+                      className={requirement.reqStatus.filter(status => status.statusId === "first").length === 1 ? `${styles.selectedbtn} ${styles.statusbtn}` : `${styles.unselectedbtn} ${styles.statusbtn}`}
+                      onClick={() => {handleSelectStatus('first 1차 처리중')}}>1차 처리중</button>
+                    <button
+                      className={requirement.reqStatus.filter(status => status.statusId === "second").length === 1 ? `${styles.selectedbtn} ${styles.statusbtn}` : `${styles.unselectedbtn} ${styles.statusbtn}`}
+                      onClick={() => {handleSelectStatus('second 2차 처리중')}}>2차 처리중</button>
+                    <button
+                      className={requirement.reqStatus.filter(status => status.statusId === "approve").length === 1 ? `${styles.selectedbtn} ${styles.statusbtn}` : `${styles.unselectedbtn} ${styles.statusbtn}`}
+                      onClick={() => {handleSelectStatus('approve 승인')}}>승인</button>
+                    <button
+                      className={requirement.reqStatus.filter(status => status.statusId === "denied").length === 1 ? `${styles.selectedbtn} ${styles.statusbtn}` : `${styles.unselectedbtn} ${styles.statusbtn}`}
+                      onClick={() => {handleSelectStatus('denied 반려')}}>반려</button>
+                  </InputGroup>
+                </div>
+              </Accordion.Body>
+            </div>
+            <div className="d-flex justify-content-center">
+              <Accordion.Body>
+                <Button className="container-sm px-5" onClick={searchToDB}>조회</Button>
+              </Accordion.Body>
+            </div>
           </Accordion.Item>
         </Accordion>
         <div className={styles.divtable}>
