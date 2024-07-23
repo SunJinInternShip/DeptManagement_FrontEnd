@@ -7,6 +7,8 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { GetUserInfo } from './JWTToken';
 import LoadingSpinner from './LoadingSpinner';
 import image from '../assets/blank_receipt.jpg';
+import styles from '../styles/HomeModal.module.css'
+import { Button, ModalBody, ModalFooter } from 'react-bootstrap';
 
 interface Receipt {
   file: File | Blob | null;
@@ -24,6 +26,8 @@ interface Order {
 export function HomeOrder(modalShow: boolean, handleClose: any) {
   const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const [receipt, setReceipt] = React.useState<Receipt>({
     file: null,
@@ -187,20 +191,19 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
   },[])
 
   return (
-    <div style={{ display: 'block', position: 'initial' }}>
+    <div className={styles.ordermaindiv}>
       <Modal show={modalShow} onHide={handleClose} animation centered>
         <Modal.Header closeButton/>
-
-        <Modal.Body className="d-flex flex-column align-items-center">
-          <Form style={{display: 'flex', justifyContent: 'space-between'}} onSubmit={handleSubmit} encType='multipart/form-data'>
-            <Image rounded style={{ maxHeight: "30%", maxWidth: "30%"}}
+        <Form onSubmit={handleSubmit}>
+          <Modal.Body className="d-flex flex-column">
+            <Image rounded className={`d-flex container-sm w-50 pt-1 pb-2 ${styles.image}`}
+             onClick={() => {return inputRef.current !== null ? inputRef.current.click() : ''}}
              src={receipt.file ? receipt.preview?.toString() : blankReceipt.preview?.toString()}/>
             <Form.Group>
-              
-              <Form.Control type="file" placeholder='img' name='file'
+              <Form.Control type="file" name='file' accept='image/jpeg' ref={inputRef} hidden
                onChange={handleChangeImage}/>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>계정</InputGroup.Text>
                 <Form.Select onChange={handleSelectAccount}>
                   <option>비품</option>
                   <option>간식</option>
@@ -211,28 +214,32 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
                   <option>기타</option>
                 </Form.Select>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>
-                <Form.Control type="text" placeholder='bName' name='bName' required
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>상호명</InputGroup.Text>
+                <Form.Control type="text" name='bName' maxLength={15} required
                  value={order.bName}
                  onChange={handleChangeText}/>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>비용</InputGroup.Text>
-                <Form.Control type="number" placeholder='price' name='price' required
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>비용</InputGroup.Text>
+                <Form.Control type="number" name='price' required
                  value={order.price} min={0}
                  onChange={handleChangeText}/>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>적요</InputGroup.Text>
-                <Form.Control type="text" placeholder='detail' name='detail'
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>적요</InputGroup.Text>
+                <Form.Control type="text" name='detail' maxLength={30}
                  value={order.detail}
                  onChange={handleChangeText}/>
               </InputGroup>
-              <Form.Control type="submit"/>
             </Form.Group>
-          </Form>
-        </Modal.Body>
+          </Modal.Body>
+          <ModalFooter>
+            <Button className={`mx-2 d-flex container-sm ${styles.aligntext}`} type="submit">
+              추가
+            </Button>
+          </ModalFooter>
+        </Form>
       </Modal>
       {LoadingSpinner(spinnerShow)}
     </div>
@@ -242,6 +249,8 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
 export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order, orderId: number) {
   const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const [currentReceipt, setCurrentReceipt] = React.useState<Receipt>({
     file: null,
@@ -419,20 +428,24 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
   },[orderId]);
 
   return (
-    <div style={{ display: 'block', position: 'initial' }}>
+    <div className={styles.ordermaindiv}>
       <Modal show={modalShow} onHide={handleClose} animation centered>
         <Modal.Header closeButton/>
 
-        <Modal.Body className="d-flex flex-column align-items-center">
-          <Form style={{display: 'flex', justifyContent: 'space-between'}}
-           onSubmit={handleSubmit}>
-            <Image rounded style={{ maxHeight: "30%", maxWidth: "30%"}}
+        <Form onSubmit={handleSubmit}>
+          <Modal.Body className="d-flex flex-column">
+            <div className={`d-flex pb-2 ${styles.btndiv}`}>
+              <Button variant='warning' className={`mx-2 px-4 ${styles.aligntext}`} type="submit">수정</Button>
+              <Button variant='danger' className={`mx-2 px-4 ${styles.aligntext}`} type="button" onClick={handleDelete}>삭제</Button>
+            </div>
+            <Image rounded className={`d-flex container-sm w-50 pt-1 pb-2 ${styles.image}`}
+             onClick={() => {return inputRef.current !== null ? inputRef.current.click() : ''}}
              src={newReceipt.file ? newReceipt.preview?.toString() : currentReceipt.preview?.toString()}/>
             <Form.Group>
-              <Form.Control type="file" placeholder='img' name='file'
+              <Form.Control type="file" name='file' ref={inputRef} hidden
                onChange={handleChangeImage}/>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>계정</InputGroup.Text>
                 <Form.Select onChange={handleSelectAccount}>
                   <option>비품</option>
                   <option>간식</option>
@@ -443,29 +456,27 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
                   <option>기타</option>
                 </Form.Select>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>
-                <Form.Control type="text" placeholder='bName' name='bName' required
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>상호명</InputGroup.Text>
+                <Form.Control type="text" name='bName' maxLength={15} required
                  value={order.bName}
                  onChange={handleChangeText}/>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>비용</InputGroup.Text>
-                <Form.Control type="number" placeholder='price' name='price' required
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>비용</InputGroup.Text>
+                <Form.Control type="number" name='price' required
                  value={order.price} min={0}
                  onChange={handleChangeText}/>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>적요</InputGroup.Text>
-                <Form.Control type="text" placeholder='detail' name='detail'
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>적요</InputGroup.Text>
+                <Form.Control type="text" name='detail' maxLength={30}
                  value={order.detail}
                  onChange={handleChangeText}/>
               </InputGroup>
-              <Form.Control type="submit" value="수정"/>
-              <Form.Control type="button" value="삭제" onClick={handleDelete}/>
             </Form.Group>
-          </Form>
-        </Modal.Body>
+          </Modal.Body>
+        </Form>
       </Modal>
       {LoadingSpinner(spinnerShow)}
     </div>

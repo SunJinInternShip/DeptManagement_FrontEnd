@@ -1,0 +1,18 @@
+.ordermaindiv {
+  display: block;
+  position: initial;
+}
+
+.image:hover {
+  cursor: pointer;
+}
+
+.aligntext {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.btndiv {
+  justify-content: flex-end;
+}
