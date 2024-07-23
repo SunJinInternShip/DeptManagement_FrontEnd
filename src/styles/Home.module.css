@@ -10,6 +10,7 @@
   color: #0D6EFD;
   border: 1px solid #0D6EFD;
   border-radius: 10px;
+  transition: all 0.1s ease-in-out;
 }
 .enabledsubmitbtn:hover {
   cursor: pointer;
@@ -34,6 +35,7 @@
   color: #FFC107;
   border: 1px solid #FFC107;
   border-radius: 10px;
+  transition: all 0.1s ease-in-out;
 }
 
 .enablededitbtn:hover {
@@ -59,6 +61,7 @@
   color: #0D6EFD;
   border: 1px solid #0D6EFD;
   border-radius: 10px;
+  transition: all 0.1s ease-in-out;
 }
 
 .addbtn:hover {
