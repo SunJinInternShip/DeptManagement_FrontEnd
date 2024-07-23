@@ -3,12 +3,12 @@ import axios from 'axios';
 import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { GetUserInfo } from './JWTToken';
 import LoadingSpinner from './LoadingSpinner';
 import image from '../assets/blank_receipt.jpg';
 import styles from '../styles/HomeModal.module.css'
-import { Button, ModalBody, ModalFooter } from 'react-bootstrap';
 
 interface Receipt {
   file: File | Blob | null;
@@ -234,11 +234,11 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
               </InputGroup>
             </Form.Group>
           </Modal.Body>
-          <ModalFooter>
+          <Modal.Footer>
             <Button className={`mx-2 d-flex container-sm ${styles.aligntext}`} type="submit">
               추가
             </Button>
-          </ModalFooter>
+          </Modal.Footer>
         </Form>
       </Modal>
       {LoadingSpinner(spinnerShow)}

@@ -143,6 +143,7 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
           </Form.Group>
         </Modal.Body>
       </Modal>
+      {LoadingSpinner(spinnerShow)}
     </div>
   )
 }
