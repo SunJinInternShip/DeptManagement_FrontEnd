@@ -292,8 +292,12 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
   // 물품 삭제 요청
   const handleDelete = async () => {
     setSpinnerShow(true);
+
+    let url: string;
+    url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/${orderId}` : `${process.env.REACT_APP_SERVER_URL}/teamleader/${orderId}`;
+
     try {
-      const res = await axios.delete(`${process.env.REACT_APP_SERVER_URL}/employee/${orderId}`, {
+      const res = await axios.delete(url, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
