@@ -447,19 +447,19 @@ export default function Search() {
                 <th className={styles.th}>처리 날짜</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className={styles.tablebody}>
               {Object.entries(orderData).reverse().map(([k,v]) => (
                 <tr key={k} onClick={() => handleClick(v)}>
-                  <td className={styles.td}>{v.applicantDeptName}</td>
-                  <td className={styles.td}>{v.applicant}</td>
-                  <td className={styles.td}>{v.productType}</td>
-                  <td className={styles.td}>{v.storeName}</td>
-                  <td className={styles.td}>{PriceComma(v.totalPrice)}</td>
-                  <td className={styles.td}>{v.description}</td>
-                  <td className={styles.td}>{v.orderStatus}</td>
-                  <td className={styles.td}>{v.deniedDescription}</td>
-                  <td className={styles.td}>{v.createdAt}</td>
-                  <td className={styles.td}>{v.procDate}</td>
+                  <td className={v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td}>{v.applicantDeptName}</td>
+                  <td className={v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td}>{v.applicant}</td>
+                  <td className={v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td}>{v.productType}</td>
+                  <td className={v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td}>{v.storeName}</td>
+                  <td className={v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td}>{PriceComma(v.totalPrice)}</td>
+                  <td className={v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td}>{v.description}</td>
+                  <td className={`${v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td} ${styles.textbold}`}>{v.orderStatus}</td>
+                  <td className={v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td}>{v.deniedDescription}</td>
+                  <td className={v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td}>{v.createdAt}</td>
+                  <td className={v.orderStatus === "승인" ? styles.atd : v.orderStatus === "반려" ? styles.dtd : styles.td}>{v.procDate}</td>
                 </tr>
               ))}
             </tbody>

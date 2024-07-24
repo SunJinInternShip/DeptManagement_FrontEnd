@@ -44,11 +44,29 @@
   color: white;
 }
 
-.td {
+.tablebody .td {
   text-align: center;
 }
 
 .td:hover {
+  cursor: pointer;
+}
+
+.tablebody .atd {
+  text-align: center;
+  background-color: rgba(13, 110, 253, 0.3);
+}
+
+.atd:hover {
+  cursor: pointer;
+}
+
+.tablebody .dtd {
+  text-align: center;
+  background-color: rgba(220, 53, 69, 0.3);
+}
+
+.dtd:hover {
   cursor: pointer;
 }
 
@@ -77,4 +95,8 @@
 
 .statusbtn {
   flex: 1 1 auto;
+}
+
+.textbold {
+  font-weight: bold;
 }
