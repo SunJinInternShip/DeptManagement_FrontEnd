@@ -114,7 +114,7 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
 
         <Modal.Body className="d-flex flex-column">
           <Image rounded className='d-flex container-sm w-50 pt-1 pb-2'
-            src={receipt.preview?.toString()}/>
+           src={receipt.preview?.toString()}/>
           <Form.Group>
             <InputGroup className='p-1'>
               <InputGroup.Text className={`w-25 ${styles.aligntext}`}>사원</InputGroup.Text>

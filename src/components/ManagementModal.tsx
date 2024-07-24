@@ -7,6 +7,7 @@ import { GetUserInfo } from './JWTToken';
 import LoadingSpinner from './LoadingSpinner';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
+import styles from '../styles/ManagementModal.module.css'
 
 interface Receipt {
   file: File | Blob | null;
@@ -39,11 +40,10 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
     file: null,
     preview: null
   });
-
   const [approval, setApproval] = React.useState<Approval>({
     deniedDescription: "",
     approved: true
-  })
+  });
 
   // 내용 변경
   const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,15 +52,6 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
       deniedDescription: e.target.value
     }));
   };
-
-  // 라디오 버튼 변경
-  const handleClickRadio = (e: any) => {
-    const approved: boolean = e.target.id === "true" ? true : false;
-    setApproval((approval: Approval) => ({
-      ...approval,
-      approved: approved
-    }));
-  }
 
   // 모달이 열리면 이미지 조회, 닫히면 값 초기화
   React.useEffect(() => {
@@ -170,53 +161,69 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
   }
 
   return (
-    <div style={{ display: 'block', position: 'initial' }}>
+    <div className={styles.maindiv}>
       <Modal show={modalShow} onHide={handleClose} animation centered size="lg">
         <Modal.Header closeButton/>
-
-        <Modal.Body className="d-flex flex-column align-items-center">
-          <Form style={{display: 'flex', justifyContent: 'space-between'}}>
-            <Image rounded style={{ maxHeight: "30%", maxWidth: "30%"}}
+        <div className="d-flex flex-row">
+          <Modal.Body className="d-flex flex-column w-50">
+            <Image rounded className='d-flex container-sm w-50 pt-1 pb-2'
              src={receipt.preview?.toString()}/>
             <Form.Group>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>사원</InputGroup.Text>
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>사원</InputGroup.Text>
                 <Form.Control value={`${order.applicantDeptName} ${order.applicant}`} readOnly/>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>계정</InputGroup.Text>
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>계정</InputGroup.Text>
                 <Form.Control value={`${order.productType}`} readOnly/>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>상호명</InputGroup.Text>
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>상호명</InputGroup.Text>
                 <Form.Control value={`${order.storeName}`} readOnly/>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>비용</InputGroup.Text>
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>비용</InputGroup.Text>
                 <Form.Control value={`${order.totalPrice}`} readOnly/>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>적요</InputGroup.Text>
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>적요</InputGroup.Text>
                 <Form.Control value={`${order.description}`} readOnly/>
               </InputGroup>
-              <InputGroup>
-                <InputGroup.Text style={{width: "25%"}}>신청일</InputGroup.Text>
+              <InputGroup className='p-1'>
+                <InputGroup.Text className={`w-25 ${styles.aligntext}`}>신청일</InputGroup.Text>
                 <Form.Control value={`${order.createdAt}`} readOnly/>
               </InputGroup>
             </Form.Group>
-            <Form.Group>
-              <Form.Check type='radio' name='g1' label="승인" id='true' checked={approval.approved}
-               onChange={handleClickRadio}/>
-              <Form.Check type='radio' name='g1' label="반려" id='false' checked={!approval.approved}
-               onChange={handleClickRadio}/>
-              <InputGroup>
-                <InputGroup.Text>반려사유</InputGroup.Text>
-                <Form.Control as="textarea" readOnly={approval.approved} onChange={handleChangeText}/>
-              </InputGroup>
-              <Button onClick={handleClick}>등록</Button>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
+          </Modal.Body>
+          <Modal.Body className="d-flex flex-column w-50">
+            <div className='d-flex flex-row justify-content-center'>
+              <Button variant={approval.approved === true ? 'primary' : 'outline-primary'} className={`${styles.width30} mx-3`}
+               onClick={() => {setApproval((approval: Approval) => ({...approval, approved: true}))}}>
+                승인
+              </Button>
+              <Button variant={approval.approved === false ? 'danger' : 'outline-danger'} className={`${styles.width30} mx-3`}
+               onClick={() => {setApproval((approval: Approval) => ({...approval, approved: false}))}}>
+                반려
+              </Button>
+            </div>
+            {approval.approved === true ?
+              <div className='d-flex justify-content-center align-items-center h-100'/>
+            :
+              <div className='d-flex justify-content-center align-items-center h-100'>
+                <InputGroup>
+                  <InputGroup.Text className={`w-25 ${styles.aligntext}`}>비고</InputGroup.Text>
+                  <Form.Control as="textarea" rows={5} className={styles.textarea}
+                   readOnly={approval.approved} onChange={handleChangeText}/>
+                </InputGroup>
+              </div>
+            }
+          </Modal.Body>
+        </div>
+        <Modal.Footer className='d-flex justify-content-center'>
+          <Button variant={approval.approved === true ? 'primary' : 'danger'} className={styles.width30} onClick={handleClick}>
+            {approval.approved === true ? '승인' : '반려'}
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );
