@@ -1,0 +1,18 @@
+.maindiv {
+  display: block;
+  position: initial;
+}
+
+.aligntext {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.width70 {
+  width: 70%;
+}
+
+.width20 {
+  width: 20%;
+}

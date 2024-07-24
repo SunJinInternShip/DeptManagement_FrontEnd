@@ -1,8 +1,14 @@
 import axios from 'axios';
 import * as React from 'react';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Image';
+import InputGroup from 'react-bootstrap/InputGroup';
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from '../components/LoadingSpinner';
 import { GetUserInfo, SetUserInfo } from '../components/JWTToken';
+import styles from '../styles/Login.module.css'
+import logo from '../assets/sunjin.png';
 
 interface User {
   id: string;
@@ -57,17 +63,24 @@ export default function Login() {
   },[])
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <div>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
-          <input type='text' placeholder='id' name='id'
-           value={user.id} required
-           onChange={handleChange}/>
-          <input type='password' placeholder='password' name='password'
-           value={user.password} required
-           onChange={handleChange}/>
-          <input type='submit' value="로그인"/>
-        </form>
+    <div className={styles.maindiv}>
+      <div className='container-sm d-flex flex-column justify-content-center align-items-center'>
+      <Image className={`m-4 ${styles.width20}`} src={logo}></Image>
+        <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-center align-items-center w-50'>
+          <InputGroup className={`p-1 ${styles.width70}`}>
+            <InputGroup.Text className={`w-25 ${styles.aligntext}`}>아이디</InputGroup.Text>
+            <Form.Control type="text" name='id' maxLength={20} required
+             value={user.id} onChange={handleChange}/>
+          </InputGroup>
+          <InputGroup className={`p-1 ${styles.width70}`}>
+            <InputGroup.Text className={`w-25 ${styles.aligntext}`}>비밀번호</InputGroup.Text>
+            <Form.Control type="password" name='password' maxLength={20} required
+             value={user.password} onChange={handleChange}/>
+          </InputGroup>
+          <div className={`p-1 ${styles.width70}`}>
+            <Button className={`w-100 ${styles.aligntext}`} type='submit'>로그인</Button>
+          </div>
+        </Form>
       </div>
       {LoadingSpinner(spinnerShow)}
     </div>
