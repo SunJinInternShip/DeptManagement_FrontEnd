@@ -66,7 +66,7 @@ export default function Login() {
     <div className={styles.maindiv}>
       <div className='container-sm d-flex flex-column justify-content-center align-items-center'>
       <Image className={`m-4 ${styles.width20}`} src={logo}></Image>
-        <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-center align-items-center w-50'>
+        <Form onSubmit={handleSubmit} className={`d-flex flex-column justify-content-center align-items-center`}>
           <InputGroup className={`p-1 ${styles.width70}`}>
             <InputGroup.Text className={`w-25 ${styles.aligntext}`}>아이디</InputGroup.Text>
             <Form.Control type="text" name='id' maxLength={20} required
@@ -77,7 +77,7 @@ export default function Login() {
             <Form.Control type="password" name='password' maxLength={20} required
              value={user.password} onChange={handleChange}/>
           </InputGroup>
-          <div className={`p-1 ${styles.width70}`}>
+          <div className={`p-1 m-4 w-100`}>
             <Button className={`w-100 ${styles.aligntext}`} type='submit'>로그인</Button>
           </div>
         </Form>
