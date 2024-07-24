@@ -25,7 +25,7 @@ interface Order {
   totalPrice: number | null;
 }
 
-
+// 조회 모달
 export default function SearchModal(modalShow: boolean, handleClose: any, order: Order) {
   const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;

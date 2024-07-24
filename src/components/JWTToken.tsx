@@ -4,7 +4,7 @@ interface UserInfo {
   role: string | null;
 }
 
-// 로그인 시, 서버로부터 받은 유저 정보(accesstoken, refreshtoken, username)를 localStorage와 cookie로 저장
+// 로그인 시, 서버로부터 받은 유저 정보(accesstoken, refreshtoken, username, userrole)를 localStorage와 cookie로 저장
 export async function SetUserInfo(aToken: string, rToken: string, userName: string, role: string): Promise<void> {
   localStorage.setItem('accessToken', aToken);
   document.cookie = `refreshToken=${rToken}; Path=/;`; // 현재는 보안없이 저장, 수정 필요

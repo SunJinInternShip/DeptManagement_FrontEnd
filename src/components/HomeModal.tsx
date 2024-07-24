@@ -22,11 +22,13 @@ interface Order {
   detail: string;
 }
 
-// 홈 - 추가 버튼
+// 홈 - 추가 모달
 export function HomeOrder(modalShow: boolean, handleClose: any) {
+  // localStorage에 저장된 유저 정보 가져옴
   const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
+  // input type image의 ref
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const [receipt, setReceipt] = React.useState<Receipt>({
@@ -45,7 +47,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
   })
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
-  // 빈 이미지 File으로
+  // 빈 이미지 -> File
   const blankImageToFile = () => {
     try {
       let img = new window.Image();
@@ -95,12 +97,12 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
     }));
   };
 
-
   // 물품 주문 요청
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSpinnerShow(true);
 
+    // image + req -> formData
     let formData = new FormData();
     const img: any = receipt.file ? receipt.file : blankReceipt.file;
     const requestData = {
@@ -246,6 +248,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
   );
 }
 
+// 홈 - 수정 모달
 export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order, orderId: number) {
   const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
