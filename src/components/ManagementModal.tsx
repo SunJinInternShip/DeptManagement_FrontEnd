@@ -80,7 +80,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
               file: response.data
             }));
             reader.readAsDataURL(response.data);
-          } catch (error) {
+          } catch (error: any) {
             console.log(error);
             setReceipt({
               file: null,

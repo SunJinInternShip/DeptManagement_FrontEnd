@@ -65,7 +65,7 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
               file: response.data
             }));
             reader.readAsDataURL(response.data);
-          } catch (error) {
+          } catch (error: any) {
             console.log(error);
             setReceipt({
               file: null,

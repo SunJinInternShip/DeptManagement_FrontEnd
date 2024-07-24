@@ -64,7 +64,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
           }));
         }, 'image/jpeg');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
     }
   }
@@ -127,8 +127,8 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
       });
       alert(res.data);
       handleClose();
-    } catch (error: unknown) {
-      console.log(error);
+    } catch (error: any) {
+      alert(error.response.data.message);
     }
     setSpinnerShow(false);
   }
@@ -300,8 +300,8 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
       });
       alert(res.data);
       handleClose();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      alert(error.response.data.message);
     }
     setSpinnerShow(false);
   }
@@ -344,8 +344,8 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
       });
       alert(res.data);
       handleClose();
-    } catch (error: unknown) {
-      console.log(error);
+    } catch (error: any) {
+      alert(error.response.data.message);
     }
     setSpinnerShow(false);
   }
@@ -414,7 +414,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
             file: response.data
           }));
           reader.readAsDataURL(response.data);
-        } catch (error) {
+        } catch (error: any) {
           console.log(error);
           setCurrentReceipt({
             file: null,

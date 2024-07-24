@@ -115,8 +115,8 @@ export default function Search() {
           }
         });
         setOrderData(res.data);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        alert(error.response.data.message);
       }
     }
     else if(role === "TEAMLEADER") {
@@ -131,8 +131,8 @@ export default function Search() {
           }
         });
         setOrderData(res.data);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        alert(error.response.data.message);
       }
     }
     else if(role === "CENTERDIRECTOR") {
@@ -148,8 +148,8 @@ export default function Search() {
         });
         setOrderData(res.data);
         console.log(res);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        alert(error.response.data.message);
       }
     }
     setSpinnerShow(false);
@@ -302,8 +302,8 @@ export default function Search() {
             })
           });
           setMemberData(mData);
-        } catch (error) {
-          console.log(error);
+        } catch (error: any) {
+          alert(error.response.data.message);
         }
       }
       loadDeptAndUserInfo();
@@ -333,8 +333,8 @@ export default function Search() {
           });
           setMemberData(mData);
           setDeptData(dData);
-        } catch (error) {
-          console.log(error);
+        } catch (error: any) {
+          alert(error.response.data.message);
         }
       }
       loadDeptAndUserInfo();

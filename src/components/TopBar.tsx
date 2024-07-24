@@ -28,8 +28,8 @@ export default function TopBar(url: string) {
       alert(res.data);
       //setSpinnerShow(false);
       navigate("/", { replace: true });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      alert(error.response.data.message);
     }
   };
   

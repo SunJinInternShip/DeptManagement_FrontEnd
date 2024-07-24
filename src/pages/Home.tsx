@@ -76,8 +76,8 @@ export default function Home() {
       })
       loadOrders();
       alert(res.data);
-    } catch (error: unknown) {
-      console.log(error);
+    } catch (error: any) {
+      alert(error.response.data.message);
     }
     setSpinnerShow(false);
   }
@@ -98,8 +98,8 @@ export default function Home() {
         response.then((res) => {
           setOrderData(res.data);
         })
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        alert(error.response.data.message);
       }
     }
     else if(role === "TEAMLEADER") {
@@ -115,8 +115,8 @@ export default function Home() {
         response.then((res) => {
           setOrderData(res.data);
         })
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        alert(error.response.data.message);
       }
     }
     setSpinnerShow(false);

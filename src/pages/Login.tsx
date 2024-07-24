@@ -49,8 +49,8 @@ export default function Login() {
       await SetUserInfo(res.data.accessToken, res.data.refreshToken, res.data.userName, res.data.role);
       alert(`${GetUserInfo().name}님 환영합니다`);
       GetUserInfo().role === "CENTERDIRECTOR" ? navigate("/search", { replace: true }) : navigate("/home", { replace: true });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      alert(error.response.data.message);
     }
     setSpinnerShow(false);
   };

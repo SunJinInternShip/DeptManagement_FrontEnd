@@ -59,8 +59,8 @@ export default function Management() {
           }
         });
         setOrderData(res.data);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        alert(error.response.data.message);
       }
     }
     else if(role === "CENTERDIRECTOR") {
@@ -71,8 +71,8 @@ export default function Management() {
           }
         });
         setOrderData(res.data);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        alert(error.response.data.message);
       }
     }
   }
