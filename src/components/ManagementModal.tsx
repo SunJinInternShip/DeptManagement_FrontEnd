@@ -168,11 +168,13 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
     <div className={styles.maindiv}>
       <Modal show={modalShow} onHide={handleClose} animation centered size="lg">
         <Modal.Header closeButton/>
-        <div className="d-flex flex-row">
-          <Modal.Body className="d-flex flex-column w-50">
-            <Image rounded className='d-flex container-sm w-50 pt-1 pb-2'
+        <div className="d-flex flex-column w-100">
+          <Modal.Body>
+            <Image rounded className='d-flex container-sm w-25 pt-1 pb-2'
              src={receipt.preview?.toString()}/>
-            <Form.Group>
+          </Modal.Body>
+          <Modal.Body className="d-flex flex-row w-100">
+            <Form.Group className='w-50 px-3'>
               <InputGroup className='p-1'>
                 <InputGroup.Text className={`w-25 ${styles.aligntext}`}>사원</InputGroup.Text>
                 <Form.Control value={`${order.applicantDeptName} ${order.applicant}`} readOnly/>
@@ -198,9 +200,8 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
                 <Form.Control value={`${order.createdAt}`} readOnly/>
               </InputGroup>
             </Form.Group>
-          </Modal.Body>
-          <Modal.Body className="d-flex flex-column w-50">
-            <div className='d-flex flex-row justify-content-center'>
+            <div className={`d-flex flex-column w-50`}>
+              <div className={`d-flex flex-row justify-content-center`}>
               <Button variant={approval.approved === true ? 'primary' : 'outline-primary'} className={`${styles.width30} mx-3`}
                onClick={() => {setApproval((approval: Approval) => ({...approval, approved: true}))}}>
                 승인
@@ -209,18 +210,19 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
                onClick={() => {setApproval((approval: Approval) => ({...approval, approved: false}))}}>
                 반려
               </Button>
-            </div>
-            {approval.approved === true ?
-              <div className='d-flex justify-content-center align-items-center h-100'/>
-            :
-              <div className='d-flex justify-content-center align-items-center h-100'>
-                <InputGroup>
-                  <InputGroup.Text className={`w-25 ${styles.aligntext}`}>비고</InputGroup.Text>
-                  <Form.Control as="textarea" rows={5} className={styles.textarea}
-                   readOnly={approval.approved} onChange={handleChangeText}/>
-                </InputGroup>
               </div>
-            }
+              {approval.approved === true ?
+                <div className='d-flex justify-content-center h-100'/>
+              :
+                <div className='d-flex justify-content-center h-100 px-3 py-4'>
+                  <InputGroup>
+                    <InputGroup.Text className={`w-25 ${styles.aligntext}`}>비고</InputGroup.Text>
+                    <Form.Control as="textarea" rows={5} className={styles.textarea}
+                      readOnly={approval.approved} onChange={handleChangeText}/>
+                  </InputGroup>
+                </div>
+              }
+            </div>
           </Modal.Body>
         </div>
         <Modal.Footer className='d-flex justify-content-center'>

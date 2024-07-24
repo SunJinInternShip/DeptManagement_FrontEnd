@@ -23,7 +23,6 @@ export default function TopBar(url: string) {
       });
       await RemoveUserInfo();
       alert(res.data);
-      //setSpinnerShow(false);
       navigate("/", { replace: true });
     } catch (error: any) {
       alert(error.response.data.message);
@@ -37,16 +36,16 @@ export default function TopBar(url: string) {
         <button onClick={() => {navigate("/home")}}
          className={url === "home" ? styles.selectedtab : styles.unselectedtab}
          hidden={role === "CENTERDIRECTOR"}>
-          홈
+          대기 조회
         </button>
         <button onClick={() => {navigate("/search")}}
          className={url === "search" ? styles.selectedtab : styles.unselectedtab}>
-          조회
+          주문 현황
         </button>
         <button onClick={() => {navigate("/management")}}
          className={url === "management" ? styles.selectedtab : styles.unselectedtab}
          hidden={role === "EMPLOYEE"}>
-          승인 및 반려
+          상신 조회
         </button>
       </div>
       <div className={styles.rightSection}>
