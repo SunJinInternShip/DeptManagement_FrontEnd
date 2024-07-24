@@ -11,6 +11,7 @@
   border: 1px solid #0D6EFD;
   border-radius: 10px;
   transition: all 0.1s ease-in-out;
+  font-weight: bold;
 }
 .enabledsubmitbtn:hover {
   cursor: pointer;
@@ -26,6 +27,7 @@
   color: rgba(128, 128, 128, 0.5);
   border: 1px solid rgba(128, 128, 128, 0.5);
   border-radius: 10px;
+  font-weight: bold;
 }
 
 .enablededitbtn {
@@ -36,6 +38,7 @@
   border: 1px solid #FFC107;
   border-radius: 10px;
   transition: all 0.1s ease-in-out;
+  font-weight: bold;
 }
 
 .enablededitbtn:hover {
@@ -52,6 +55,7 @@
   color: rgba(128, 128, 128, 0.5);
   border: 1px solid rgba(128, 128, 128, 0.5);
   border-radius: 10px;
+  font-weight: bold;
 }
 
 .addbtn {
@@ -62,6 +66,7 @@
   border: 1px solid #0D6EFD;
   border-radius: 10px;
   transition: all 0.1s ease-in-out;
+  font-weight: bold;
 }
 
 .addbtn:hover {
