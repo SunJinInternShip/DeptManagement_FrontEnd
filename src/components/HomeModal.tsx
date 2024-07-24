@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { GetUserInfo } from './JWTToken';
 import LoadingSpinner from './LoadingSpinner';
-import image from '../assets/blank_receipt.jpg';
+import image from '../assets/blank_img.jpg';
 import styles from '../styles/HomeModal.module.css'
 
 interface Receipt {
