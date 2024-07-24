@@ -392,7 +392,7 @@ export default function Search() {
                         전체
                       </option>
                       {Object.entries(memberData).map(([k,v]: any) => (
-                        <option key={k}>
+                        <option key={k} hidden={v.deptId === requirement.deptId ? false : requirement.deptId === 0 ? false : true}>
                           {v.memberName}
                         </option>
                       ))}
