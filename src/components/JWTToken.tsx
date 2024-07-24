@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 interface UserInfo {
   accessToken: string | null;
   name: string | null;
@@ -29,16 +27,3 @@ export async function RemoveUserInfo(): Promise<void> {
   localStorage.removeItem("name");
   localStorage.removeItem("role");
 }
-
-/*
-function getCookieValue(cookieName: string): string | undefined {
-  const cookies = document.cookie.split(';');
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i].trim();
-    if (cookie.startsWith(`${cookieName}=`)) {
-      return cookie.substring(cookieName.length + 1);
-    }
-  }
-  return undefined;
-}
-*/

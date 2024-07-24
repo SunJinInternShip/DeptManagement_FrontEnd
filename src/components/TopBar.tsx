@@ -1,5 +1,3 @@
-// src/App.js
-import * as React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { GetUserInfo, RemoveUserInfo } from './JWTToken';
