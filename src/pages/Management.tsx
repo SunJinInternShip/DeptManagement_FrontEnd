@@ -37,6 +37,7 @@ export default function Management() {
     totalPrice: 0
   });
   const [modalShow, setModalShow] = React.useState<boolean>(false);
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false)
 
   // 승인 반려 모달 열기
   const handleClick = (o: Order) => {
@@ -51,6 +52,7 @@ export default function Management() {
 
   // 나에게 상신된 목록 조회
   const loadOrders = async () => {
+    setSpinnerShow(true);
     if(role === "TEAMLEADER") {
       try {
         const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/department/progress`, {
@@ -75,20 +77,23 @@ export default function Management() {
         alert(error.response.data.message);
       }
     }
+    setSpinnerShow(false);
   }
 
   // 처음 페이지 로드 시, 조회 | 모달이 닫히면 조회
   React.useEffect(() => {
-    //setSpinnerShow(true);
+    setSpinnerShow(true);
     if(modalShow === false) {
       loadOrders();
     }
-    //setSpinnerShow(false);
+    setSpinnerShow(false);
   },[modalShow]);
 
   // 나에게 상신된 목록 조회
   React.useEffect(() => {
+    setSpinnerShow(true);
     loadOrders();
+    setSpinnerShow(false);
   },[])
 
   return (
@@ -125,6 +130,7 @@ export default function Management() {
         </Table>
       </div>
       {ManagementModal(modalShow, handleClose, order)}
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }

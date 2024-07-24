@@ -44,6 +44,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
     deniedDescription: "",
     approved: true
   });
+  const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
   // 내용 변경
   const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +56,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
 
   // 모달이 열리면 이미지 조회, 닫히면 값 초기화
   React.useEffect(() => {
-    //setSpinnerShow(true);
+    setSpinnerShow(true);
     if(modalShow === true) {
       if(order.orderId !== undefined) {
         const reader = new FileReader();
@@ -101,12 +102,12 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
         approved: true
       });
     }
-    //setSpinnerShow(false);
+    setSpinnerShow(false);
   },[modalShow])
 
   // 이미지 미리 보기
   React.useEffect(() => {
-    //setSpinnerShow(true);
+    setSpinnerShow(true);
     if(receipt.file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -123,13 +124,15 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
         preview: null
       }));
     }
-    //setSpinnerShow(false);
+    setSpinnerShow(false);
   },[receipt.file])
 
   // 승인 및 반려 처리
   const handleClick = async () => {
+    setSpinnerShow(true);
     if(approval.approved === false && approval.deniedDescription === "") {
       alert("반려 사유를 입력해주세요.")
+      setSpinnerShow(false);
     }
     else {
       const ApprovedToStr: string = approval.approved === true ? "true" : "false";
@@ -158,6 +161,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
         handleClose();
       }
     }
+    setSpinnerShow(false);
   }
 
   return (
@@ -225,6 +229,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
           </Button>
         </Modal.Footer>
       </Modal>
+      {LoadingSpinner(spinnerShow)}
     </div>
   );
 }

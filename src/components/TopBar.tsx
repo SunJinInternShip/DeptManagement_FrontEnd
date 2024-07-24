@@ -14,7 +14,6 @@ export default function TopBar(url: string) {
 
   // 로그아웃
   const handleLogout = async () => {
-    //setSpinnerShow(true);
     try {
       const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/logout`, {},
       {

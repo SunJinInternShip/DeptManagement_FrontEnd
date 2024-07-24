@@ -4,7 +4,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
-import { GetUserInfo, RemoveUserInfo } from '../components/JWTToken';
+import { GetUserInfo } from '../components/JWTToken';
 import TopBar from '../components/TopBar';
 import { HomeEdit, HomeOrder } from '../components/HomeModal';
 import qs from 'qs';
