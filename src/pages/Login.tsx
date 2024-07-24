@@ -67,7 +67,6 @@ export default function Login() {
            value={user.password} required
            onChange={handleChange}/>
           <input type='submit' value="로그인"/>
-          <button onClick={() => {navigate("/register")}}>회원가입</button>
         </form>
       </div>
       {LoadingSpinner(spinnerShow)}
