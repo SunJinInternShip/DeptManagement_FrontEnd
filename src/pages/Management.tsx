@@ -113,7 +113,7 @@ export default function Management() {
               <th className={styles.th}>신청 날짜</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className={styles.tablebody}>
             {Object.entries(orderData).reverse().map(([k,v]) => (
               <tr key={k} onClick={() => {handleClick(v)}}>
                 <td className={styles.td}>{v.applicantDeptName}</td>

@@ -203,7 +203,7 @@ export default function Home() {
           <tbody>
             {Object.entries(orderData).reverse().map(([k,v]) => (
               <tr key={k} onClick={() => {handleClick(v)}}
-               className={checkedOrders.find((item) => item === v.orderId) !== undefined ? styles.tablechecked : ''}>
+               className={checkedOrders.find((item) => item === v.orderId) !== undefined ? styles.tablechecked : styles.tableunchecked}>
                 <td className={styles.td}>
                   <Form.Check onClick={() => {handleClick(v)}} readOnly
                    checked={checkedOrders.find((item) => item === v.orderId) !== undefined}/>
