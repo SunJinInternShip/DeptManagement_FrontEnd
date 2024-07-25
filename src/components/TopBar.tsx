@@ -49,7 +49,7 @@ export default function TopBar(url: string) {
         </button>
       </div>
       <div className={styles.rightSection}>
-        <span className={styles.text}>{role} | {userName}</span>
+        <span className={styles.text}>{role === "EMPLOYEE" ? "사원" : role === "CENTERDIRECTOR" ? "센터장" : "팀장"} | {userName}</span>
         <Button variant="outline-danger"
          onClick={handleLogout}
          className={styles.button}>
