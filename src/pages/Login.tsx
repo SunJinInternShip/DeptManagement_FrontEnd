@@ -80,6 +80,9 @@ export default function Login() {
           <div className={`p-1 m-4 w-100`}>
             <Button className={`w-100 ${styles.aligntext}`} type='submit'>로그인</Button>
           </div>
+          <div className={`p-1 m-4 w-100`}>
+            <Button className={`w-100 ${styles.aligntext}`} onClick={() => navigate("/signup")}>회원가입</Button>
+          </div>
         </Form>
       </div>
       {LoadingSpinner(spinnerShow)}
