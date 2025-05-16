@@ -20,6 +20,16 @@ export function GetUserInfo(): UserInfo {
   return {accessToken, name, role};
 }
 
+// 보안 문제로 수정 필요
+export function GetRefreshToken(): string | null {
+  const cookies = document.cookie.split('; ')
+  for(const cookie of cookies) {
+    const [key, value] = cookie.split('=');
+    if(key == "refreshToken") return value;
+  }
+  return null
+}
+
 // 로그아웃 시, 유저 정보 remove
 export async function RemoveUserInfo(): Promise<void> {
   localStorage.removeItem("accessToken");
