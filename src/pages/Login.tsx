@@ -46,9 +46,11 @@ export default function Login() {
         "loginId": user.id,
         "password": user.password
       });
-      await SetUserInfo(res.data.accessToken, res.data.refreshToken, res.data.userName, res.data.role);
-      alert(`${GetUserInfo().name}님 환영합니다`);
-      GetUserInfo().role === "CENTERDIRECTOR" ? navigate("/search", { replace: true }) : navigate("/home", { replace: true });
+      const setUserInfoResult = SetUserInfo(res.data.accessToken, res.data.refreshToken, res.data.userName, res.data.role);
+      if(setUserInfoResult) {
+        alert(`${GetUserInfo().name}님 환영합니다`);
+        GetUserInfo().role === "CENTERDIRECTOR" ? navigate("/search", { replace: true }) : navigate("/home", { replace: true });
+      }
     } catch (error: any) {
       alert(error.response.data.message);
     }
