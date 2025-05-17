@@ -4,7 +4,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
-import { GetUserInfo } from '../components/JWTToken';
+import { GetUserInfo, reissueTokens } from '../components/JWTToken';
 import TopBar from '../components/TopBar';
 import { HomeEdit, HomeOrder } from '../components/HomeModal';
 import qs from 'qs';
@@ -20,7 +20,6 @@ interface Order {
 
 // 사원 페이지
 export default function Home() {
-  const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
   const [orderData, setOrderData] = React.useState<Object>([]);
@@ -71,10 +70,10 @@ export default function Home() {
           return qs.stringify(params, { arrayFormat: 'repeat' })
         },
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${GetUserInfo().accessToken}`
         }
       })
-      loadOrders();
+      setOrders();
       alert(res.data);
     } catch (error: any) {
       alert(error.response.data.message);
@@ -82,41 +81,40 @@ export default function Home() {
     setSpinnerShow(false);
   }
 
-  // 물품 조회
-  const loadOrders = async () => {
-    setSpinnerShow(true);
-    if(role === "EMPLOYEE") {
-      try {
-        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/employee/orders`, {
-          params: {
-            status: "wait"
-          },
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
-        response.then((res) => {
-          setOrderData(res.data);
-        })
-      } catch (error: any) {
-        alert(error.response.data.message);
+  // 서버에서 사용 내역 조회
+  const loadOrders = async (lowerRole: string): Promise<number | null> => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/orders`, {
+        params: {
+          status: "wait"
+        },
+        headers: {
+          Authorization: `Bearer ${GetUserInfo().accessToken}`
+        }
+      });
+      setOrderData(res.data)
+      return res.status
+    } catch (error: unknown) {
+      if(axios.isAxiosError(error) && error.response) {
+        console.log("조회 실패:", error)
+        return error.response?.status
       }
     }
-    else if(role === "TEAMLEADER") {
-      try {
-        const response = axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/orders`, {
-          params: {
-            status: "wait"
-          },
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
-        response.then((res) => {
-          setOrderData(res.data);
-        })
-      } catch (error: any) {
-        alert(error.response.data.message);
+    return null
+  }
+
+  // 사용 내역 설정 및 에러 처리
+  const setOrders = async () => {
+    setSpinnerShow(true);
+    if(role === "EMPLOYEE" || role === "TEAMLEADER") {
+      const lowerRole = role.toLowerCase()
+      const orderResult = await loadOrders(lowerRole)
+      // 에러 처리
+      if(orderResult !== axios.HttpStatusCode.Ok) {
+        const res = await reissueTokens()
+        if(res !== axios.HttpStatusCode.Ok) {
+          // 로그아웃 처리
+        }
       }
     }
     setSpinnerShow(false);
@@ -133,7 +131,7 @@ export default function Home() {
   React.useEffect(() => {
     setSpinnerShow(true);
     if((orderModalShow === false && editModalShow === false)) {
-      loadOrders();
+      setOrders();
     }
     setSpinnerShow(false);
   },[orderModalShow, editModalShow]);
