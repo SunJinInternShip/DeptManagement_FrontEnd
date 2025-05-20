@@ -58,13 +58,10 @@ export default function Home() {
   // 상신
   const handleClickBtn = async () => {
     setSpinnerShow(true);
-    let apiURL: string = "";
-    
-    if(role === "EMPLOYEE") apiURL = `${process.env.REACT_APP_SERVER_URL}/employee/submit`;
-    else if(role === "TEAMLEADER") apiURL = `${process.env.REACT_APP_SERVER_URL}/teamleader/submit`;
-
-    try {
-      const res = await axios.get(apiURL, {
+    if(role === "EMPLOYEE" || role === "TEAMLEADER") {
+      const lowerRole = role.toLowerCase()
+      try {
+      const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/submit`, {
         params: { order: checkedOrders },
         paramsSerializer: params => {
           return qs.stringify(params, { arrayFormat: 'repeat' })
@@ -77,6 +74,7 @@ export default function Home() {
       alert(res.data);
     } catch (error: any) {
       alert(error.response.data.message);
+    }
     }
     setSpinnerShow(false);
   }
