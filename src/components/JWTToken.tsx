@@ -11,8 +11,8 @@ export function SetUserInfo(aToken: string, rToken: string, userName: string | n
   try {
     localStorage.setItem('accessToken', aToken);
     document.cookie = `refreshToken=${rToken}; Path=/;`; // 현재는 보안없이 저장, 수정 필요
-    if(userName) localStorage.setItem('name', userName); // 현재 토큰 재발급 시에 유저 이름 못 가져옴. 추측으로는 토큰 내에 유저 이름이 없는 듯
-    if(role) localStorage.setItem('role', role); // 토큰 재발급 시에 유저 역할도 고정되어있는 듯
+    if(userName) localStorage.setItem('name', userName); // 토큰 재발급 시에 유저이름이 null
+    if(role) localStorage.setItem('role', role); // 토큰 재발급 시에 유저 역할이 null
     return true
   } catch (error) {
     console.log("유저 정보 저장 실패:", error)
