@@ -8,11 +8,6 @@ import LoadingSpinner from './LoadingSpinner';
 import InputGroup from 'react-bootstrap/InputGroup';
 import styles from '../styles/Search.module.css'
 
-interface Receipt {
-  file: File | Blob | null;
-  preview: string | ArrayBuffer | null;
-}
-
 interface Order {
   applicant: string | null;
   applicantDeptName: string | null;
@@ -30,82 +25,33 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
   const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
-  const [receipt, setReceipt] = React.useState<Receipt>({
-    file: null,
-    preview: null
-  });
+  const [receipt, setReceipt] = React.useState<string>("");
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false);
 
  // 모달이 열리면 이미지 조회, 닫히면 값 초기화
   React.useEffect(() => {
     setSpinnerShow(true);
     if(modalShow === true) {
-      if(order.orderId !== undefined) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setReceipt((receipt: Receipt) => ({
-            ...receipt,
-            preview: reader.result
-          }));
-        };
-        let url: string;
-        if(role === 'EMPLOYEE') url = `${process.env.REACT_APP_SERVER_URL}/employee/img/${order.orderId}`;
-        else if(role === 'TEAMLEADER') url = `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${order.orderId}`;
-        else if(role === 'CENTERDIRECTOR') url = `${process.env.REACT_APP_SERVER_URL}/centerdirector/img/${order.orderId}`;
+      if(order.orderId !== undefined && role) {
+        const lowerRole = role.toLowerCase()
         const loadImg = async () => {
           try {
-            const response: any = await axios.get(url, {
-                responseType: 'blob',
+            const response: any = await axios.get(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/img/${order.orderId}`, {
                 headers: {
                   Authorization: `Bearer ${accessToken}`
                 }
             });
-            setReceipt((receipt: Receipt) => ({
-              ...receipt,
-              file: response.data
-            }));
-            reader.readAsDataURL(response.data);
+            console.log(response.data)
+            setReceipt(response.data);
           } catch (error: any) {
             console.log(error);
-            setReceipt({
-              file: null,
-              preview: null
-            });
           }
         }
         loadImg()
       }
     }
-    else {
-      setReceipt({
-        file: null,
-        preview: null
-      });
-    }
     setSpinnerShow(false);
   },[modalShow])
-
-  // 이미지 미리 보기
-  React.useEffect(() => {
-    setSpinnerShow(true);
-    if(receipt.file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setReceipt((receipt: Receipt) => ({
-          ...receipt,
-          preview: reader.result
-        }));
-      };
-      reader.readAsDataURL(receipt.file);
-    }
-    else if(receipt.file === null) {
-      setReceipt((receipt: Receipt) => ({
-        ...receipt,
-        preview: null
-      }));
-    }
-    setSpinnerShow(false);
-  },[receipt.file])
 
   return (
     <div className={styles.maindiv}>
@@ -114,7 +60,7 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
 
         <Modal.Body className="d-flex flex-column">
           <Image rounded className='d-flex container-sm w-50 pt-1 pb-2'
-           src={receipt.preview?.toString()}/>
+           src={receipt}/>
           <Form.Group>
             <InputGroup className='p-1'>
               <InputGroup.Text className={`w-25 ${styles.aligntext}`}>사원</InputGroup.Text>
