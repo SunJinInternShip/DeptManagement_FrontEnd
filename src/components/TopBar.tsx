@@ -21,9 +21,11 @@ export default function TopBar(url: string) {
           Authorization: `Bearer ${accessToken}`
         }
       });
-      await RemoveUserInfo();
-      alert(res.data);
-      navigate("/", { replace: true });
+      const removeUserInfoResult = RemoveUserInfo();
+      if(removeUserInfoResult) {
+        alert(res.data);
+        navigate("/", { replace: true });
+      }
     } catch (error: any) {
       alert(error.response.data.message);
     }
