@@ -61,9 +61,15 @@ export async function reissueTokens(): Promise<number | null> {
 }
 
 // 로그아웃 시, 유저 정보 remove
-export async function RemoveUserInfo(): Promise<void> {
-  localStorage.removeItem("accessToken");
-  document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-  localStorage.removeItem("name");
-  localStorage.removeItem("role");
+export function RemoveUserInfo(): boolean {
+  try {
+    localStorage.removeItem("accessToken");
+    document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    localStorage.removeItem("name");
+    localStorage.removeItem("role");
+    return true
+  } catch (error) {
+    console.log("유저 정보 삭제 실패:", error)
+    return false
+  }
 }

@@ -4,7 +4,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
-import { GetUserInfo, reissueTokens } from '../components/JWTToken';
+import { GetUserInfo, reissueTokens, RemoveUserInfo } from '../components/JWTToken';
 import TopBar from '../components/TopBar';
 import { HomeEdit, HomeOrder } from '../components/HomeModal';
 import qs from 'qs';
@@ -112,6 +112,11 @@ export default function Home() {
         const res = await reissueTokens()
         if(res !== axios.HttpStatusCode.Ok) {
           // 로그아웃 처리
+          const removeUserInfoResult = RemoveUserInfo()
+          if(removeUserInfoResult) {
+            alert("잘못된 접근입니다.")
+            navigate("/", { replace: true });
+          }
         }
       }
     }
