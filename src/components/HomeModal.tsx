@@ -329,10 +329,6 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
 
     if(orderId !== undefined && role) {
       const lowerRole = role.toLowerCase()
-      console.log(order.account)
-      console.log(order.bName)
-      console.log(order.price)
-      console.log(order.detail)
       try {
         const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/${orderId}`, formData,
         {
@@ -370,7 +366,6 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
   React.useEffect(() => {
     setSpinnerShow(true);
     if(modalShow === true) {
-      console.log(orderInfo)
       setOrder(orderInfo);
       loadCurrentImg()
     }
@@ -424,14 +419,14 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
                onChange={handleChangeImage}/>
               <InputGroup className='p-1'>
                 <InputGroup.Text className={`w-25 ${styles.aligntext}`}>계정</InputGroup.Text>
-                <Form.Select onChange={handleSelectAccount}>
-                  <option selected={order.account === "비품"}>비품</option>
-                  <option selected={order.account === "간식"}>간식</option>
-                  <option selected={order.account === "식비"}>식비</option>
-                  <option selected={order.account === "일반 경비"}>일반 경비</option>
-                  <option selected={order.account === "접대비"}>접대비</option>
-                  <option selected={order.account === "교통비"}>교통비</option>
-                  <option selected={order.account === "기타"}>기타</option>
+                <Form.Select value={order.account} onChange={handleSelectAccount}>
+                  <option value="비품">비품</option>
+                  <option value="간식">간식</option>
+                  <option value="식비">식비</option>
+                  <option value="일반 경비">일반 경비</option>
+                  <option value="접대비">접대비</option>
+                  <option value="교통비">교통비</option>
+                  <option value="기타">기타</option>
                 </Form.Select>
               </InputGroup>
               <InputGroup className='p-1'>
