@@ -255,10 +255,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const [currentReceipt, setCurrentReceipt] = React.useState<Receipt>({
-    file: null,
-    preview: null
-  });
+  const [currentReceipt, setCurrentReceipt] = React.useState<string>("");
   const [newReceipt, setNewReceipt] = React.useState<Receipt>({
     file: null,
     preview: null
@@ -295,20 +292,19 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
   // 물품 삭제 요청
   const handleDelete = async () => {
     setSpinnerShow(true);
-
-    let url: string;
-    url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/${orderId}` : `${process.env.REACT_APP_SERVER_URL}/teamleader/${orderId}`;
-
-    try {
-      const res = await axios.delete(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-      alert(res.data);
-      handleClose();
-    } catch (error: any) {
-      alert(error.response.data.message);
+    if(orderId !== undefined && role) {
+      const lowerRole = role.toLowerCase()
+      try {
+        const res = await axios.delete(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/${orderId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        alert(res.data);
+        handleClose();
+      } catch (error: any) {
+        alert(error.response.data.message);
+      }
     }
     setSpinnerShow(false);
   }
@@ -319,13 +315,6 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
     setSpinnerShow(true);
 
     let formData = new FormData();
-    let img: any;
-    if(newReceipt.file === null && currentReceipt.file !== null) {
-      img = new File([currentReceipt.file], 'image.jpg', { type: 'image/jpeg' });
-    }
-    else {
-      img = newReceipt.file
-    }
 
     const requestData = {
       "productType": order.account,
@@ -335,33 +324,55 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
     };
     const blob = new Blob([JSON.stringify(requestData)], {type: 'application/json'});
 
-    formData.append("image", img);
+    if(newReceipt.file) formData.append("image", newReceipt.file);
     formData.append("request", blob);
 
-    let url: string;
-    url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/${orderId}` : `${process.env.REACT_APP_SERVER_URL}/teamleader/${orderId}`;
-    
-    try {
-      const res = await axios.patch(url, formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
-      alert(res.data);
-      handleClose();
-    } catch (error: any) {
-      alert(error.response.data.message);
+    if(orderId !== undefined && role) {
+      const lowerRole = role.toLowerCase()
+      console.log(order.account)
+      console.log(order.bName)
+      console.log(order.price)
+      console.log(order.detail)
+      try {
+        const res = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/${orderId}`, formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+        alert(res.data);
+        handleClose();
+      } catch (error: any) {
+        alert(error.response.data.message);
+      }
+      setSpinnerShow(false);
     }
-    setSpinnerShow(false);
+  }
+
+  const loadCurrentImg = async () => {
+    if(orderId !== undefined && role) {
+      const lowerRole = role.toLowerCase()
+      try {
+        const response: any = await axios.get(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/img/${orderId}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+        });
+        setCurrentReceipt(response.data);
+      } catch (error: any) {
+        console.log(error);
+      }
+    }
   }
 
   // 모달이 열리면 선택된 물품 값으로 변경, 닫히면 값 초기화
   React.useEffect(() => {
     setSpinnerShow(true);
     if(modalShow === true) {
+      console.log(orderInfo)
       setOrder(orderInfo);
+      loadCurrentImg()
     }
     else {
       setNewReceipt({
@@ -394,46 +405,6 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
     setSpinnerShow(false);
   },[newReceipt.file])
 
-  // 수정 시, orderId에 따른 이미지
-  React.useEffect(() => {
-    if(orderId !== undefined) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCurrentReceipt((receipt: Receipt) => ({
-          ...receipt,
-          preview: reader.result
-        }));
-      };
-
-      let url: string;
-      url = role === 'EMPLOYEE'? `${process.env.REACT_APP_SERVER_URL}/employee/img/${orderId}` : `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${orderId}`;
-
-      const loadImg = async () => {
-        try {
-          const response: any = await axios.get(url, {
-              responseType: 'blob',
-              headers: {
-                Authorization: `Bearer ${accessToken}`
-              }
-          });
-          setCurrentReceipt((receipt: Receipt) => ({
-            ...receipt,
-            file: response.data
-          }));
-          reader.readAsDataURL(response.data);
-        } catch (error: any) {
-          console.log(error);
-          setCurrentReceipt({
-            file: null,
-            preview: null
-          });
-        }
-      }
-
-      loadImg()
-    }
-  },[orderId]);
-
   return (
     <div className={styles.ordermaindiv}>
       <Modal show={modalShow} onHide={handleClose} animation centered>
@@ -447,7 +418,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
             </div>
             <Image rounded className={`d-flex container-sm w-50 pt-1 pb-2 ${styles.image}`}
              onClick={() => {return inputRef.current !== null ? inputRef.current.click() : ''}}
-             src={newReceipt.file ? newReceipt.preview?.toString() : currentReceipt.preview?.toString()}/>
+             src={newReceipt.file ? newReceipt.preview?.toString() : currentReceipt}/>
             <Form.Group>
               <Form.Control type="file" name='file' ref={inputRef} hidden
                onChange={handleChangeImage}/>
