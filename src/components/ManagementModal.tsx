@@ -9,11 +9,6 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import styles from '../styles/ManagementModal.module.css'
 
-interface Receipt {
-  file: File | Blob | null;
-  preview: string | ArrayBuffer | null;
-}
-
 interface Order {
   applicant: string | null;
   applicantDeptName: string | null;
@@ -36,10 +31,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
   const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
-  const [receipt, setReceipt] = React.useState<Receipt>({
-    file: null,
-    preview: null
-  });
+  const [receipt, setReceipt] = React.useState<string>("");
   const [approval, setApproval] = React.useState<Approval>({
     deniedDescription: "",
     approved: true
@@ -58,45 +50,26 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
   React.useEffect(() => {
     setSpinnerShow(true);
     if(modalShow === true) {
-      if(order.orderId !== undefined) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setReceipt((receipt: Receipt) => ({
-            ...receipt,
-            preview: reader.result
-          }));
-        };
-        let url: string;
-        url = role === 'TEAMLEADER' ? `${process.env.REACT_APP_SERVER_URL}/teamleader/img/${order.orderId}` : `${process.env.REACT_APP_SERVER_URL}/centerdirector/img/${order.orderId}`;
+      if(order.orderId !== undefined && role) {
+        const lowerRole = role.toLowerCase()
         const loadImg = async () => {
           try {
-            const response: any = await axios.get(url, {
-                responseType: 'blob',
+            const response: any = await axios.get(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/img/${order.orderId}`, {
                 headers: {
                   Authorization: `Bearer ${accessToken}`
                 }
             });
-            setReceipt((receipt: Receipt) => ({
-              ...receipt,
-              file: response.data
-            }));
-            reader.readAsDataURL(response.data);
+            setReceipt(response.data);
           } catch (error: any) {
             console.log(error);
-            setReceipt({
-              file: null,
-              preview: null
-            });
+            setReceipt("");
           }
         }
         loadImg()
       }
     }
     else {
-      setReceipt({
-        file: null,
-        preview: null
-      });
+      setReceipt("");
       setApproval({
         deniedDescription: "",
         approved: true
@@ -104,28 +77,6 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
     }
     setSpinnerShow(false);
   },[modalShow])
-
-  // 이미지 미리 보기
-  React.useEffect(() => {
-    setSpinnerShow(true);
-    if(receipt.file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setReceipt((receipt: Receipt) => ({
-          ...receipt,
-          preview: reader.result
-        }));
-      };
-      reader.readAsDataURL(receipt.file);
-    }
-    else if(receipt.file === null) {
-      setReceipt((receipt: Receipt) => ({
-        ...receipt,
-        preview: null
-      }));
-    }
-    setSpinnerShow(false);
-  },[receipt.file])
 
   // 승인 및 반려 처리
   const handleClick = async () => {
@@ -171,7 +122,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
         <div className="d-flex flex-column w-100">
           <Modal.Body>
             <Image rounded className='d-flex container-sm w-25 pt-1 pb-2'
-             src={receipt.preview?.toString()}/>
+             src={receipt}/>
           </Modal.Body>
           <Modal.Body className="d-flex flex-row w-100">
             <Form.Group className='w-50 px-3'>
