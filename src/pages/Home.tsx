@@ -34,7 +34,6 @@ export default function Home() {
     detail: ''
   });
   const [spinnerShow, setSpinnerShow] = React.useState<boolean>(false)
-  const [notifications, setNotifications] = React.useState<Array<any>>([])
 
   const navigate = useNavigate();
 
@@ -93,16 +92,6 @@ export default function Home() {
         }
       });
       setOrderData(res.data)
-      try {
-        const res2 = await axios.get(`${process.env.REACT_APP_SERVER_URL}/notifications`, {
-          headers: {
-            Authorization: `Bearer ${GetUserInfo().accessToken}`
-          }
-        });
-        setNotifications(res2.data)
-      } catch (error) {
-        console.log(error)
-      }
       return res.status
     } catch (error: unknown) {
       if(axios.isAxiosError(error) && error.response) {
@@ -234,7 +223,7 @@ export default function Home() {
           </tbody>
         </Table>
       </div>
-      {Notification(notifications)}
+      {Notification()}
       {HomeOrder(orderModalShow, handleClose)}
       {HomeEdit(editModalShow, handleClose, order, checkedOrders[0])}
       {LoadingSpinner(spinnerShow)}

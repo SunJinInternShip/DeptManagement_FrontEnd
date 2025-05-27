@@ -12,6 +12,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import SearchModal from '../components/SearchModal';
 import PriceComma from '../components/PriceComma';
 import styles from '../styles/Search.module.css'
+import Notification from '../notifications/Notification';
 
 interface Requirement {
   userId: number;
@@ -468,6 +469,7 @@ export default function Search() {
           {LoadingSpinner(spinnerShow)}
         </div>
       </div>
+      {Notification()}
     </div>
   );
 }

@@ -6,10 +6,29 @@ import WhiteCircle from '../assets/whiteCircle_20.svg';
 import WhiteNoti from '../assets/whiteNoti_28.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggle } from './NotificationSlice';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { GetUserInfo } from '../components/JWTToken';
 
-export default function Notification(notifications: Array<any>) {
+export default function Notification() {
   const notificationState = useSelector((state: any) => state.notification)
   const dispatch = useDispatch()
+
+  const [notifications, setNotifications] = useState<Array<any>>([])
+
+  useEffect(() => {
+    const getNotifications = async () => {
+      const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/notifications`, {
+        headers: {
+          Authorization: `Bearer ${GetUserInfo().accessToken}`
+        }
+      });
+      setNotifications(res.data)
+    }
+    getNotifications();
+    const interval = setInterval(getNotifications, 5000) // 5초마다 GET 요청
+    return () => clearInterval(interval); // 컴포넌트 언마운트 시 정리
+  }, []);
 
   return (
     <div>

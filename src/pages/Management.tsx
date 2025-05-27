@@ -7,6 +7,7 @@ import TopBar from '../components/TopBar';
 import ManagementModal from '../components/ManagementModal';
 import PriceComma from '../components/PriceComma';
 import styles from '../styles/Management.module.css'
+import Notification from '../notifications/Notification';
 
 interface Order {
   applicant: string | null;
@@ -129,6 +130,7 @@ export default function Management() {
           </tbody>
         </Table>
       </div>
+      {Notification()}
       {ManagementModal(modalShow, handleClose, order)}
       {LoadingSpinner(spinnerShow)}
     </div>
