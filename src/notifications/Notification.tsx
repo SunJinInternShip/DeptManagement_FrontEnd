@@ -25,7 +25,7 @@ export default function Notification(notifications: Array<any>) {
         ))}
       </ToastContainer>
       <Button
-       variant={notificationState ? "outline-primary" : "primary"}
+       variant={notificationState ? "primary" : "outline-primary"}
        style={{ position: 'fixed', bottom: '1rem', right: '1rem', zIndex: 1 }}
        onClick={() => {dispatch(toggle())}}>
         <img src={WhiteNoti} alt='notification'/>
