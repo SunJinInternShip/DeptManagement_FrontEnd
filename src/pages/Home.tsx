@@ -10,7 +10,7 @@ import { HomeEdit, HomeOrder } from '../components/HomeModal';
 import qs from 'qs';
 import PriceComma from '../components/PriceComma';
 import styles from '../styles/Home.module.css'
-import Notification from '../components/Notification';
+import Notification from '../notifications/Notification';
 
 interface Order {
   account: string;
