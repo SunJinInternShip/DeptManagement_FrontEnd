@@ -25,7 +25,6 @@ interface Order {
 // 홈 - 추가 모달
 export function HomeOrder(modalShow: boolean, handleClose: any) {
   // localStorage에 저장된 유저 정보 가져옴
-  const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
   // input type image의 ref
@@ -124,7 +123,7 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
       {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${GetUserInfo().accessToken}`
         }
       });
       alert(res.data);
@@ -250,7 +249,6 @@ export function HomeOrder(modalShow: boolean, handleClose: any) {
 
 // 홈 - 수정 모달
 export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order, orderId: number) {
-  const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -297,7 +295,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
       try {
         const res = await axios.delete(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/${orderId}`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${GetUserInfo().accessToken}`
           }
         });
         alert(res.data);
@@ -334,7 +332,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${GetUserInfo().accessToken}`
           }
         });
         alert(res.data);
@@ -352,7 +350,7 @@ export function HomeEdit(modalShow: boolean, handleClose: any, orderInfo: Order,
       try {
         const response: any = await axios.get(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/img/${orderId}`, {
             headers: {
-              Authorization: `Bearer ${accessToken}`
+              Authorization: `Bearer ${GetUserInfo().accessToken}`
             }
         });
         setCurrentReceipt(response.data);

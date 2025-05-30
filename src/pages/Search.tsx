@@ -41,7 +41,6 @@ interface Order {
 
 // 사원 페이지
 export default function Search() {
-  const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
   const [orderData, setOrderData] = React.useState<Array<any>>([]);
@@ -112,7 +111,7 @@ export default function Search() {
             return qs.stringify(params, { arrayFormat: 'repeat' })
           },
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${GetUserInfo().accessToken}`
           }
         });
         setOrderData(res.data);
@@ -128,7 +127,7 @@ export default function Search() {
             return qs.stringify(params, { arrayFormat: 'repeat' })
           },
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${GetUserInfo().accessToken}`
           }
         });
         setOrderData(res.data);
@@ -144,7 +143,7 @@ export default function Search() {
             return qs.stringify(params, { arrayFormat: 'repeat' })
           },
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${GetUserInfo().accessToken}`
           }
         });
         setOrderData(res.data);
@@ -290,7 +289,7 @@ export default function Search() {
         try {
           const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/department`, {
             headers: {
-              Authorization: `Bearer ${accessToken}`
+              Authorization: `Bearer ${GetUserInfo().accessToken}`
             }
           });
           let mData: Array<any> = [];
@@ -313,7 +312,7 @@ export default function Search() {
         try {
           const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/centerdirector/department`, {
             headers: {
-              Authorization: `Bearer ${accessToken}`
+              Authorization: `Bearer ${GetUserInfo().accessToken}`
             }
           });
           let dData: Array<any> = [];

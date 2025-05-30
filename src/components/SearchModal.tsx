@@ -22,7 +22,6 @@ interface Order {
 
 // 조회 모달
 export default function SearchModal(modalShow: boolean, handleClose: any, order: Order) {
-  const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
   const [receipt, setReceipt] = React.useState<string>("");
@@ -38,7 +37,7 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
           try {
             const response: any = await axios.get(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/img/${order.orderId}`, {
                 headers: {
-                  Authorization: `Bearer ${accessToken}`
+                  Authorization: `Bearer ${GetUserInfo().accessToken}`
                 }
             });
             setReceipt(response.data);

@@ -22,7 +22,6 @@ interface Order {
 }
 
 export default function Management() {
-  const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
   const [orderData, setOrderData] = React.useState<Object>([]);
@@ -58,7 +57,7 @@ export default function Management() {
       try {
         const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/teamleader/department/progress`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${GetUserInfo().accessToken}`
           }
         });
         setOrderData(res.data);
@@ -70,7 +69,7 @@ export default function Management() {
       try {
         const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/centerdirector/department/progress`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${GetUserInfo().accessToken}`
           }
         });
         setOrderData(res.data);

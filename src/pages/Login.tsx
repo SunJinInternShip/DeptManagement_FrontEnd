@@ -17,7 +17,6 @@ interface User {
 
 // 로그인
 export default function Login() {
-  const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
   const [user, setUser] = React.useState<User>({
@@ -59,7 +58,7 @@ export default function Login() {
 
   // 로그인한 유저가 없다면 기본 페이지(로그인 페이지)로
   React.useEffect(() => {
-    if(accessToken !== null) {
+    if(GetUserInfo().accessToken !== null) {
       role === "CENTERDIRECTOR" ? navigate("/search", { replace: true }) : navigate("/home", { replace: true });
     }
   },[])

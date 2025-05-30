@@ -28,7 +28,6 @@ interface Approval {
 
 
 export default function ManagementModal(modalShow: boolean, handleClose: any, order: Order) {
-  const accessToken = GetUserInfo().accessToken;
   const role = GetUserInfo().role;
 
   const [receipt, setReceipt] = React.useState<string>("");
@@ -56,7 +55,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
           try {
             const response: any = await axios.get(`${process.env.REACT_APP_SERVER_URL}/${lowerRole}/img/${order.orderId}`, {
                 headers: {
-                  Authorization: `Bearer ${accessToken}`
+                  Authorization: `Bearer ${GetUserInfo().accessToken}`
                 }
             });
             setReceipt(response.data);
@@ -93,7 +92,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
           isApproved: ApprovedToStr
         }, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${GetUserInfo().accessToken}`
           }
         });
         alert(res.data);
@@ -105,7 +104,7 @@ export default function ManagementModal(modalShow: boolean, handleClose: any, or
           isApproved: ApprovedToStr
         }, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${GetUserInfo().accessToken}`
           }
         });
         alert(res.data);
