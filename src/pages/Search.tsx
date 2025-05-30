@@ -148,7 +148,6 @@ export default function Search() {
           }
         });
         setOrderData(res.data);
-        console.log(res);
       } catch (error: any) {
         alert(error.response.data.message);
       }

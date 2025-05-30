@@ -41,7 +41,6 @@ export default function SearchModal(modalShow: boolean, handleClose: any, order:
                   Authorization: `Bearer ${accessToken}`
                 }
             });
-            console.log(response.data)
             setReceipt(response.data);
           } catch (error: any) {
             console.log(error);
