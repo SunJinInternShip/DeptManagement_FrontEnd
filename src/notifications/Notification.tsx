@@ -6,28 +6,42 @@ import WhiteCircle from '../assets/whiteCircle_20.svg';
 import WhiteNoti from '../assets/whiteNoti_28.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggle } from './NotificationSlice';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
 import { GetUserInfo } from '../components/JWTToken';
 
 export default function Notification() {
-  const notificationState = useSelector((state: any) => state.notification)
-  const dispatch = useDispatch()
+  const notificationState = useSelector((state: any) => state.notification) // 알림함 전역 상태
+  const dispatch = useDispatch() // 알림함 전역 상태 변경
+  const socketRef = useRef<WebSocket | null>(null);
 
   const [notifications, setNotifications] = useState<Array<any>>([])
 
   useEffect(() => {
-    const getNotifications = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/notifications`, {
-        headers: {
-          Authorization: `Bearer ${GetUserInfo().accessToken}`
-        }
-      });
-      setNotifications(res.data)
+    const accessToken = GetUserInfo().accessToken;
+    if(accessToken) {
+      const wsUrl = `${process.env.REACT_APP_SERVER_URL}/ws/notifications?token=Bearer ${encodeURIComponent(accessToken)}`;
+      socketRef.current = new WebSocket(wsUrl);
+
+      socketRef.current.onopen = () => {
+        console.log('✅ WebSocket 연결됨');
+      };
+
+      socketRef.current.onmessage = (event) => {
+        console.log('📩 받은 메시지:', event.data);
+      };
+
+      socketRef.current.onclose = () => {
+        console.log('❌ WebSocket 연결 종료됨');
+      };
+
+      socketRef.current.onerror = (error) => {
+        console.error('⚠️ WebSocket 에러:', error);
+      };
+
+      return () => {
+        socketRef.current?.close();
+      };
     }
-    getNotifications();
-    const interval = setInterval(getNotifications, 5000) // 5초마다 GET 요청
-    return () => clearInterval(interval); // 컴포넌트 언마운트 시 정리
   }, []);
 
   return (
