@@ -70,7 +70,7 @@ export default function Signup() {
     setSpinnerShow(true);
     try {
       const deptResult = await verifyDept(e);
-      if(deptResult == axios.HttpStatusCode.Ok) {
+      if(deptResult === axios.HttpStatusCode.Ok) {
         await axios.post(`${process.env.REACT_APP_SERVER_URL}/signup`, {
           "deptCode": user.deptCode,
           "userName": user.name,
